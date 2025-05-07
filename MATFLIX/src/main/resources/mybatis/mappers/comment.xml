@@ -1,0 +1,31 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.CommentDAO">
+    
+    <insert id="save">
+	    <selectKey keyProperty="commentNo" order="BEFORE" resultType="int">
+	        SELECT NVL(MAX(commentNo), 0) + 1 FROM board_comment
+	    </selectKey>
+	    INSERT INTO board_comment(
+	        commentNo,
+	        commentWriter,
+	        commentContent,
+	        boardNo
+	    )
+	    VALUES(#{commentNo}, #{commentWriter}, #{commentContent}, #{boardNo})
+	</insert>
+    
+    <select id="findAll" resultType="com.boot.dto.CommentDTO">
+		select commentNo 		
+			  ,commentWriter 	
+			  ,commentContent 	
+			  ,boardNo 			
+			  ,commentCreatedTime
+		  from board_comment
+		 where boardNo=#{boardNo}
+		 order by commentNo desc
+    </select>
+    
+</mapper>

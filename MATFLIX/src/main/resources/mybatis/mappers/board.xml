@@ -1,0 +1,40 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.BoardDAO">
+
+    <select id="list" resultType="com.boot.dto.BoardDTO">
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit from tbl_board
+    </select>
+    
+<!--    <insert id="write">-->
+<!--    	insert into tbl_board(boardName, boardTitle, boardContent) values(#{boardName},#{boardTitle},#{boardContent})-->
+<!--    </insert>-->
+    <insert id="write">
+	    <selectKey keyProperty="boardNo" order="BEFORE" resultType="int">
+	        SELECT NVL(MAX(boardNo), 0) + 1 FROM tbl_board
+	    </selectKey>
+	    INSERT INTO tbl_board(boardNo, boardName, boardTitle, boardContent)
+	    VALUES (#{boardNo}, #{boardName}, #{boardTitle}, #{boardContent})
+	</insert>
+
+    
+    <select id="contentView" resultType="com.boot.dto.BoardDTO">
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
+          from tbl_board 
+         where boardNo=#{boardNo}
+    </select>
+
+    <update id="modify">
+    	update tbl_board set boardName=#{boardName}, boardTitle=#{boardTitle}, boardContent=#{boardContent} where boardNo=#{boardNo}
+    </update>
+
+    <update id="delete">
+    	delete from tbl_board where boardNo=#{boardNo}
+    </update>
+    
+</mapper>
+
+
+
