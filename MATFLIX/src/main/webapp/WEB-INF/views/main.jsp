@@ -69,7 +69,11 @@
 				</ul>
 			</div>
 		</section>
-
+		<form id="user_profile" class="profile" action="profile" method="post">
+			<div class="form_profile">
+		    	<input type="submit" class="mypage_btn" value="mypage">
+			</div>
+		</form>
 	    
 	    <!-- 한식 카테고리 -->
 	    <section class="category_section_korean">
