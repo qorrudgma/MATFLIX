@@ -11,4 +11,6 @@ public interface CommentDAO {
 	public ArrayList<CommentDTO> findAll(HashMap<String, String> param);
 
 	public void boardCommentDelete(HashMap<String, String> param);
+
+	public void userCommentDelete(HashMap<String, String> param);
 }

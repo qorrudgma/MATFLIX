@@ -31,7 +31,7 @@
     
     <delete id="userCommentDelete">
     	delete from board_comment
- 		 where userNo=#{userNo}
+ 		 where commentNo=#{commentNo}
     </delete>
     
 </mapper>

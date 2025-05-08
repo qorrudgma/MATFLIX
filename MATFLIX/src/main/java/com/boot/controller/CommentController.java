@@ -31,4 +31,12 @@ public class CommentController {
 		ArrayList<CommentDTO> commentList = service.findAll(param);
 		return commentList;
 	}
+
+	@RequestMapping("/delete")
+	public @ResponseBody void userCommentDelete(@RequestParam HashMap<String, String> param) {
+		log.info("@# userCommentDelete()");
+		log.info("@# param=>" + param);
+
+		service.userCommentDelete(param);
+	}
 }

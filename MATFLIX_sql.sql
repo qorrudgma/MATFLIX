@@ -16,12 +16,12 @@ CREATE TABLE board_comment (
     commentWriter VARCHAR(20),
     commentContent VARCHAR(300),
     boardNo INT,
-    userNo int DEFAULT "1",
+    userNo int DEFAULT 1,
     commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE tbl_board (
-    boardNo int PRIMARY KEY,
+    boardNo int AUTO_INCREMENT PRIMARY KEY,
     boardName VARCHAR(20),
     boardTitle VARCHAR(100),
     boardContent VARCHAR(300),

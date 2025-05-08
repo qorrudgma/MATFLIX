@@ -103,12 +103,14 @@
 	</div>
 
 	<div id="comment-list">
-		<table>
+		<table border="1">
 			<tr>
 				<th>댓글번호</th>
 				<th>작성자</th>
 				<th>내용</th>
 				<th>작성시간</th>
+				<th>게시글 번호</th>
+				<th>유저 번호</th>
 			</tr>
 			<c:forEach items="${commentList}" var="comment">
 				<tr>
@@ -118,6 +120,9 @@
 					<td>${comment.commentCreatedTime}</td>
 					<td>${comment.boardNo}</td>
 					<td>${comment.userNo}</td>
+					<c:if test="${comment.userNo == sessionUserNo}">
+						<!-- <button onclick="deleteComment(${comment.commentNo})">댓글 삭제</button> -->
+					</c:if>
 				</tr>
 			</c:forEach>
 		</table>
@@ -125,6 +130,7 @@
 
 </body>
 <script>
+	var sessionUserNo = 1;
 	const commentWrite = () => {
 		const writer = document.getElementById("commentWriter").value;
 		const content = document.getElementById("commentContent").value;
@@ -142,17 +148,28 @@
 				console.log("작성 성공");
 				console.log(commentList);
 
-				let output = "<table>";
+				let output = "<table border='1'>";
 				output += "<tr><th>댓글번호</th>";
 				output += "<th>작성자</th>";
 				output += "<th>내용</th>";
-				output += "<th>작성시간</th></tr>";
+				output += "<th>작성시간</th>";
+				output += "<th>게시글 번호</th>";
+				output += "<th>유저 번호</th></tr>";
 				for (let i in commentList) {
 					output += "<tr>";
 					output += "<td>" + commentList[i].commentNo + "</td>";
 					output += "<td>" + commentList[i].commentWriter + "</td>";
 					output += "<td>" + commentList[i].commentContent + "</td>";
 					output += "<td>" + commentList[i].commentCreatedTime + "</td>";
+					output += "<td>" + commentList[i].boardNo + "</td>";
+					output += "<td>" + commentList[i].userNo + "</td>";
+
+					// 우선 1을 적어둠-------------------------
+					if (commentList[i].userNo == sessionUserNo) {
+						output += "<td><button onclick='deleteComment(" + commentList[i].commentNo + ")'>댓글 삭제</button></td>";
+					} else {
+						output += "<td></td>";
+					}
 					output += "</tr>";
 				}
 				output += "</table>";
@@ -165,6 +182,56 @@
 			}
 		});//end of ajax
 	}//end of script
+
+	function deleteComment(commentNo){
+		$.ajax({
+			type: "post",
+			url: "/comment/delete",
+			data: { commentNo: commentNo },
+			success: function(response) {
+				console.log("댓글 삭제 성공");
+				loadComments();
+			},
+			error: function() {
+				console.log("댓글 삭제 실패");
+			}
+    	});
+	}
+
+	function loadComments() {
+		const no = "${content_view.boardNo}";
+
+		$.ajax({
+			type: "get",
+			url: "/comment/list",
+			data: { boardNo: no },
+			success: function (commentList) {
+				let output = "<table border='1'>";
+				output += "<tr><th>댓글번호</th><th>작성자</th><th>내용</th><th>작성시간</th><th>게시글 번호</th><th>유저 번호</th></tr>";
+				for (let i in commentList) {
+					output += "<tr>";
+					output += "<td>" + commentList[i].commentNo + "</td>";
+					output += "<td>" + commentList[i].commentWriter + "</td>";
+					output += "<td>" + commentList[i].commentContent + "</td>";
+					output += "<td>" + commentList[i].commentCreatedTime + "</td>";
+					output += "<td>" + commentList[i].boardNo + "</td>";
+					output += "<td>" + commentList[i].userNo + "</td>";
+					if (commentList[i].userNo == sessionUserNo) {
+						output += "<td><button onclick='deleteComment(" + commentList[i].commentNo + ")'>댓글 삭제</button></td>";
+					} else {
+						output += "<td></td>";
+					}
+					output += "</tr>";
+				}
+				output += "</table>";
+				document.getElementById("comment-list").innerHTML = output;
+			},
+			error: function () {
+				console.log("댓글 목록 불러오기 실패");
+			}
+		});
+	}
+
 </script>
 <script>
 	// 이미지 보여주기
