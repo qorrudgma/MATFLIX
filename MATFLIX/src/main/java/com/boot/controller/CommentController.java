@@ -39,4 +39,13 @@ public class CommentController {
 
 		service.userCommentDelete(param);
 	}
+
+	@RequestMapping("/list")
+	public @ResponseBody ArrayList<CommentDTO> findAll(@RequestParam HashMap<String, String> param) {
+		log.info("@# findAll()");
+		log.info("@# param=>" + param);
+
+		ArrayList<CommentDTO> commentList = service.findAll(param);
+		return commentList;
+	}
 }
