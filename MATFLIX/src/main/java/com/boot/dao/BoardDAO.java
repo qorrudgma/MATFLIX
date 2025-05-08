@@ -8,7 +8,6 @@ import com.boot.dto.BoardDTO;
 public interface BoardDAO {
 	public ArrayList<BoardDTO> list();
 
-//	public void write(HashMap<String, String> param);
 	public void write(BoardDTO boardDTO);
 
 	public BoardDTO contentView(HashMap<String, String> param);
@@ -16,4 +15,6 @@ public interface BoardDAO {
 	public void modify(HashMap<String, String> param);
 
 	public void delete(HashMap<String, String> param);
+
+	public void hitUp(HashMap<String, String> param);
 }

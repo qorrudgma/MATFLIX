@@ -17,17 +17,6 @@ public class BoardDTO {
 	private String boardContent;
 	private Timestamp boardDate;
 	private int boardHit;
-	
+
 	private List<BoardAttachDTO> attachList;
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -25,16 +25,13 @@ public class PageController {
 		log.info("@# list()");
 		log.info("@# cri=>" + cri);
 
-//		model.addAttribute("list", service.listWithPaging(cri));
 		ArrayList<BoardDTO> list = service.listWithPaging(cri);
 		int total = service.getTotalCount(cri);
 		log.info("@# total=>" + total);
 
 		model.addAttribute("list", list);
-//		model.addAttribute("pageMaker", new PageDTO(123, cri));
 		model.addAttribute("pageMaker", new PageDTO(total, cri));
 
 		return "list";
 	}
-
 }

@@ -5,27 +5,33 @@
 <mapper namespace="com.boot.dao.CommentDAO">
     
     <insert id="save">
-	    <selectKey keyProperty="commentNo" order="BEFORE" resultType="int">
-	        SELECT NVL(MAX(commentNo), 0) + 1 FROM board_comment
-	    </selectKey>
-	    INSERT INTO board_comment(
-	        commentNo,
-	        commentWriter,
-	        commentContent,
-	        boardNo
-	    )
-	    VALUES(#{commentNo}, #{commentWriter}, #{commentContent}, #{boardNo})
-	</insert>
+		insert into board_comment( 		
+			  commentWriter 	
+			 ,commentContent 	
+			 ,boardNo)
+		values(#{commentWriter},#{commentContent},#{boardNo})
+    </insert>
     
     <select id="findAll" resultType="com.boot.dto.CommentDTO">
-		select commentNo 		
-			  ,commentWriter 	
-			  ,commentContent 	
-			  ,boardNo 			
+		select commentNo
+			  ,commentWriter
+			  ,commentContent
+			  ,boardNo
 			  ,commentCreatedTime
+			  ,userNo
 		  from board_comment
 		 where boardNo=#{boardNo}
 		 order by commentNo desc
     </select>
+    
+    <delete id="boardCommentDelete">
+    	delete from board_comment
+ 		 where boardNo=#{boardNo}
+    </delete>
+    
+    <delete id="userCommentDelete">
+    	delete from board_comment
+ 		 where userNo=#{userNo}
+    </delete>
     
 </mapper>

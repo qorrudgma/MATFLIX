@@ -4,26 +4,7 @@
 
 <mapper namespace="com.boot.dao.PageDAO">
 
-<!-- <![CDATA[]]> : mybatis 에서 특수문자 인식 처리 -->
-<!--    <select id="listWithPaging" resultType="com.boot.dto.BoardDTO">-->
-<!--    	<![CDATA[-->
-<!--		  select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit-->
-<!--			from ( select rownum , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit -->
-<!--					 from ( select row_number() over(order by boardNo desc) as rownum-->
-<!--								 , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit -->
-<!--							  from tbl_board-->
-<!--							 order by boardNo desc-->
-<!--							) a-->
-<!--					where rownum <= (#{pageNum} * #{amount})-->
-<!--				) aa-->
-<!--			where rownum > (#{pageNum}-1) * #{amount}-->
-<!--		]]>-->
-<!--    </select>-->
-
 	<sql id="criteria">
-	<!-- 1번 방법 -->
-<!--		<if test="type == 'T'.toString()"></if>-->
-	<!-- 2번 방법 -->
 		<if test='type == "T"'>
 			where boardTitle like concat('%', #{keyword}, '%')
 		</if>
@@ -39,37 +20,31 @@
 		<if test='type == "TW"'>
 			where boardTitle like concat('%', #{keyword}, '%') or boardName like concat('%', #{keyword}, '%')
 		</if>
-		<if test='type == "TCW"'>
-			where boardTitle like concat('%', #{keyword}, '%') or boardContent like concat('%', #{keyword}, '%')
-															   or boardName like concat('%', #{keyword}, '%')
+		<if test='type == "CW"'>
+			where boardContent like concat('%', #{keyword}, '%') or boardName like concat('%', #{keyword}, '%')
 		</if>
 	</sql>
 	
-	<select id="listWithPaging" resultType="com.boot.dto.BoardDTO">
-		<![CDATA[
-			select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit
-			  from (select boardNo
-			  	  		 , boardName
-			  			 , boardTitle
-			  			 , boardContent
-			  			 , boardDate
-			  			 , boardHit
-			  			 , row_number() over (order by boardNo desc) as rnum
-			  		  from tbl_board
-			  		  ]]>
-			          <include refid="criteria"></include>
-			          <![CDATA[
-				  					 )
-			 where rnum > (#{pageNum} - 1) * #{amount}
-			   and rnum <= #{pageNum} * #{amount}
+    <select id="listWithPaging" resultType="com.boot.dto.BoardDTO">
+    	<![CDATA[
+		  select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit
+			from ( select rownum , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
+					 from ( select row_number() over(order by boardNo desc) as rownum
+								 , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
+							  from tbl_board
+							 ]]>
+							 <include refid="criteria"></include>
+							 <![CDATA[
+							 order by boardNo desc
+							) a
+					where rownum <= (#{pageNum} * #{amount})
+				) aa
+			where rownum > (#{pageNum}-1) * #{amount}
 		]]>
-	</select>
-
-
+    </select>
     
-	<select id="getTotalCount" resultType="int">
-	    select count(*) from tbl_board <include refid="criteria"></include>
-	</select>
-
+    <select id="getTotalCount" resultType="int">
+		  select count(*) from tbl_board <include refid="criteria"></include>
+    </select>
     
 </mapper>

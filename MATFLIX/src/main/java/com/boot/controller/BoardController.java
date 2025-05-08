@@ -32,19 +32,23 @@ public class BoardController {
 	@Autowired
 	private UploadService uploadService;
 
-//	@RequestMapping("/list")
-	@RequestMapping("/list_old")
+//	@RequestMapping("/main")
+//	public String main() {
+//		log.info("@# main()");
+//		return "main";
+//	}
+
+	@RequestMapping("/main")
 	public String list(Model model) {
 		log.info("@# list()");
 
 		ArrayList<BoardDTO> list = service.list();
 		model.addAttribute("list", list);
 
-		return "list";
+		return "main";
 	}
 
 	@RequestMapping("/write")
-//	public String write(@RequestParam HashMap<String, String> param) {
 	public String write(BoardDTO boardDTO) {
 		log.info("@# write()");
 		log.info("@# boardDTO=>" + boardDTO);
@@ -53,7 +57,6 @@ public class BoardController {
 			boardDTO.getAttachList().forEach(attach -> log.info("@# attach=>" + attach));
 		}
 
-//		service.write(param);
 		service.write(boardDTO);
 
 		return "redirect:list";
@@ -73,11 +76,10 @@ public class BoardController {
 
 		BoardDTO dto = service.contentView(param);
 		model.addAttribute("content_view", dto);
+		service.hitUp(param);
 
-//		content_view.jsp 에서 pageMaker 를 가지고 페이징 처리
 		model.addAttribute("pageMaker", param);
 
-		// 해당 게시글에 작성된 댓글 리스트를 가져옴
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);
 		model.addAttribute("commentList", commentList);
 
@@ -85,15 +87,12 @@ public class BoardController {
 	}
 
 	@RequestMapping("/modify")
-//	public String modify(@RequestParam HashMap<String, String> param) {
 	public String modify(@RequestParam HashMap<String, String> param, RedirectAttributes rttr) {
 		log.info("@# modify()");
-//		@# param=>{boardNo=260, pageNum=5, amount=10, boardName=kim260ab, boardTitle=260appleab, boardContent=content_260ab}
 		log.info("@# param=>" + param);
 
 		service.modify(param);
 
-//		페이지 이동시 뒤에 페이지번호, 글 갯수 추가
 		rttr.addAttribute("pageNum", param.get("pageNum"));
 		rttr.addAttribute("amount", param.get("amount"));
 
@@ -101,7 +100,6 @@ public class BoardController {
 	}
 
 	@RequestMapping("/delete")
-//	public String delete(@RequestParam HashMap<String, String> param) {
 	public String delete(@RequestParam HashMap<String, String> param, RedirectAttributes rttr) {
 		log.info("@# delete()");
 		log.info("@# param=>" + param);
@@ -110,12 +108,10 @@ public class BoardController {
 		List<BoardAttachDTO> fileList = uploadService.getFileList(Integer.parseInt(param.get("boardNo")));
 		log.info("@# fileList=>" + fileList);
 
-//		게시글 삭제, 댓글 삭제
 		service.delete(param);
-//		폴더 삭제
 		uploadService.deleteFiles(fileList);
+		commentService.boardCommentDelete(param);
 
-//		페이지 이동시 뒤에 페이지번호, 글 갯수 추가
 		rttr.addAttribute("pageNum", param.get("pageNum"));
 		rttr.addAttribute("amount", param.get("amount"));
 

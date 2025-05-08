@@ -20,27 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentController {
 	@Autowired
 	private CommentService service;
-	
+
 	@RequestMapping("/save")
-//	public String save(@RequestParam HashMap<String, String> param) {
-//	public ArrayList<CommentDTO> save(@RequestParam HashMap<String, String> param) {
 	public @ResponseBody ArrayList<CommentDTO> save(@RequestParam HashMap<String, String> param) {
 		log.info("@# save()");
-		log.info("@# param=>"+param);
-		
+		log.info("@# param=>" + param);
+
 		service.save(param);
-		
-		// 해당 게시글에 작성된 댓글 리스트를 가져옴
+
 		ArrayList<CommentDTO> commentList = service.findAll(param);
-//		return null;
 		return commentList;
 	}
-	
 }
-
-
-
-
-
-
-

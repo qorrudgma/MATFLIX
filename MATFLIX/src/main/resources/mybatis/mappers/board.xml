@@ -8,17 +8,15 @@
         select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit from tbl_board
     </select>
     
-<!--    <insert id="write">-->
-<!--    	insert into tbl_board(boardName, boardTitle, boardContent) values(#{boardName},#{boardTitle},#{boardContent})-->
-<!--    </insert>-->
     <insert id="write">
-	    <selectKey keyProperty="boardNo" order="BEFORE" resultType="int">
-	        SELECT NVL(MAX(boardNo), 0) + 1 FROM tbl_board
-	    </selectKey>
-	    INSERT INTO tbl_board(boardNo, boardName, boardTitle, boardContent)
-	    VALUES (#{boardNo}, #{boardName}, #{boardTitle}, #{boardContent})
-	</insert>
-
+    	<selectKey keyProperty="boardNo" order="BEFORE" resultType="int">
+			select ifnull(max(boardNo),0)+1 
+			  from tbl_board
+    	</selectKey>
+    	insert into tbl_board(boardNo, boardName, boardTitle, boardContent) 
+			select ifnull(max(boardNo),0)+1, #{boardName},#{boardTitle},#{boardContent} 
+			  from tbl_board
+    </insert>
     
     <select id="contentView" resultType="com.boot.dto.BoardDTO">
         select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
@@ -34,7 +32,8 @@
     	delete from tbl_board where boardNo=#{boardNo}
     </update>
     
+    <update id="hitUp">
+	    update tbl_board set boardHit = boardHit +1 where boardNo=#{boardNo}
+    </update>
+    
 </mapper>
-
-
-
