@@ -34,8 +34,8 @@
 <body>
 	<%= user %><br>
 	${user.mf_no}
-	<table width="500" border="1">
-		<form method="post" action="modify">
+	<form method="post" action="modify">
+		<table width="500" border="1">
 			<input type="hidden" name="boardNo" value="${pageMaker.boardNo}">
 			<input type="hidden" name="pageNum" value="${pageMaker.pageNum}">
 			<input type="hidden" name="amount" value="${pageMaker.amount}">
@@ -83,17 +83,30 @@
 					<c:if test="${content_view.mf_no == user.mf_no}">
 						&nbsp;&nbsp;<input type="submit" value="삭제" formaction="delete">
 					</c:if>
+					<% if(user != null){ %>
+						&nbsp;&nbsp;<button id="recommend" type="button">추천</button>
+					<% } %>
+					<!-- <c:if test="${user != null}">
+						&nbsp;&nbsp;<button id="recommend" type="button">
+							<c:choose>
+								<c:when test="${isRecommended}">
+									추천 취소
+								</c:when>
+								<c:otherwise>
+									추천
+								</c:otherwise>
+							</c:choose>
+						</button>
+					</c:if> -->
 				</td>
 			</tr>
-		</form>
-	</table>
-
+		</table>
+	</form>
+<!-- 
 	Files
-	<!-- 추가 -->
 	<div class="uploadDiv">
 		<input type="file" name="uploadFile" multiple>
 	</div>
-	<!-- 출력 -->
 	<div class="bigPicture">
 		<div class="bigPic">
 
@@ -104,11 +117,11 @@
 		<ul>
 
 		</ul>
-	</div>
+	</div> -->
 
 	<!-- 댓글 출력 -->
 	<div>
-		<input type="text" id="commentWriter" placeholder="작성자">
+		<input type="text" id="commentWriter" value="${user.mf_nickname}" readonly>
 		<input type="text" id="commentContent" placeholder="내용">
 		<button onclick="commentWrite()">댓글작성</button>
 	</div>
@@ -143,17 +156,49 @@
 
 </body>
 <script>
+	// 변수
     <% if (user != null) { %>
         var sessionUserNo = <%= user.getMf_no() %>;
     <% } else { %>
         var sessionUserNo = null;
     <% } %>
+	var no = "${content_view.boardNo}";
+	// 추천 버튼
+	$("#recommend").click(function (e) {
+		e.preventDefault();
 
+		if (sessionUserNo == null) {
+			alert("로그인 후 이용 가능합니다.");
+			return;
+		}
+
+		$.ajax({
+			 type: "POST"
+			,data: {boardNo: no}
+			,url: "/recommend"
+			,success: function (result) {
+				console.log(result);
+				if (result = "recommend") {
+					alert("추천됨.");
+					// location.reload();
+					$("#recommend").text("추천 취소");
+				} else {
+					alert("추천 취소됨.");
+					// location.reload();
+					$("#recommend").text("추천");
+				}
+			}
+			,error: function () {
+				console.log("추천 실패");
+			}
+		});
+	});
+
+	// 댓글
 	const commentWrite = () => {
 		console.log("유저 넘 => "+sessionUserNo);
 		const writer = document.getElementById("commentWriter").value;
 		const content = document.getElementById("commentContent").value;
-		const no = "${content_view.boardNo}";
 
 		$.ajax({
 			type: "post"

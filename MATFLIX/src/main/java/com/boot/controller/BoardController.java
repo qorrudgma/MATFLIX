@@ -16,6 +16,7 @@ import com.boot.dto.BoardDTO;
 import com.boot.dto.CommentDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentService;
+import com.boot.service.RecommendService;
 import com.boot.service.UploadService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,9 @@ public class BoardController {
 
 	@Autowired
 	private UploadService uploadService;
+
+	@Autowired
+	private RecommendService recommendService;
 
 //	@RequestMapping("/main")
 //	public String main() {
@@ -111,6 +115,7 @@ public class BoardController {
 		service.delete(param);
 		uploadService.deleteFiles(fileList);
 		commentService.boardCommentDelete(param);
+		recommendService.delete_board(Integer.parseInt(param.get("boardNo")));
 
 		rttr.addAttribute("pageNum", param.get("pageNum"));
 		rttr.addAttribute("amount", param.get("amount"));
