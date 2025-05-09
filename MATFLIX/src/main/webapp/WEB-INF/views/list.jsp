@@ -40,7 +40,11 @@
       </c:forEach>
       <tr>
          <td colspan="5">
-            <a href="write_view">글작성</a>
+			<% if(user != null){ %>
+	            <a href="write_view">글작성</a>
+			<% }else{ %>
+	            <a href="#" id="write_a">글작성</a>
+			<% } %>
          </td>
       </tr>
    </table>
@@ -103,6 +107,11 @@
 </html>
 <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
 <script>
+	$("#write_a").on("click", function(e){
+		e.preventDefault();
+      alert("로그인 후 이용 가능한 콘텐츠 입니다.");
+	});
+	
    var actionForm = $("#actionForm");
    // 페이지번호 처리
    $(".paginate_button a").on("click", function (e) {

@@ -54,22 +54,19 @@
 			<tr>
 				<td>이름(닉네임이 나오게 수정하기)</td>
 				<td>
-					<%-- ${content_view.boardName} --%>
-						<input type="text" name="boardName" value="${content_view.boardName}">
+					${content_view.boardName}
 				</td>
 			</tr>
 			<tr>
 				<td>제목</td>
 				<td>
-					<%-- ${content_view.boardTitle} --%>
-						<input type="text" name="boardTitle" value="${content_view.boardTitle}">
+					<input type="text" name="boardTitle" value="${content_view.boardTitle}">
 				</td>
 			</tr>
 			<tr>
 				<td>내용</td>
 				<td>
-					<%-- ${content_view.boardContent} --%>
-						<input type="text" name="boardContent" value="${content_view.boardContent}">
+					<input type="text" name="boardContent" value="${content_view.boardContent}">
 				</td>
 			</tr>
 			<tr>
