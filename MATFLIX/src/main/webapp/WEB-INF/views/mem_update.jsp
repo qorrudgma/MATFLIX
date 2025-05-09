@@ -1,6 +1,4 @@
-<%@page import="com.lgy.TeamProject.dto.TeamDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%  TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,10 +20,10 @@
 		$.ajax({
 			type: "post",
 			data: formData,
-			url: "${pageContext.request.contextPath}/member/update_member_ok",  // Spring Boot의 매핑 경로로 변경
+			url: "${pageContext.request.contextPath}/update_member_ok",  // Spring Boot의 매핑 경로로 변경
 			success: function(data) {
 				alert("수정이 정상적으로 처리되었습니다.");
-				location.href = "${pageContext.request.contextPath}/member/my_page";  // 수정 후 페이지 이동
+				location.href = "${pageContext.request.contextPath}/profile";  // 수정 후 페이지 이동
 			},
 			error: function() {
 				alert("오류 발생");
@@ -109,20 +107,12 @@
 					<input type="date" name="mf_birth" value="${user.mf_birth}" required>
 				</td>
 			</tr>
-			<tr>
-				<td>성별:</td>
-				<td>
-					<select name="mf_gender" required>
-						<option value="m" <%= "m".equals(user.getMf_gender()) ? "selected" : "" %> >남성</option>
-						<option value="f" <%= "f".equals(user.getMf_gender()) ? "selected" : "" %> >여성</option>
-					</select>
-				</td>
-			</tr>
+			
 		</table>
 
 		<br>
 		<input type="button" onclick="fn_submit()" value="수정">
-		<button type="button" onclick="location.href='${pageContext.request.contextPath}/member/my_page'">취소</button>
+		<button type="button" onclick="location.href='${pageContext.request.contextPath}/main'">취소</button>
 	</form>
 </body>
 </html>

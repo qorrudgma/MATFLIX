@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="com.boot.dto.TeamDTO" %>
+<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 <header class="header">
-
+<%=user%>
 	<div>
 		<img src="${pageContext.request.contextPath}/resources/image/MATFLIX.png" width="60px" alt="MATFLIX로고">
 	</div>
@@ -31,27 +33,26 @@
 			<button type="submit">검색</button>
 		</form>
 	</div>
-	<!-- if -->
+	<% if(user != null){ %>
  	<div class="header_actions">
 		<div class="profile_image profile">
 			<img onclick="my_page()" alt="MATFLIX" src="${pageContext.request.contextPath}">
 		</div>
 		<div>
 			<div class="profile_info">
-				<span><span id="profile_name">name</span>님 환영합니다.</span>
+				<span><span id="profile_name"><%= user.getMf_name() %></span>님 환영합니다.</span>
 			</div>
-			<input type="button" value="로그아웃" id="log_out" onclick="location.href='${pageContext.request.contextPath}/member/log_out'">
+			<input type="button" value="로그아웃" id="log_out" onclick="location.href='${pageContext.request.contextPath}/main'">
 		</div>
 	</div>
-
-	<!-- else -->
+	<% }else{ %>
 	<div class="header_actions">
 		<div class="user_actions">
 			<button class="btn_login">로그인</button>
 			<button class="btn_register">회원가입</button>
 		</div>
 	</div>
-<!-- 닫기 -->
+	<% } %>
 	<button id="page_up">
 		<i class="fas fa-chevron-up"></i>
 	</button>

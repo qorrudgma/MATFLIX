@@ -1,0 +1,39 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.BoardDAO">
+
+    <select id="list" resultType="com.boot.dto.BoardDTO">
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit from tbl_board
+    </select>
+    
+    <insert id="write">
+    	<selectKey keyProperty="boardNo" order="BEFORE" resultType="int">
+			select ifnull(max(boardNo),0)+1 
+			  from tbl_board
+    	</selectKey>
+    	insert into tbl_board(boardNo, boardName, boardTitle, boardContent) 
+			select ifnull(max(boardNo),0)+1, #{boardName},#{boardTitle},#{boardContent} 
+			  from tbl_board
+    </insert>
+    
+    <select id="contentView" resultType="com.boot.dto.BoardDTO">
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
+          from tbl_board 
+         where boardNo=#{boardNo}
+    </select>
+
+    <update id="modify">
+    	update tbl_board set boardName=#{boardName}, boardTitle=#{boardTitle}, boardContent=#{boardContent} where boardNo=#{boardNo}
+    </update>
+
+    <update id="delete">
+    	delete from tbl_board where boardNo=#{boardNo}
+    </update>
+    
+    <update id="hitUp">
+	    update tbl_board set boardHit = boardHit +1 where boardNo=#{boardNo}
+    </update>
+    
+</mapper>

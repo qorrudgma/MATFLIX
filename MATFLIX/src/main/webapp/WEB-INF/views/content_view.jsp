@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.boot.dto.TeamDTO" %>
+<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
+<% request.setAttribute("user", user); %>
 <html>
 
 <head>
@@ -29,6 +32,8 @@
 </head>
 
 <body>
+	<%= user %><br>
+	${user.mf_no}
 	<table width="500" border="1">
 		<form method="post" action="modify">
 			<input type="hidden" name="boardNo" value="${pageMaker.boardNo}">
@@ -120,9 +125,11 @@
 					<td>${comment.commentCreatedTime}</td>
 					<td>${comment.boardNo}</td>
 					<td>${comment.userNo}</td>
-					<c:if test="${comment.userNo == sessionUserNo}">
-						<!-- <button onclick="deleteComment(${comment.commentNo})">댓글 삭제</button> -->
-					</c:if>
+					<td>
+						<c:if test="${comment.userNo == user.mf_no}">
+							<button onclick="deleteComment('${comment.commentNo}')">댓글 삭제</button>
+						</c:if>
+					</td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -130,8 +137,14 @@
 
 </body>
 <script>
-	var sessionUserNo = 1;
+    <% if (user != null) { %>
+        var sessionUserNo = <%= user.getMf_no() %>;
+    <% } else { %>
+        var sessionUserNo = null;
+    <% } %>
+
 	const commentWrite = () => {
+		console.log("유저 넘 => "+sessionUserNo);
 		const writer = document.getElementById("commentWriter").value;
 		const content = document.getElementById("commentContent").value;
 		const no = "${content_view.boardNo}";
@@ -142,6 +155,7 @@
 				commentWriter: writer
 				, commentContent: content
 				, boardNo: no
+				, userNo: sessionUserNo
 			}
 			, url: "/comment/save"
 			, success: function (commentList) {

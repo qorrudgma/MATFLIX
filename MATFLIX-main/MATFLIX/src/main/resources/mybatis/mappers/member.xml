@@ -1,0 +1,70 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.boot.dao.TeamDAO">
+
+	<insert id="recruit">
+	  INSERT INTO matflix (
+	      mf_id, mf_pw, mf_pw_chk, mf_nickname,
+	      mf_name, mf_email, mf_phone, mf_birth, mf_gender
+	  ) VALUES (
+	      #{mf_id}, #{mf_pw}, #{mf_pw_chk}, #{mf_nickname},
+	      #{mf_name}, #{mf_email}, #{mf_phone}, #{mf_birth}, #{mf_gender}
+	  )
+	</insert>
+
+
+	<select id="login" resultType="int">
+		SELECT COUNT(*) FROM matflix
+		<where>
+			<if test="mf_id != null and mf_id != ''">
+				AND mf_id = #{mf_id}
+			</if>
+			<if test="mf_pw != null and mf_pw != ''">
+				AND mf_pw = #{mf_pw}
+			</if>
+		</where>
+	</select>
+
+	<select id="list" resultType="com.boot.dto.TeamDTO">
+		select mf_no, mf_id, mf_pw,
+		mf_pw_chk, mf_name, mf_email,
+		mf_phone, mf_birth, mf_gender from
+		matflix
+	</select>
+
+	<select id="find_list"
+		resultType="com.boot.dto.TeamDTO">
+		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
+		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}
+	</select>
+
+	<!-- 다른유저 -->
+	<select id="user"
+		resultType="com.boot.dto.TeamDTO">
+		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
+		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}
+	</select>
+	<!-- 다른유저 -->
+
+	<update id="update_ok">
+		update matflix set mf_pw=#{mf_pw}, mf_pw_chk=#{mf_pw_chk},
+		mf_name=#{mf_name}, mf_email=#{mf_email}
+		<where>
+			mf_id = #{mf_id}
+		</where>
+	</update>
+	
+	<delete id="delete_ok">
+		delete from matflix where mf_id=#{mf_id}
+	</delete>
+
+	<update id="nickname">
+		update matflix set mf_nickname=#{mf_nickname}
+		<where>
+			mf_id = #{mf_id}
+		</where>
+	</update>
+
+</mapper>

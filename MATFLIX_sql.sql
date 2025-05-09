@@ -35,7 +35,7 @@ CREATE TABLE board_comment (
     commentWriter VARCHAR(20),
     commentContent VARCHAR(300),
     boardNo INT,
-    userNo int DEFAULT 1,
+    userNo int,
     commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

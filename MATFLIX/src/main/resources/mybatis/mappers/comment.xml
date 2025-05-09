@@ -8,8 +8,9 @@
 		insert into board_comment( 		
 			  commentWriter 	
 			 ,commentContent 	
-			 ,boardNo)
-		values(#{commentWriter},#{commentContent},#{boardNo})
+			 ,boardNo
+			 ,userNo)
+		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo})
     </insert>
     
     <select id="findAll" resultType="com.boot.dto.CommentDTO">

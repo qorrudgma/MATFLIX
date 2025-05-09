@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.boot.dto.TeamDTO" %>
+<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 <html>
 
 <head>
@@ -15,6 +17,7 @@
 </style>
 
 <body>
+   <%= user %>
    <table width="700" border="1">
       <tr>
          <td>번호</td>

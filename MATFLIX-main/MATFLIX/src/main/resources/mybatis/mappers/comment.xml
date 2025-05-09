@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.CommentDAO">
+    
+    <insert id="save">
+		insert into board_comment( 		
+			  commentWriter 	
+			 ,commentContent 	
+			 ,boardNo)
+		values(#{commentWriter},#{commentContent},#{boardNo})
+    </insert>
+    
+    <select id="findAll" resultType="com.boot.dto.CommentDTO">
+		select commentNo
+			  ,commentWriter
+			  ,commentContent
+			  ,boardNo
+			  ,commentCreatedTime
+			  ,userNo
+		  from board_comment
+		 where boardNo=#{boardNo}
+		 order by commentNo desc
+    </select>
+    
+    <delete id="boardCommentDelete">
+    	delete from board_comment
+ 		 where boardNo=#{boardNo}
+    </delete>
+    
+    <delete id="userCommentDelete">
+    	delete from board_comment
+ 		 where commentNo=#{commentNo}
+    </delete>
+    
+</mapper>
