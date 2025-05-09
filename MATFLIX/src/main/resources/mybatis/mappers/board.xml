@@ -5,7 +5,7 @@
 <mapper namespace="com.boot.dao.BoardDAO">
 
     <select id="list" resultType="com.boot.dto.BoardDTO">
-        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit from tbl_board
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no from tbl_board
     </select>
     
     <insert id="write">
@@ -13,19 +13,19 @@
 			select ifnull(max(boardNo),0)+1 
 			  from tbl_board
     	</selectKey>
-    	insert into tbl_board(boardNo, boardName, boardTitle, boardContent) 
-			select ifnull(max(boardNo),0)+1, #{boardName},#{boardTitle},#{boardContent} 
+    	insert into tbl_board(boardNo, boardName, boardTitle, boardContent, mf_no)
+			select ifnull(max(boardNo),0)+1, #{boardName},#{boardTitle},#{boardContent},#{mf_no} 
 			  from tbl_board
     </insert>
     
     <select id="contentView" resultType="com.boot.dto.BoardDTO">
-        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
-          from tbl_board 
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no
+          from tbl_board
          where boardNo=#{boardNo}
     </select>
 
     <update id="modify">
-    	update tbl_board set boardName=#{boardName}, boardTitle=#{boardTitle}, boardContent=#{boardContent} where boardNo=#{boardNo}
+    	update tbl_board set boardTitle=#{boardTitle}, boardContent=#{boardContent} where boardNo=#{boardNo}
     </update>
 
     <update id="delete">

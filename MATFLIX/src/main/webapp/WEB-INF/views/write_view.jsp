@@ -51,6 +51,7 @@
 <body>
 	<table width="500" border="1">
 		<form id="frm" method="post" action="write">
+			<input type="hidden" name="mf_no" value="${user.mf_no}">
 			<tr>
 				<td>이름</td>
 				<td>

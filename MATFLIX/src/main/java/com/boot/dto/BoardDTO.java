@@ -17,6 +17,7 @@ public class BoardDTO {
 	private String boardContent;
 	private Timestamp boardDate;
 	private int boardHit;
+	private int mf_no;
 
 	private List<BoardAttachDTO> attachList;
 }

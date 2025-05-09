@@ -70,10 +70,19 @@
 				</td>
 			</tr>
 			<tr>
+				<td>
+					${content_view.mf_no}
+				</td>
+			</tr>
+			<tr>
 				<td colspan="2">
-					<input type="submit" value="수정">
+					<c:if test="${content_view.mf_no == user.mf_no}">
+						<input type="submit" value="수정">
+					</c:if>
 					&nbsp;&nbsp;<input type="submit" value="목록보기" formaction="list">
-					&nbsp;&nbsp;<input type="submit" value="삭제" formaction="delete">
+					<c:if test="${content_view.mf_no == user.mf_no}">
+						&nbsp;&nbsp;<input type="submit" value="삭제" formaction="delete">
+					</c:if>
 				</td>
 			</tr>
 		</form>

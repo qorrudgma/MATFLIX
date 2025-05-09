@@ -3,6 +3,7 @@ SELECT * FROM tbl_board;
 SELECT * FROM board_comment;
 SELECT * FROM board_attach;
 
+commit;
 -- 유저테이블
 CREATE TABLE matflix (
     mf_no        INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,7 +27,8 @@ CREATE TABLE tbl_board (
     boardTitle VARCHAR(100),
     boardContent VARCHAR(300),
     boardDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    boardHit int DEFAULT 0 
+    boardHit int DEFAULT 0,
+    mf_no INT not null
 );
 
 -- 게시판 댓글 테이블
@@ -35,7 +37,7 @@ CREATE TABLE board_comment (
     commentWriter VARCHAR(20),
     commentContent VARCHAR(300),
     boardNo INT,
-    userNo int,
+    userNo int DEFAULT 1,
     commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
