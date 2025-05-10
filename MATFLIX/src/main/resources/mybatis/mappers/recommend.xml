@@ -18,7 +18,7 @@
     </select>
     
     <!-- 게시글 추천 수 표기 -->
-    <select id="recommended" resultType="int">
+    <select id="total_recommend" resultType="int">
     	select count(*)
 		  from tbl_recommend
 		 where boardNo=#{boardNo}

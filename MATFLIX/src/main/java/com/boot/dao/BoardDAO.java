@@ -17,4 +17,6 @@ public interface BoardDAO {
 	public void delete(HashMap<String, String> param);
 
 	public void hitUp(HashMap<String, String> param);
+
+	public void hitDown(int boardNo);
 }

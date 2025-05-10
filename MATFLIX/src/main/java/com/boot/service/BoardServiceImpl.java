@@ -84,4 +84,10 @@ public class BoardServiceImpl implements BoardService {
 		dao.hitUp(param);
 	}
 
+	@Override
+	public void hitDown(int boardNo) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+
+		dao.hitDown(boardNo);
+	}
 }

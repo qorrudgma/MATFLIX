@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.boot.dto.RecommendDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.service.BoardService;
 import com.boot.service.RecommendService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,9 @@ public class RecommendController {
 
 	@Autowired
 	private RecommendService recommendService;
+
+	@Autowired
+	private BoardService boardService;
 
 	@PostMapping("/recommend")
 	@ResponseBody
@@ -32,9 +36,11 @@ public class RecommendController {
 
 		if (check == 1) {
 			recommendService.delete_recommend(dto);
+			boardService.hitDown(boardNo);
 			return "delete";
 		} else {
 			recommendService.recommend(dto);
+			boardService.hitDown(boardNo);
 			return "recommend";
 		}
 

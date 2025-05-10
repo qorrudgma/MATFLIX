@@ -70,8 +70,15 @@
 				</td>
 			</tr>
 			<tr>
+				<td>유저 넘</td>
 				<td>
 					${content_view.mf_no}
+				</td>
+			</tr>
+			<tr>
+				<td>추천 수</td>
+				<td>
+					${total_recommend}
 				</td>
 			</tr>
 			<tr>

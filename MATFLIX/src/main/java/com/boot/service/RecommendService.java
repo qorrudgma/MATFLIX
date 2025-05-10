@@ -7,6 +7,8 @@ public interface RecommendService {
 
 	public int check_recommend(RecommendDTO recomemdDTO);
 
+	public int total_recommend(int boardNo);
+
 	public void delete_recommend(RecommendDTO recomemdDTO);
 
 	public void delete_board(int boardNo);

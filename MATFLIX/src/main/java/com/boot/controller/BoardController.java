@@ -93,12 +93,14 @@ public class BoardController {
 		Rdto.setMf_no(Integer.parseInt(param.get("mf_no")));
 		int recommend = recommendService.check_recommend(Rdto);
 
+		int total_recommend = recommendService.total_recommend(Integer.parseInt(param.get("boardNo")));
+
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);
 		model.addAttribute("commentList", commentList);
 		model.addAttribute("recommend", recommend);
+		model.addAttribute("total_recommend", total_recommend);
 
 		log.info("model => " + model);
-
 		return "content_view";
 	}
 

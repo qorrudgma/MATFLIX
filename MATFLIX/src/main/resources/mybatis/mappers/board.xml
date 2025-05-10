@@ -35,5 +35,9 @@
     <update id="hitUp">
 	    update tbl_board set boardHit = boardHit +1 where boardNo=#{boardNo}
     </update>
+
+    <update id="hitDown">
+	    update tbl_board set boardHit = boardHit -1 where boardNo=#{boardNo}
+    </update>
     
 </mapper>

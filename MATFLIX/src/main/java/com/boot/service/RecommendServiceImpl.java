@@ -27,6 +27,14 @@ public class RecommendServiceImpl implements RecommendService {
 	}
 
 	@Override
+	public int total_recommend(int boardNo) {
+		RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
+		int total_recommend = dao.total_recommend(boardNo);
+
+		return total_recommend;
+	}
+
+	@Override
 	public void delete_recommend(RecommendDTO recomemdDTO) {
 		RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
 		dao.delete_recommend(recomemdDTO);
