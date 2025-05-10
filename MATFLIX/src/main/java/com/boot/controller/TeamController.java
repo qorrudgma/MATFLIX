@@ -67,11 +67,14 @@ public class TeamController {
 	// 탈퇴 페이지 이동
 	@RequestMapping("/delete_member")
 	public String delete_member(HttpSession session, Model model) {
+		log.info("삭제하러옴");
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		if (user == null) {
+			log.info("여기오면 안돼");
 			return "redirect:/";
 		}
 		model.addAttribute("mf_id", user.getMf_id());
+		log.info("여기는 와야해");
 		return "delete_member";
 	}
 
@@ -80,7 +83,7 @@ public class TeamController {
 	@ResponseBody
 	public String delete_member_check(@RequestParam("mf_id") String mf_id, @RequestParam("mf_pw") String mf_pw,
 			HttpSession session) {
-
+		log.info("탈퇴 버튼 누름");
 		TeamDTO dto = service.find_list(mf_id); // 기존 비밀번호 확인용
 		if (dto != null && dto.getMf_pw().equals(mf_pw)) {
 			service.delete_ok(mf_id); // delete_ok에 바로 mf_id 전달

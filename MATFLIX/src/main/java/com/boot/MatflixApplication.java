@@ -9,5 +9,4 @@ public class MatflixApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MatflixApplication.class, args);
 	}
-
 }

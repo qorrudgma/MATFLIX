@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.boot.dao.PageDAO;
 import com.boot.dto.BoardDTO;
+import com.boot.dto.CommentDTO;
 import com.boot.dto.Criteria;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,22 @@ public class PageServiceImpl implements PageService {
 
 		PageDAO dao = sqlSession.getMapper(PageDAO.class);
 		int total = dao.getTotalCount(cri);
+
+		return total;
+	}
+
+	@Override
+	public ArrayList<CommentDTO> listWithPagingComment(Criteria cri) {
+		PageDAO dao = sqlSession.getMapper(PageDAO.class);
+		ArrayList<CommentDTO> list = dao.listWithPagingComment(cri);
+
+		return list;
+	}
+
+	@Override
+	public int getTotalCommentCount(Criteria cri) {
+		PageDAO dao = sqlSession.getMapper(PageDAO.class);
+		int total = dao.getTotalCommentCount(cri);
 
 		return total;
 	}

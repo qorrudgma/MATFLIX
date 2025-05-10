@@ -25,6 +25,7 @@
 		</if>
 	</sql>
 	
+	<!-- tbl_board start -->
     <select id="listWithPaging" resultType="com.boot.dto.BoardDTO">
     	<![CDATA[
 		  select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit
@@ -46,5 +47,28 @@
     <select id="getTotalCount" resultType="int">
 		  select count(*) from tbl_board <include refid="criteria"></include>
     </select>
-    
+	<!-- tbl_board end -->
+
+	<!-- board_comment start -->
+	<select id="listWithPagingComment" resultType="com.boot.dto.CommentDTO">
+		<![CDATA[
+			select commentNo, commentWriter, commentContent, boardNo, userNo, commentCreatedTime
+			  from ( select rownum , commentNo, commentWriter, commentContent, boardNo, userNo, commentCreatedTime
+					   from ( select row_number() over(order by commentNo desc) as rownum
+							       , commentNo, commentWriter, commentContent, boardNo, userNo, commentCreatedTime
+								from board_comment
+							   order by commentNo desc
+							) a
+					  where rownum <= (#{pageNum} * #{amount})
+				   ) aa
+			 where rownum > (#{pageNum}-1) * #{amount}
+		]]>
+	</select>
+	
+	<select id="getTotalCommentCount" resultType="int">
+		select count(*)
+		  from board_comment
+		 where boardNo=#{boardNo}
+    </select>
+	<!-- board_comment end -->
 </mapper>

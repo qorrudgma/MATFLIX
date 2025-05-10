@@ -17,5 +17,10 @@
 		<mapper resource="mybatis/mappers/recommend.xml"/>		
 		
 		<!-- 레시피 -->
+		<mapper resource="mybatis/mappers/recipe.xml"/>
+		<mapper resource="mybatis/mappers/rc_upload.xml"/>
+		<mapper resource="mybatis/mappers/rc_board.xml"/>
+		<mapper resource="mybatis/mappers/rc_comment.xml"/>
+		<mapper resource="mybatis/mappers/rc_page.xml"/>
 	</mappers>
 </configuration>

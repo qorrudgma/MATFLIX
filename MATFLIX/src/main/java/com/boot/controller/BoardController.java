@@ -43,15 +43,15 @@ public class BoardController {
 //		return "main";
 //	}
 
-	@RequestMapping("/main")
-	public String list(Model model) {
-		log.info("@# list()");
-
-		ArrayList<BoardDTO> list = service.list();
-		model.addAttribute("list", list);
-
-		return "main";
-	}
+//	@RequestMapping("/main")
+//	public String list(Model model) {
+//		log.info("@# main()");
+//
+//		ArrayList<BoardDTO> list = service.list();
+//		model.addAttribute("list", list);
+//
+//		return "main";
+//	}
 
 	@RequestMapping("/write")
 	public String write(BoardDTO boardDTO) {

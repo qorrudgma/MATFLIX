@@ -1,0 +1,72 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.RecipeDAO">
+
+	<!-- 레시피 등록 -->
+	<insert id="insert_recipe" parameterType="hashmap" useGeneratedKeys="true" keyProperty="rc_recipe_id">
+		insert into Recipe (
+		rc_name, rc_description, rc_category1_id,
+		rc_cooking_time, rc_difficulty,
+		rc_tip, rc_tag
+		)
+		VALUES (
+		#{rc_name},
+		#{rc_description},
+		#{rc_category1_id},
+		#{rc_cooking_time},
+		#{rc_difficulty},
+		#{rc_tip},
+		#{rc_tag}
+		)
+	</insert>
+
+	<insert id="insert_rc_ingredient" parameterType="java.util.List">
+	        INSERT INTO rc_ingredient (
+	        	rc_recipe_id,
+	            rc_ingredient_name,
+	            rc_ingredient_amount
+	        )
+	        VALUES (
+	            (SELECT MAX(rc_recipe_id) FROM Recipe),
+	            #{rc_ingredient_name},
+	            #{rc_ingredient_amount}
+	        )
+	</insert>
+	<!-- 과정 insert -->
+	<insert id="insert_rc_course" parameterType="java.util.List">
+	        INSERT INTO rc_course (
+	        	rc_recipe_id,
+	            rc_course_description
+	        )
+	        VALUES (
+	        	(SELECT MAX(rc_recipe_id) FROM Recipe),
+	            #{rc_course_description}
+	        )
+	</insert>
+
+<!--각 카테고리 별 레시피 아이디 추출-->
+	<select id="get_food">
+		select rc_recipe_id from recipe where rc_category1_id = #{rc_category1_id}
+	</select>
+	
+	<select id="find_list_all" resultType="com.boot.dto.RecipeDTO">
+		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag from recipe
+	</select>
+	
+	<select id="get_recipe_by_id">
+		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag from recipe where rc_recipe_id=#{rc_recipe_id}
+	</select>
+	<select id="get_recipe_ingredient_by_id" resultType="com.boot.dto.RcIngredientDTO">
+		select rc_recipe_id, rc_ingredient_id, rc_ingredient_name, rc_ingredient_amount from rc_ingredient where rc_recipe_id = #{rc_recipe_id}
+	</select>
+	<select id="get_recipe_course_by_id" resultType="com.boot.dto.RcCourseDTO">
+		select rc_recipe_id, rc_recipe_id, rc_course_description, rc_course_img from rc_course where rc_recipe_id = #{rc_recipe_id}
+	</select>
+
+<!--	페이징처리-->
+	<select id="paging_recipe_list" resultType="com.boot.dto.RecipeDTO">
+		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag from recipe where rc_recipe_id=#{rc_recipe_id}
+	</select>
+</mapper>

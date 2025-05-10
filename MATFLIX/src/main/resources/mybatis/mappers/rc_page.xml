@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.RecipePageDAO">
+
+<sql id="criteria">
+  <if test="rc_type == 'T'">
+    WHERE rc_name LIKE CONCAT('%', #{keyword}, '%')
+  </if>
+  <if test="rc_type == 'C'">
+    WHERE rc_description LIKE CONCAT('%', #{keyword}, '%')
+  </if>
+  <if test="rc_type == 'TC'">
+    WHERE rc_name LIKE CONCAT('%', #{keyword}, '%')
+      OR rc_description LIKE CONCAT('%', #{keyword}, '%')
+  </if>
+</sql>
+
+ <select id="listWithPaging" resultType="int">
+  <![CDATA[
+    SELECT rc_recipe_id FROM (
+      SELECT row_number() OVER (ORDER BY rc_recipe_id DESC) AS rownum, rc_recipe_id
+      FROM recipe
+      ]]>
+      <include refid="criteria"></include>
+      <![CDATA[
+    ) a
+    WHERE rownum <= (#{rc_pageNum} * #{rc_amount})
+      AND rownum > ((#{rc_pageNum} - 1) * #{rc_amount})
+  ]]>
+</select>
+    
+	<select id="totalList" resultType="int">
+	  SELECT COUNT(*) 
+	  FROM recipe
+	  <include refid="criteria"></include>
+	</select>
+</mapper>
+
+
