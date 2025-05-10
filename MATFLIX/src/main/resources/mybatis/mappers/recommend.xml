@@ -4,10 +4,12 @@
 
 <mapper namespace="com.boot.dao.RecommendDAO">
     
+    <!-- 추천 하기 -->
     <insert id="recommend">
 		insert into tbl_recommend(boardNo, mf_no) values(#{boardNo},#{mf_no})
     </insert>
     
+    <!-- 추천 유/뮤 -->
     <select id="check_recommend" resultType="int">
     	select count(*)
 		  from tbl_recommend
@@ -15,12 +17,21 @@
 		   and mf_no=#{mf_no}
     </select>
     
+    <!-- 게시글 추천 수 표기 -->
+    <select id="recommended" resultType="int">
+    	select count(*)
+		  from tbl_recommend
+		 where boardNo=#{boardNo}
+    </select>
+    
+    <!-- 추천 취소 -->
     <delete id="delete_recommend">
     	delete from tbl_recommend
 		 where boardNo=#{boardNo}
 		   and mf_no=#{mf_no}
     </delete>
 
+    <!-- 게시글 삭제시 추천 목록 삭제 -->
     <delete id="delete_board">
     	delete from tbl_recommend
 		 where boardNo=#{boardNo}

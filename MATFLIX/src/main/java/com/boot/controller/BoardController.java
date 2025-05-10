@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.boot.dto.BoardAttachDTO;
 import com.boot.dto.BoardDTO;
 import com.boot.dto.CommentDTO;
+import com.boot.dto.RecommendDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentService;
 import com.boot.service.RecommendService;
@@ -84,8 +85,19 @@ public class BoardController {
 
 		model.addAttribute("pageMaker", param);
 
+		// 추천
+		RecommendDTO Rdto = new RecommendDTO();
+		log.info("param in boardNo => " + param.get("boardNo"));
+		log.info("param in mf_no => " + param.get("mf_no"));
+		Rdto.setBoardNo(Integer.parseInt(param.get("boardNo")));
+		Rdto.setMf_no(Integer.parseInt(param.get("mf_no")));
+		int recommend = recommendService.check_recommend(Rdto);
+
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);
 		model.addAttribute("commentList", commentList);
+		model.addAttribute("recommend", recommend);
+
+		log.info("model => " + model);
 
 		return "content_view";
 	}

@@ -83,21 +83,21 @@
 					<c:if test="${content_view.mf_no == user.mf_no}">
 						&nbsp;&nbsp;<input type="submit" value="삭제" formaction="delete">
 					</c:if>
-					<% if(user != null){ %>
+					<!-- <% if(user != null){ %>
 						&nbsp;&nbsp;<button id="recommend" type="button">추천</button>
-					<% } %>
-					<!-- <c:if test="${user != null}">
+					<% } %> -->
+					<c:if test="${user != null}">
 						&nbsp;&nbsp;<button id="recommend" type="button">
 							<c:choose>
-								<c:when test="${isRecommended}">
-									추천 취소
+								<c:when test="${recommend != 1}">
+									추천
 								</c:when>
 								<c:otherwise>
-									추천
+									추천 취소
 								</c:otherwise>
 							</c:choose>
 						</button>
-					</c:if> -->
+					</c:if>
 				</td>
 			</tr>
 		</table>
@@ -180,11 +180,11 @@
 				console.log(result);
 				if (result = "recommend") {
 					alert("추천됨.");
-					// location.reload();
+					location.reload();
 					$("#recommend").text("추천 취소");
 				} else {
 					alert("추천 취소됨.");
-					// location.reload();
+					location.reload();
 					$("#recommend").text("추천");
 				}
 			}

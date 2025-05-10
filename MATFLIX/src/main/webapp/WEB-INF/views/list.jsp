@@ -107,6 +107,13 @@
 </html>
 <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
 <script>
+   // 변수
+   <% if (user != null) { %>
+      var sessionUserNo = <%= user.getMf_no() %>;
+   <% } else { %>
+      var sessionUserNo = null;
+   <% } %>
+
 	$("#write_a").on("click", function(e){
 		e.preventDefault();
       alert("로그인 후 이용 가능한 콘텐츠 입니다.");
@@ -136,6 +143,7 @@
          actionForm.find("input[name='boardNo']").remove();
       }
       actionForm.append("<input type='hidden' name='boardNo' value='" + targetBno + "'>");
+      actionForm.append("<input type='hidden' name='mf_no' value='" + sessionUserNo + "'>");
       actionForm.attr("action","content_view").submit();
       
    }); // end of move_link click
