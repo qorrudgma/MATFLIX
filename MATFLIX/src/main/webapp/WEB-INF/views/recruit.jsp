@@ -157,9 +157,9 @@ document.getElementById("togglePwChk").addEventListener("click", function() {
                     <label for="mf_id"><i class="fas fa-user"></i> 아이디 <span class="required">*</span></label>
                     <div class="input_with_button">
                         <input type="text" id="mf_id" name="mf_id" 
-                               required minlength="3" maxlength="12"
+                               required minlength="4" maxlength="12"
                                pattern="^[a-zA-Z0-9]{4,12}$"
-                               oninvalid="this.setCustomValidity('아이디는 3~12자의 영문 소문자 및 숫자만 입력 가능합니다.')"
+                               oninvalid="this.setCustomValidity('아이디는 4~12자의 영문 소문자 및 숫자만 입력 가능합니다.')"
                                oninput="this.setCustomValidity('')">
                         <button type="button" class="btn_check">중복확인</button>
                     </div>

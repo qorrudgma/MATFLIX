@@ -70,11 +70,9 @@ public class TeamController {
 		log.info("삭제하러옴");
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		if (user == null) {
-			log.info("여기오면 안돼");
 			return "redirect:/";
 		}
 		model.addAttribute("mf_id", user.getMf_id());
-		log.info("여기는 와야해");
 		return "delete_member";
 	}
 
