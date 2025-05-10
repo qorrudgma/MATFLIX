@@ -4,17 +4,21 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 삭제</title>
-<script src="${pageContext.request.contextPath}/resources/js/jquery.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.js"></script>
 <script type="text/javascript">
 	function check_pw() {
+		console.log("check_pw() 도착");
 		// 입력된 비밀번호 값 가져오기
-		const mf_pw = $("#mf_pw").val();
 		const mf_id = $("input[name='mf_id']").val();
-		
+		console.log(mf_id);
+
+		const mf_pw = $("#mf_pw").val();
+		console.log(mf_pw);
         if (!mf_pw) {
             alert("비밀번호를 입력해주세요.");
             return;
         }
+		
 		
 	    $.ajax({
 	        type: "POST",
