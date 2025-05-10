@@ -13,4 +13,6 @@ public interface CommentService {
 	public void boardCommentDelete(HashMap<String, String> param);
 
 	public void userCommentDelete(HashMap<String, String> param);
+
+	public int count(int boardNo);
 }

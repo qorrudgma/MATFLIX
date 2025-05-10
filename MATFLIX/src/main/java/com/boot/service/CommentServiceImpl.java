@@ -39,4 +39,11 @@ public class CommentServiceImpl implements CommentService {
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		dao.userCommentDelete(param);
 	}
+
+	@Override
+	public int count(int boardNo) {
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		int count = dao.count(boardNo);
+		return count;
+	}
 }

@@ -36,11 +36,11 @@ public class RecommendController {
 
 		if (check == 1) {
 			recommendService.delete_recommend(dto);
-			boardService.hitDown(boardNo);
+//			boardService.hitDown(boardNo);
 			return "delete";
 		} else {
 			recommendService.recommend(dto);
-			boardService.hitDown(boardNo);
+//			boardService.hitDown(boardNo);
 			return "recommend";
 		}
 

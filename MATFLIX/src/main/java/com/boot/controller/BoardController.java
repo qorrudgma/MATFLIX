@@ -91,6 +91,7 @@ public class BoardController {
 		log.info("param in mf_no => " + param.get("mf_no"));
 
 		int total_recommend = recommendService.total_recommend(Integer.parseInt(param.get("boardNo")));
+		int count = commentService.count(Integer.parseInt(param.get("boardNo")));
 
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);
 		if (param.get("mf_no") != null) {
@@ -103,6 +104,7 @@ public class BoardController {
 				log.info("mf_no => null");
 			}
 		}
+		model.addAttribute("count", count);
 		model.addAttribute("commentList", commentList);
 		model.addAttribute("total_recommend", total_recommend);
 

@@ -35,4 +35,10 @@
  		 where commentNo=#{commentNo}
     </delete>
     
+    <select id="count" resultType="int">
+    	select count(*)
+    	  from board_comment
+		 where boardNo = #{boardNo}
+    </select>
+    
 </mapper>

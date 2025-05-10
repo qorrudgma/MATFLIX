@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page import="com.boot.dto.TeamDTO" %>
 <% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 <% request.setAttribute("user", user); %>
@@ -143,7 +144,7 @@
 				<th>게시글 번호</th>
 				<th>유저 번호</th>
 			</tr>
-			<c:forEach items="${commentList}" var="comment">
+			<c:forEach items="${commentList}" var="comment" begin="0" end="4">
 				<tr>
 					<td>${comment.commentNo}</td>
 					<td>${comment.commentWriter}</td>
@@ -158,6 +159,18 @@
 					</td>
 				</tr>
 			</c:forEach>
+			<tr>
+				<c:if test="${count>5}">
+					<td colspan="6">
+						<button onclick="loadMoreComments()">더보기</button>
+					</td>
+				</c:if>
+				<!-- <c:if test="${count>5}">
+					<td>
+						<button onclick="hideComments()">접기</button>
+					</td>
+				</c:if> -->
+			</tr>
 		</table>
 	</div>
 
@@ -170,6 +183,9 @@
         var sessionUserNo = null;
     <% } %>
 	var no = "${content_view.boardNo}";
+	var endNo = 5;
+	var comment_count="${count}";
+	
 	// 추천 버튼
 	$("#recommend").click(function (e) {
 		e.preventDefault();
@@ -185,15 +201,16 @@
 			,url: "/recommend"
 			,success: function (result) {
 				console.log(result);
-				if (result = "recommend") {
-					alert("추천됨.");
-					location.reload();
-					$("#recommend").text("추천 취소");
-				} else {
-					alert("추천 취소됨.");
-					location.reload();
-					$("#recommend").text("추천");
-				}
+				$("#recommend").text(result == "recommend" ? "추천 취소" : "추천");
+				// if (result == "recommend") {
+				// 	alert("추천됨.");
+				// 	location.reload();
+				// 	$("#recommend").text("추천 취소");
+				// } else {
+				// 	alert("추천 취소됨.");
+				// 	location.reload();
+				// 	$("#recommend").text("추천");
+				// }
 			}
 			,error: function () {
 				console.log("추천 실패");
@@ -201,7 +218,7 @@
 		});
 	});
 
-	// 댓글
+	// 댓글 작성 기능능
 	const commentWrite = () => {
 		console.log("유저 넘 => "+sessionUserNo);
 		const writer = document.getElementById("commentWriter").value;
@@ -220,14 +237,15 @@
 				console.log("작성 성공");
 				console.log(commentList);
 
-				let output = "<table border='1'>";
+				let output = "<table id='commentsTable' border='1'>";
 				output += "<tr><th>댓글번호</th>";
 				output += "<th>작성자</th>";
 				output += "<th>내용</th>";
 				output += "<th>작성시간</th>";
 				output += "<th>게시글 번호</th>";
 				output += "<th>유저 번호</th></tr>";
-				for (let i in commentList) {
+				//for (let i in commentList) {
+				for (let i = 0; i < commentList.length && i < endNo; i++) {
 					output += "<tr>";
 					output += "<td>" + commentList[i].commentNo + "</td>";
 					output += "<td>" + commentList[i].commentWriter + "</td>";
@@ -244,10 +262,17 @@
 					}
 					output += "</tr>";
 				}
+				if (commentList.length>5 && comment_count>=endNo) {
+					output += "<tr><td colspan='6'><button onclick='loadMoreComments()'>더보기</button></td>";
+				}
+				if (commentList.length>5 && endNo>5) {
+					output += "<td><button onclick='hideComments()'>접기</button></td></tr>";
+				}
 				output += "</table>";
 				console.log("@# output=>" + output);
 
 				document.getElementById("comment-list").innerHTML = output;
+				document.getElementById("commentContent").value = "";
 			}
 			, error: function () {
 				console.log("실패");
@@ -255,6 +280,7 @@
 		});//end of ajax
 	}//end of script
 
+	// 댓글 삭제 기능
 	function deleteComment(commentNo){
 		$.ajax({
 			type: "post",
@@ -278,9 +304,10 @@
 			url: "/comment/list",
 			data: { boardNo: no },
 			success: function (commentList) {
-				let output = "<table border='1'>";
+				let output = "<table id='commentsTable' border='1'>";
 				output += "<tr><th>댓글번호</th><th>작성자</th><th>내용</th><th>작성시간</th><th>게시글 번호</th><th>유저 번호</th></tr>";
-				for (let i in commentList) {
+				//for (let i in commentList) {
+				for (let i = 0; i < commentList.length && i < endNo; i++) {
 					output += "<tr>";
 					output += "<td>" + commentList[i].commentNo + "</td>";
 					output += "<td>" + commentList[i].commentWriter + "</td>";
@@ -295,6 +322,12 @@
 					}
 					output += "</tr>";
 				}
+				if (commentList.length>5 && comment_count>=endNo) {
+					output += "<tr><td colspan='6'><button onclick='loadMoreComments()'>더보기</button></td>";
+				}
+				if (commentList.length > 5 && endNo>5) {
+					output += "<td><button onclick='hideComments()'>접기</button></td></tr>";
+				}
 				output += "</table>";
 				document.getElementById("comment-list").innerHTML = output;
 			},
@@ -303,6 +336,19 @@
 			}
 		});
 	}
+
+	// 댓글 더보기 버튼
+	function loadMoreComments() {
+		endNo += 5;
+		loadComments();
+	}
+
+	// 댓글 접기 버튼
+	function hideComments() {
+		endNo -= 5;
+		loadComments();
+	}
+
 
 </script>
 <script>
