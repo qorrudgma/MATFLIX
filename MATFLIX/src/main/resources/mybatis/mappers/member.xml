@@ -48,13 +48,16 @@
 	</select>
 	<!-- 다른유저 -->
 
-	<update id="update_ok">
-		update matflix set mf_pw=#{mf_pw}, mf_pw_chk=#{mf_pw_chk},
-		mf_name=#{mf_name}, mf_email=#{mf_email}
-		<where>
-			mf_id = #{mf_id}
-		</where>
+	<update id="update_ok" parameterType="hashmap">
+	    UPDATE matflix
+	    SET 
+	        mf_pw = #{mf_pw},
+	        mf_pw_chk = #{mf_pw_chk},
+	        mf_name = #{mf_name},
+	        mf_email = #{mf_email}
+	    WHERE mf_id = #{mf_id}
 	</update>
+
 	
 	<delete id="delete_ok">
 		delete from matflix where mf_id=#{mf_id}

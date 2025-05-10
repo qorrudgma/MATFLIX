@@ -4,7 +4,7 @@
 <script>
   $(document).ready(function() {
     $('.tab_btn[data-tab="account_settings"]').on('click', function() {
-      window.location.href = '/mem_update';
+      window.location.href = '/account';
     });
   });
 </script>
@@ -19,9 +19,25 @@
                 <button class="edit_profile_image"><i class="fas fa-camera"></i></button>
             </div>
             <div class="profile_info_container">
-                <div class="profile_info">
-                    <h2>${user.getMf_nickname()}<button class="edit_profile_btn tab_btn" data-tab="nickname_settings"><i class="fas fa-edit user_nick_name"></i></button></h2>
-                </div>
+<!--                <div class="profile_info">-->
+<!--                    <h2>${user.getMf_nickname()}-->
+<!--					<button class="edit_profile_btn tab_btn" data-tab="nickname_settings"><i class="fas fa-edit user_nick_name"></i></button></h2>-->
+<!--                </div>-->
+
+<!--	--------------------------------------닉네임 변경 div ----------------------------------------->
+				<div class="profile_info">
+				    <h2>
+				        ${user.getMf_nickname()}
+				        <form action="${pageContext.request.contextPath}/nickname_form" method="get" style="display:inline;">
+				            <input type="hidden" name="mf_id" value="${user.getMf_id()}"/>
+				            <button type="submit" class="edit_profile_btn tab_btn">
+				                <i class="fas fa-edit user_nick_name"></i>닉네임 수정
+				            </button>
+				        </form>
+				    </h2>
+				</div>
+
+	
                     <div class="user_bio">안녕하세요! 맛있는 요리를 사랑하는 요리 초보입니다.</div>
                 <div class="profile_stats">
                     <div class="stat_item">

@@ -89,15 +89,21 @@ public class BoardController {
 		RecommendDTO Rdto = new RecommendDTO();
 		log.info("param in boardNo => " + param.get("boardNo"));
 		log.info("param in mf_no => " + param.get("mf_no"));
-		Rdto.setBoardNo(Integer.parseInt(param.get("boardNo")));
-		Rdto.setMf_no(Integer.parseInt(param.get("mf_no")));
-		int recommend = recommendService.check_recommend(Rdto);
 
 		int total_recommend = recommendService.total_recommend(Integer.parseInt(param.get("boardNo")));
 
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);
+		if (param.get("mf_no") != null) {
+			try {
+				Rdto.setBoardNo(Integer.parseInt(param.get("boardNo")));
+				Rdto.setMf_no(Integer.parseInt(param.get("mf_no")));
+				int recommend = recommendService.check_recommend(Rdto);
+				model.addAttribute("recommend", recommend);
+			} catch (Exception e) {
+				log.info("mf_no => null");
+			}
+		}
 		model.addAttribute("commentList", commentList);
-		model.addAttribute("recommend", recommend);
 		model.addAttribute("total_recommend", total_recommend);
 
 		log.info("model => " + model);

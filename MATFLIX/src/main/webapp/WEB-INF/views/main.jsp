@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.boot.dto.TeamDTO" %>
-<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -50,6 +48,7 @@
 <!--         </div>-->
 <!--    </div>-->
 	<div class="main_content">
+		<a href="list">게시글</a>
 	    <!-- 배너 슬라이더 -->
 	    <section class="banner_slider">
 	        <div class="slider_container">

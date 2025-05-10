@@ -54,8 +54,9 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public void update_ok(HashMap<String, String> param) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		System.out.println(param);
+		System.out.println("@# update ok => 	" + param);
 		dao.update_ok(param);
+		log.info("@# update_ok2!!!!!!!!");
 	}
 
 	@Override
