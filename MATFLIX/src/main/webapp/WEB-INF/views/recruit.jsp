@@ -53,6 +53,70 @@
 	        }
 	    });
 	});
+
+    // 이메일 인증 번호 받기
+    $(document).on("click", "#email_send_btn", function () {
+        console.log("인증번호 받기 버튼 클릭");
+        const mf_email = $("#mf_email").val();
+        console.log("이메일 => ", mf_email);
+
+        if (!mf_email) {
+            alert("이메일을 입력해주세요.");
+            return;
+        }
+
+        $.ajax({
+	        type: "post",
+	        url: "/email_check",
+	        data: { mf_email: mf_email },
+	        success: function (code) {
+	            console.log("email_chk 응답:", code);
+	            if (code !=null) {
+	                alert("이메일 인증번호 전송 완료.");
+                    document.getElementById("email_send_btn").style.display = 'none';
+                    $("#email_chk").prop("readonly", true);
+	            } else {
+	                alert("이메일 인증번호 전송 실패.");
+	            }
+	        },
+	        error: function (xhr, status, error) {
+	            console.error("Ajax 오류:", status, error);
+	            alert("서버 요청 중 오류가 발생했습니다.");
+	        }
+	    });
+    });
+
+    // 이메일 인증증 확인
+    $(document).on("click", "#email_chk_btn", function () {
+        console.log("이메일 체크 버튼 클릭");
+        const code_chk = $("#code_chk").val();
+        console.log("code_chk => ", code_chk);
+
+        if (!code_chk) {
+            alert("인증번호를 입력해주세요.");
+            return;
+        }
+
+        $.ajax({
+	        type: "post",
+	        url: "/code_check",
+	        data: { code_chk: code_chk },
+	        success: function (result) {
+	            console.log("code_check 응답:", result);
+	            if (result == "true") {
+	                alert("이메일 인증 완료.");
+                    document.getElementById("email_chk_btn").style.display = 'none';
+                    $("#code_chk").prop("readonly", true);
+	            } else {
+	                alert("인증 번호 미일치.");
+	            }
+	        },
+	        error: function (xhr, status, error) {
+	            console.error("Ajax 오류:", status, error);  // 에러 확인
+	            alert("서버 요청 중 오류가 발생했습니다.");
+	        }
+	    });
+    });
 	
 function fn_submit() {
 	console.log("@# fn_submit 실행된다.")
@@ -74,6 +138,12 @@ function fn_submit() {
         alert("비밀번호가 일치하지 않습니다.");
         return;
     }
+
+    // 이메일 인증 확인 여부
+    if(!$("#code_chk").prop("readonly")){
+	    alert("이메일 인증을 해주세요.");
+		return;
+	}
 
     const formData = $("#frm").serialize();
 
@@ -196,6 +266,8 @@ document.getElementById("togglePwChk").addEventListener("click", function() {
 <!--                          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"-->
 <!--                          oninvalid="this.setCustomValidity('올바른 이메일 주소 형식으로 입력해주세요.')"-->
 <!--                          oninput="this.setCustomValidity('')">-->
+                    <button  type="button" id="email_send_btn">인증번호 받기</button><br>
+                    <input type="text" name="code_chk" id="code_chk"><button  type="button" id="email_chk_btn">인증번호 확인</button>
                 </div>
                 
                 <div class="form_group">

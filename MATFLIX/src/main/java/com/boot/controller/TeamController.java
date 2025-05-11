@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.TeamDTO;
+import com.boot.service.EmailService;
 import com.boot.service.TeamService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,9 @@ public class TeamController {
 
 	@Autowired
 	private TeamService service;
+
+	@Autowired
+	private EmailService emailService;
 
 	@RequestMapping("/profile")
 	public String profile(HttpSession session, Model model) {
@@ -198,6 +202,39 @@ public class TeamController {
 			exists = false;
 		}
 		return exists ? "unavailable" : "available";
+	}
+
+	// 이메일 체크
+	@PostMapping("/email_check")
+	@ResponseBody
+	public String email_check(@RequestParam String mf_email, HttpSession session) {
+		log.info(mf_email);
+		String code = emailService.sendEmail(mf_email);
+		log.info("보냄");
+
+		session.setAttribute("authCode", code);
+//		session.setAttribute("authCodeTime", System.currentTimeMillis());
+		log.info(session.getAttribute("authCode") + "");
+		return code;
+	}
+
+	// 인증번호 체크
+	@PostMapping("/code_check")
+	@ResponseBody
+	public String code_check(@RequestParam String code_chk, HttpSession session) {
+		log.info("내가 적은 인증 코드 => " + code_chk);
+
+		String code = (String) session.getAttribute("authCode");
+		log.info("인증 코드 => " + code);
+
+		String result = "";
+		if (code.equals(code_chk)) {
+			result = "true";
+			return result;
+		} else {
+			result = "false";
+			return result;
+		}
 	}
 
 	// 닉네임 변경 폼 이동용
