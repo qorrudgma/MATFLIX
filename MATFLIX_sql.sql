@@ -23,6 +23,17 @@ CREATE TABLE follow (
     UNIQUE KEY uniq_follow (follower_id, following_id) -- 중복 방지
 );
 
+-- 알림 테이블
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    follower_id INT NOT NULL, 			-- 팔로우를 거는 사람 (내 ID)
+    following_id INT NOT NULL, 			-- 팔로우 당하는 사람 (상대 ID)
+    post_id INT,                      	-- 어떤 알림인지 (게시글,댓글,레시피,게시글,게시글)
+    message VARCHAR(255),            	-- 알림 메시지 ('qwer님이 글을 작성했습니다')
+    is_read BOOLEAN DEFAULT FALSE,    	-- 알림 읽음 여부
+    created_at DATETIME DEFAULT NOW() 	-- 생성 시간
+);
+
 -- 게시판 테이블
 CREATE TABLE tbl_board (
     boardNo int AUTO_INCREMENT PRIMARY KEY,
