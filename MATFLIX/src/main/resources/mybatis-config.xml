@@ -9,6 +9,9 @@
 
 		<!-- 팔로우 -->
 		<mapper resource="mybatis/mappers/follow.xml"/>
+
+		<!-- 알림 -->
+		<mapper resource="mybatis/mappers/notification.xml"/>
 				
 		<!-- 게시판 & 댓글 & 페이징 -->
 		<mapper resource="mybatis/mappers/board.xml"/>

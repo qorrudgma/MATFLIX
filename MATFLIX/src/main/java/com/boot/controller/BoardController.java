@@ -19,6 +19,7 @@ import com.boot.service.BoardService;
 import com.boot.service.CommentService;
 import com.boot.service.EmailService;
 import com.boot.service.FollowService;
+import com.boot.service.NotificationService;
 import com.boot.service.RecommendService;
 import com.boot.service.UploadService;
 
@@ -44,6 +45,9 @@ public class BoardController {
 
 	@Autowired
 	private FollowService followService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 //	@RequestMapping("/main")
 //	public String main() {
@@ -74,11 +78,18 @@ public class BoardController {
 		// 여기다가 메일 보내는거 적기
 		int following_id = boardDTO.getMf_no();
 		String following_name = boardDTO.getBoardName();
-		log.info(following_id + "");
+		log.info("작성자 고유 id => " + following_id);
 
+		// 알림 테이블에 데이터 넣기
+		List<Integer> follower_id_list = followService.follower_id_list(following_id);
+		for (int i = 0; i < follower_id_list.size(); i++) {
+//			log.info("반복문" + i);
+			notificationService.add_notification(following_id, follower_id_list.get(i), 1);
+		}
+
+		// 메일 보내기
 		List<String> follower_list = followService.follower_list(following_id);
 //		log.info("follower_list => " + follower_list);
-
 		for (int i = 0; i < follower_list.size(); i++) {
 			String follower_email = follower_list.get(i);
 			emailService.follower_list(following_name, follower_email);

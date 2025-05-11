@@ -31,7 +31,10 @@
 </head>
 <body>
 	<!-- 헤더 -->
-	 <jsp:include page="header.jsp" />
+	<jsp:include page="header.jsp" />
+	
+    <!-- 알림 -->
+	<jsp:include page="notification.jsp" />
 
 	<!-- 게시글 -->
 	<a href="list">게시글</a>

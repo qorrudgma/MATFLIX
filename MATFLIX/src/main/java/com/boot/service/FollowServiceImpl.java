@@ -11,7 +11,7 @@ import com.boot.dao.FollowDAO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
+@Service("FollowService")
 public class FollowServiceImpl implements FollowService {
 
 	@Autowired
@@ -48,5 +48,12 @@ public class FollowServiceImpl implements FollowService {
 	public void delete_follow(int following_id, int follower_id) {
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
 		dao.delete_follow(following_id, follower_id);
+	}
+
+	@Override
+	public List<Integer> follower_id_list(int following_id) {
+		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		List<Integer> follower_id_list = dao.follower_id_list(following_id);
+		return follower_id_list;
 	}
 }

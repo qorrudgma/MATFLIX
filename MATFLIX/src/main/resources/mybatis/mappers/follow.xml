@@ -32,9 +32,16 @@
 		 where follower_id =#{follower_id}
 	</select>
 	
-	<!-- 메일 보낼 사람 찾기 -->
+	<!-- 메일 보낼 사람 찾기(메일) -->
 	<select id="follower_list" resultType="String">
 		select follower_email
+		  from follow
+		 where following_id = #{following_id}
+	</select>
+
+	<!-- 메일 보낼 사람 찾기(아이디) -->
+	<select id="follower_id_list" resultType="int">
+		select follower_id
 		  from follow
 		 where following_id = #{following_id}
 	</select>
