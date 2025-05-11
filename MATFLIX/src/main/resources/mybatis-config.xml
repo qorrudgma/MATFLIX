@@ -6,6 +6,9 @@
 	<mappers>
 		<!-- 로그인 & 회원가입 -->
 		<mapper resource="mybatis/mappers/member.xml"/>
+
+		<!-- 팔로우 -->
+		<mapper resource="mybatis/mappers/follow.xml"/>
 				
 		<!-- 게시판 & 댓글 & 페이징 -->
 		<mapper resource="mybatis/mappers/board.xml"/>

@@ -17,6 +17,7 @@ import com.boot.dto.CommentDTO;
 import com.boot.dto.RecommendDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentService;
+import com.boot.service.EmailService;
 import com.boot.service.RecommendService;
 import com.boot.service.UploadService;
 
@@ -36,6 +37,9 @@ public class BoardController {
 
 	@Autowired
 	private RecommendService recommendService;
+
+	@Autowired
+	private EmailService emailService;
 
 //	@RequestMapping("/main")
 //	public String main() {
@@ -63,6 +67,8 @@ public class BoardController {
 		}
 
 		service.write(boardDTO);
+		// 여기다가 메일 보내는거 적기
+//		emailService.
 
 		return "redirect:list";
 	}

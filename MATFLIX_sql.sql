@@ -14,6 +14,15 @@ CREATE TABLE matflix (
     mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN'))
 );
 
+-- 팔로우
+CREATE TABLE follow (
+    follow_id INT AUTO_INCREMENT PRIMARY KEY,
+    follower_id INT NOT NULL, -- 팔로우를 거는 사람 (내 ID)
+    following_id INT NOT NULL, -- 팔로우 당하는 사람 (상대 ID)
+    follow_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_follow (follower_id, following_id) -- 중복 방지
+);
+
 -- 게시판 테이블
 CREATE TABLE tbl_board (
     boardNo int AUTO_INCREMENT PRIMARY KEY,

@@ -55,7 +55,7 @@
 			<tr>
 				<td>이름(닉네임이 나오게 수정하기)</td>
 				<td>
-					${content_view.boardName}
+					${content_view.boardName}<button type="button" id="follow_btn">팔로우</button>
 				</td>
 			</tr>
 			<tr>
@@ -183,9 +183,35 @@
         var sessionUserNo = null;
     <% } %>
 	var no = "${content_view.boardNo}";
+	var w_user = "${content_view.mf_no}";
 	var endNo = 5;
 	var comment_count="${count}";
 	
+	// 팔로우 버튼
+	$("#follow_btn").click(function (e) {
+		e.preventDefault();
+
+		if (sessionUserNo == null) {
+			alert("로그인 후 이용 가능합니다.");
+			return;
+		}
+
+		$.ajax({
+			 type: "POST"
+			,data: {following_id: w_user, follower_id:sessionUserNo}
+			,url: "/add_follow"
+			,success: function (result) {
+				console.log("팔로우 성공");
+				const text=$("#follow_btn").text();
+				$("#follow_btn").text(text == "팔로우" ? "팔로우 취소" : "팔로우");
+			}
+			,error: function () {
+				console.log("팔로우 실패");
+			}
+		});
+
+	});
+
 	// 추천 버튼
 	$("#recommend").click(function (e) {
 		e.preventDefault();

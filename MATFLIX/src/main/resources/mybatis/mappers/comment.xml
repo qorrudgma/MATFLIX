@@ -4,6 +4,7 @@
 
 <mapper namespace="com.boot.dao.CommentDAO">
     
+    <!-- 댓글 작성 -->
     <insert id="save">
 		insert into board_comment( 		
 			  commentWriter 	
@@ -13,6 +14,7 @@
 		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo})
     </insert>
     
+    <!-- 댓글 리스트 -->
     <select id="findAll" resultType="com.boot.dto.CommentDTO">
 		select commentNo
 			  ,commentWriter
@@ -25,16 +27,19 @@
 		 order by commentNo desc
     </select>
     
+    <!-- 게시글 삭제로 인한 댓글 삭제 -->
     <delete id="boardCommentDelete">
     	delete from board_comment
  		 where boardNo=#{boardNo}
     </delete>
     
+    <!-- 유저 본인이 댓글 삭제 -->
     <delete id="userCommentDelete">
     	delete from board_comment
  		 where commentNo=#{commentNo}
     </delete>
     
+    <!-- 댓글 갯수 -->
     <select id="count" resultType="int">
     	select count(*)
     	  from board_comment
