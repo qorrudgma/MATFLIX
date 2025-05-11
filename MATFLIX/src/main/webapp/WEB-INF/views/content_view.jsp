@@ -179,6 +179,7 @@
 	// 변수
     <% if (user != null) { %>
         var sessionUserNo = <%= user.getMf_no() %>;
+        var sessionUserEmail = "<%= user.getMf_email() %>";
     <% } else { %>
         var sessionUserNo = null;
     <% } %>
@@ -198,7 +199,7 @@
 
 		$.ajax({
 			 type: "POST"
-			,data: {following_id: w_user, follower_id:sessionUserNo}
+			,data: {following_id: w_user, follower_id:sessionUserNo, follower_email:sessionUserEmail}
 			,url: "/add_follow"
 			,success: function (result) {
 				console.log("팔로우 성공");

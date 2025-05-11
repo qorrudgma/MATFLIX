@@ -37,4 +37,16 @@ public class EmailServiceImpl implements EmailService {
 
 		return String.valueOf((int) (Math.random() * 900000) + 100000); // 6자리 숫자
 	}
+
+	// 팔로우 리스트 메일 보내기
+	@Override
+	public void follower_list(String following_name, String follower_email) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(follower_email);
+		message.setSubject(following_name + "님이 새로운 게시글을 작성 하였습니다.");
+		message.setText("팔로우 하신" + following_name + "님이 새로운 게시글을 작성하였습니다.");
+		message.setFrom("matflix_owner@naver.com");
+
+		mailSender.send(message);
+	}
 }

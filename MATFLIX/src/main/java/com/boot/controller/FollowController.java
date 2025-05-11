@@ -38,10 +38,11 @@ public class FollowController {
 	@RequestMapping("/add_follow")
 	@ResponseBody
 	public void add_follow(@RequestParam("following_id") String following_id,
-			@RequestParam("follower_id") String follower_id) {
+			@RequestParam("follower_id") String follower_id, @RequestParam("follower_email") String follower_email) {
 		log.info("add_follow()");
 		log.info("following_id => " + following_id);
 		log.info("follower_id => " + follower_id);
-		followService.add_follow(following_id, follower_id);
+		log.info("follower_email => " + follower_email);
+		followService.add_follow(following_id, follower_id, follower_email);
 	}
 }

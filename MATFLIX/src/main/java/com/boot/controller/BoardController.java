@@ -18,6 +18,7 @@ import com.boot.dto.RecommendDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentService;
 import com.boot.service.EmailService;
+import com.boot.service.FollowService;
 import com.boot.service.RecommendService;
 import com.boot.service.UploadService;
 
@@ -40,6 +41,9 @@ public class BoardController {
 
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private FollowService followService;
 
 //	@RequestMapping("/main")
 //	public String main() {
@@ -68,7 +72,18 @@ public class BoardController {
 
 		service.write(boardDTO);
 		// 여기다가 메일 보내는거 적기
-//		emailService.
+		int following_id = boardDTO.getMf_no();
+		String following_name = boardDTO.getBoardName();
+		log.info(following_id + "");
+
+		List<String> follower_list = followService.follower_list(following_id);
+//		log.info("follower_list => " + follower_list);
+
+		for (int i = 0; i < follower_list.size(); i++) {
+			String follower_email = follower_list.get(i);
+			emailService.follower_list(following_name, follower_email);
+		}
+		// --------------------------------------------------------------------
 
 		return "redirect:list";
 	}

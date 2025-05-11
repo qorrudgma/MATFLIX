@@ -13,5 +13,6 @@ public class FollowDTO {
 	private int follow_id;
 	private int follower_id;
 	private int following_id;
+	private String follower_email;
 	private Date follow_time;
 }

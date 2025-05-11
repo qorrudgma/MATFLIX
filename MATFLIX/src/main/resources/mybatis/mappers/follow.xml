@@ -6,8 +6,14 @@
 
 	<!-- 팔로우 테이블 -->
 	<select id="add_follow">
-		INSERT INTO follow (follower_id, following_id)
-		VALUES (#{follower_id}, #{following_id})
+		INSERT INTO follow (follower_id, following_id, follower_email)
+		VALUES (#{follower_id}, #{following_id}, #{follower_email})
 	</select>
 
+	<!-- 메일 보낼 사람 찾기 -->
+	<select id="follower_list" resultType="String">
+		select follower_email
+		  from follow
+		 where following_id = #{follower_id}
+	</select>
 </mapper>
