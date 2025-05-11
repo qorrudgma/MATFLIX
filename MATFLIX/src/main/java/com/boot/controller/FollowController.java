@@ -45,4 +45,13 @@ public class FollowController {
 		log.info("follower_email => " + follower_email);
 		followService.add_follow(following_id, follower_id, follower_email);
 	}
+
+	// 팔로우 취소 하기
+	@RequestMapping("/delete_follow")
+	@ResponseBody
+	public void delete_follow(@RequestParam("following_id") int following_id,
+			@RequestParam("follower_id") int follower_id) {
+		log.info("delete_follow()");
+		followService.delete_follow(following_id, follower_id);
+	}
 }

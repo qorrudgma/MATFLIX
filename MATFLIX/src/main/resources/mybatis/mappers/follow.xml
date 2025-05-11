@@ -10,10 +10,33 @@
 		VALUES (#{follower_id}, #{following_id}, #{follower_email})
 	</select>
 
+	<!-- 팔로우 취소 -->
+	<delete id="delete_follow">
+		delete from follow
+		 where follower_id =#{follower_id}
+		   and following_id =#{following_id}
+	</delete>
+	
+	<!-- 팔로우 유무 확인 -->
+	<select id="follow_unfollow" resultType="int">
+		select count(*)
+		  from follow
+		 where follower_id = #{follower_id}
+		   and following_id =#{following_id}
+	</select>
+	
+	<!-- 본인의 팔로우 리스트 -->
+	<select id="user_follow_list" resultType="int">
+		select following_id
+		  from follow
+		 where follower_id =#{follower_id}
+	</select>
+	
 	<!-- 메일 보낼 사람 찾기 -->
 	<select id="follower_list" resultType="String">
 		select follower_email
 		  from follow
-		 where following_id = #{follower_id}
+		 where following_id = #{following_id}
 	</select>
+	
 </mapper>

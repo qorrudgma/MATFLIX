@@ -30,4 +30,23 @@ public class FollowServiceImpl implements FollowService {
 		List<String> follower_list = dao.follower_list(following_id);
 		return follower_list;
 	}
+
+	@Override
+	public List<Integer> user_follow_list(int follower_id) {
+		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		List<Integer> user_follow_list = dao.user_follow_list(follower_id);
+		return user_follow_list;
+	}
+
+	@Override
+	public void follow_unfollow(int following_id, int follower_id) {
+		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		dao.follow_unfollow(following_id, follower_id);
+	}
+
+	@Override
+	public void delete_follow(int following_id, int follower_id) {
+		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		dao.delete_follow(following_id, follower_id);
+	}
 }

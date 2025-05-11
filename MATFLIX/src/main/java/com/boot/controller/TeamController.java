@@ -19,6 +19,7 @@ package com.boot.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.TeamDTO;
 import com.boot.service.EmailService;
+import com.boot.service.FollowService;
 import com.boot.service.TeamService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +50,9 @@ public class TeamController {
 
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private FollowService followService;
 
 	@RequestMapping("/profile")
 	public String profile(HttpSession session, Model model) {
@@ -157,8 +162,15 @@ public class TeamController {
 			TeamDTO dto = service.find_list(mf_id);
 			HttpSession session = request.getSession();
 			session.setAttribute("user", dto);
+			TeamDTO user = (TeamDTO) session.getAttribute("user");
+
+			List<Integer> user_follow_list = followService.user_follow_list(user.getMf_no());
+			if (user_follow_list != null) {
+				session.setAttribute("user_follow_list", user_follow_list);
+				log.info("@# session user_follow_list => " + session.getAttribute("user_follow_list"));
+			}
 			log.info("@# session => " + session.getAttribute("user"));
-			return "main"; // 로그인 성공 시 이동할 페이지
+			return "redirect:/main"; // 로그인 성공 시 이동할 페이지
 		} else {
 			model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
 			return "login"; // 로그인 실패 시 다시 로그인 페이지로

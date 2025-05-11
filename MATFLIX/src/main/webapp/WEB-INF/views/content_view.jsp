@@ -2,8 +2,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page import="com.boot.dto.TeamDTO" %>
-<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
-<% request.setAttribute("user", user); %>
+<% 
+	TeamDTO user = (TeamDTO) session.getAttribute("user");
+	request.setAttribute("user", user); 
+%>
+<%@ page import="java.util.List" %>
+<% 
+	List<Integer> user_follow_list = (List<Integer>) session.getAttribute("user_follow_list");
+	request.setAttribute("user_follow_list", user_follow_list);
+%>
+
 <html>
 
 <head>
@@ -34,6 +42,7 @@
 
 <body>
 	<%= user %><br>
+	<%= user_follow_list %><br>
 	${user.mf_no}
 	<form method="post" action="modify">
 		<table width="500" border="1">
@@ -55,7 +64,24 @@
 			<tr>
 				<td>이름(닉네임이 나오게 수정하기)</td>
 				<td>
-					${content_view.boardName}<button type="button" id="follow_btn">팔로우</button>
+					${content_view.boardName}
+					<!-- 이부분 좀더 깔끔하게 다듬어 보기 뭔가 좋은 방법이 있을거같음 -->
+					<c:if test="${user != null}">
+						<c:set var="isFollowing" value="false"/>
+						<c:forEach var="id" items="${sessionScope.user_follow_list}">
+							<c:if test="${id == content_view.mf_no}">
+								<c:set var="isFollowing" value="true"/>
+							</c:if>
+						</c:forEach>
+						<c:choose>
+							<c:when test="${isFollowing}">
+								<button type="button" id="delete_follow_btn">팔로우 취소</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" id="follow_btn">팔로우</button>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
 				</td>
 			</tr>
 			<tr>
@@ -189,7 +215,7 @@
 	var comment_count="${count}";
 	
 	// 팔로우 버튼
-	$("#follow_btn").click(function (e) {
+	$(document).on("click", "#follow_btn", function (e) {
 		e.preventDefault();
 
 		if (sessionUserNo == null) {
@@ -203,18 +229,39 @@
 			,url: "/add_follow"
 			,success: function (result) {
 				console.log("팔로우 성공");
-				const text=$("#follow_btn").text();
-				$("#follow_btn").text(text == "팔로우" ? "팔로우 취소" : "팔로우");
+				$("#follow_btn").attr("id", "delete_follow_btn").text("팔로우 취소");
 			}
 			,error: function () {
 				console.log("팔로우 실패");
 			}
 		});
+	});
+	
+	// 팔로우 삭제 버튼
+	$(document).on("click", "#delete_follow_btn", function (e) {
+		e.preventDefault();
 
+		if (sessionUserNo == null) {
+			alert("로그인 후 이용 가능합니다.");
+			return;
+		}
+
+		$.ajax({
+			 type: "POST"
+			,data: {following_id: w_user, follower_id:sessionUserNo}
+			,url: "/delete_follow"
+			,success: function (result) {
+				console.log("팔로우 삭제 성공");
+				$("#delete_follow_btn").attr("id", "follow_btn").text("팔로우");
+			}
+			,error: function () {
+				console.log("팔로우 실패");
+			}
+		});
 	});
 
 	// 추천 버튼
-	$("#recommend").click(function (e) {
+	$(document).on("click", "#recommend", function (e) {
 		e.preventDefault();
 
 		if (sessionUserNo == null) {
@@ -229,15 +276,6 @@
 			,success: function (result) {
 				console.log(result);
 				$("#recommend").text(result == "recommend" ? "추천 취소" : "추천");
-				// if (result == "recommend") {
-				// 	alert("추천됨.");
-				// 	location.reload();
-				// 	$("#recommend").text("추천 취소");
-				// } else {
-				// 	alert("추천 취소됨.");
-				// 	location.reload();
-				// 	$("#recommend").text("추천");
-				// }
 			}
 			,error: function () {
 				console.log("추천 실패");
