@@ -11,10 +11,12 @@
 	</insert>
 
 	<!-- 게시글 보기 -->
-    <select id="contentView" resultType="com.boot.dto.BoardDTO">
-        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no
-          from tbl_board
-         where boardNo=#{boardNo}
+    <select id="notification_list" resultType="com.boot.dto.NotificationDTO">
+    	select following_id
+    		 , post_id
+    		 , created_at
+    	  from notifications
+    	 where follower_id = #{follower_id}
     </select>
     
 </mapper>
