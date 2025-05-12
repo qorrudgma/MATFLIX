@@ -17,7 +17,10 @@
 </style>
 
 <body>
-   <%= user %>
+   <%= user %><br>
+	<a href="${pageContext.request.contextPath}/main">
+      <button type="button">메인페이지</button> 
+   </a>
    <table width="700" border="1">
       <tr>
          <td>번호</td>

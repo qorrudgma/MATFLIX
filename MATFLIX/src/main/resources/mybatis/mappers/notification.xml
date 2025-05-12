@@ -10,13 +10,14 @@
 		VALUES (#{follower_id},#{following_id},#{boardNo},#{post_id})
 	</insert>
 
-	<!-- 게시글 보기 -->
+	<!-- 알림 보기 -->
     <select id="notification_list" resultType="com.boot.dto.NotificationDTO">
     	select notifications_id
     		 , follower_id
     		 , following_id
     		 , boardNo
     		 , post_id
+    		 , is_read
     		 , created_at
     	  from notifications
     	 where follower_id = #{follower_id}
@@ -25,7 +26,7 @@
     <!-- 알림 읽음 처리 -->
     <update id="is_read_true">
     	update notifications
-    	   set is_read=TRUE
+    	   set is_read = 1
     	 where notifications_id=#{notifications_id}
     </update>
     

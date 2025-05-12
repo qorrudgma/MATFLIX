@@ -31,7 +31,7 @@ CREATE TABLE notifications (
     following_id INT NOT NULL, 			-- 팔로우 당하는 사람 (알림 생성하는 행동하는 사람)
     boardNo INT NOT NULL, 				-- 해당 게시판 고유넘버 (알림 생성하는 게시판)
     post_id INT,                      	-- 어떤 알림인지 (게시글,댓글,레시피)
-    is_read BOOLEAN DEFAULT FALSE,    	-- 알림 읽음 여부
+    is_read int DEFAULT 0,		    	-- 알림 읽음 여부
     created_at DATETIME DEFAULT NOW() 	-- 생성 시간
 );
 
