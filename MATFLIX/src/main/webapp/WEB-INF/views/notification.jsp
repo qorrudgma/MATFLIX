@@ -29,13 +29,17 @@
                 let notification_data="";
 
                 for (let i = 0; i < notification_list.length && 10; i++) {
+                    if (notification_list[i].is_read == true) {
+                        notification_data += "<div id='notification_card' class='read_true'>";
+                        } else {
+                        notification_data += "<div id='notification_card'>";
+                    }
                     console.log(notification_list[i].boardNo);
-                    notification_data += "<div id='notification_card'>";
                     notification_data += "<div>읽음 안읽음 "+notification_list[i].is_read+"</div>";
                     notification_data += "<div>시간 "+notification_list[i].created_at+"</div>";
                     notification_data += "<div>누구인지 "+notification_list[i].following_id+"</div>";
                     notification_data += "<div>어디 게시글인지 댓글인지 "+notification_list[i].boardNo+"</div></div>";
-                    notification_data += '<button type="button" class="move_board" id="'+notification_list[i].boardNo+'">보러가기</button>'
+                    notification_data += '<button type="button" class="move_board" data-board_no="'+notification_list[i].boardNo+'" data-notifications_id="'+notification_list[i].notifications_id+'">보러가기</button>'
                 }
                 console.log(notification_data);
                 document.getElementById("notification_div").innerHTML = notification_data;
@@ -52,21 +56,42 @@
         e.preventDefault();
 
         console.log("게시글 가는 버튼 클릭 됨");
-        var board_no = this.id;
-
+        var board_no = $(this).data("board_no");
+        var notifications_id = $(this).data("notifications_id");
         var h_data = {boardNo: board_no}
 
+        console.log(board_no);
+        console.log(notifications_id);
+        console.log("is_read_true ajax 시작");
+        // 알림 읽음 처리
         $.ajax({
              type: "post"
-            ,url: "/content_view"
-            ,data: h_data
+            ,url: "/is_read_true"
+            ,data: {notifications_id:notifications_id}
             ,success: function (params) {
-                console.log("해당 게시글로 이동 됨");
+                console.log("해당 알림 읽음 처리됨.");
+                window.location.href = "content_view?pageNum=1&amount=10&type=&keyword=&boardNo="+board_no+"&mf_no="+sessionUserNo;
             }
             ,error: function () {
                 console.log(error);
             }
         });
+
+        // console.log("content_view ajax 시작");
+        // // content_view 로 가게하기
+        // $.ajax({
+        //      type: "post"
+        //     ,url: "/content_view"
+        //     ,data: h_data
+        //     ,success: function (params) {
+        //         console.log(params);
+        //         console.log("해당 게시글로 이동 됨");
+        //         window.location.href = "content_view?pageNum=1&amount=10&type=&keyword=&boardNo="+board_no+"&mf_no="+sessionUserNo;
+        //     }
+        //     ,error: function () {
+        //         console.log(error);
+        //     }
+        // });
     });
 </script>
 

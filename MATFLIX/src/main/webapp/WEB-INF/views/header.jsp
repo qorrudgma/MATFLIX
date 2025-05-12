@@ -40,7 +40,7 @@
 				<div class="profile_info">
 					<span><span id="profile_name">name</span>님 환영합니다.</span>
 				</div>
-				<input type="button" value="로그아웃" id="log_out" onclick="location.href='${pageContext.request.contextPath}/main'">
+				<input type="button" value="로그아웃" id="log_out" onclick="location.href='${pageContext.request.contextPath}/log_out'">
 			</div>
 		</div>
 

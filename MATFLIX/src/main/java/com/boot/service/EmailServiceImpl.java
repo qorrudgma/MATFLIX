@@ -22,7 +22,7 @@ public class EmailServiceImpl implements EmailService {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(mf_email); // 받는 사람
 		message.setSubject("이메일 인증번호"); // 제목
-		message.setText("인증번호는 " + code + " 입니다."); // 본문
+		message.setText("인증번호는 " + code + "입니다."); // 본문
 		message.setFrom("matflix_owner@naver.com"); // 보내는 사람 (application.properties와 같아야 안전)
 		log.info(message + "");
 

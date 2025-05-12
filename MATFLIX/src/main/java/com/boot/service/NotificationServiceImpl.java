@@ -30,4 +30,11 @@ public class NotificationServiceImpl implements NotificationService {
 		List<NotificationDTO> notification_list = dao.notification_list(follower_id);
 		return notification_list;
 	}
+
+	@Override
+	public void is_read_true(int notifications_id) {
+		NotificationDAO dao = sqlSession.getMapper(NotificationDAO.class);
+		dao.is_read_true(notifications_id);
+
+	}
 }

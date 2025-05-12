@@ -14,4 +14,6 @@ public interface NotificationDAO {
 			@Param("boardNo") int boardNo, @Param("post_id") int post_id);
 
 	public List<NotificationDTO> notification_list(int follower_id);
+
+	public void is_read_true(int notifications_id);
 }
