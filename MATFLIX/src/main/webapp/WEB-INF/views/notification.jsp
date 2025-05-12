@@ -6,7 +6,6 @@
 	request.setAttribute("user", user); 
 %>
 
-
 <script>
     <% if (user != null) { %>
         var sessionUserNo = <%= user.getMf_no() %>;
