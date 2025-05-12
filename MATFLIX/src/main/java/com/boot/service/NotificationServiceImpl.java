@@ -37,4 +37,11 @@ public class NotificationServiceImpl implements NotificationService {
 		dao.is_read_true(notifications_id);
 
 	}
+
+	@Override
+	public int notification_count(int notifications_id) {
+		NotificationDAO dao = sqlSession.getMapper(NotificationDAO.class);
+		int notification_count = dao.notification_count(notifications_id);
+		return notification_count;
+	}
 }

@@ -30,4 +30,11 @@
     	 where notifications_id=#{notifications_id}
     </update>
     
+    <!-- 알림 갯수 카운트 -->
+    <select id="notification_count" resultType="int">
+    	select count(*)
+    	  from notifications
+    	 where follower_id = #{follower_id}
+    	   and is_read = 1
+    </select>
 </mapper>

@@ -5,9 +5,12 @@
 	TeamDTO user = (TeamDTO) session.getAttribute("user");
 	request.setAttribute("user", user); 
 %>
+
+
 <script>
     <% if (user != null) { %>
         var sessionUserNo = <%= user.getMf_no() %>;
+        var notification_count = <%= session.getAttribute("notification_count") %>
     <% } else { %>
         var sessionUserNo = null;
     <% } %>
@@ -28,6 +31,11 @@
 
                 let notification_data="";
 
+                console.log(notification_count);
+                if (notification_count != 0 && notification_count != null) {
+                    notification_data += "<div><h3>알림 갯수"+notification_count+"</h3></div>";
+                }
+                
                 for (let i = 0; i < notification_list.length && 10; i++) {
                     if (notification_list[i].is_read == 1) {
                         notification_data += "<div id='notification_card' class='read_true'>";

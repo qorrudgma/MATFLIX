@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.boot.dto.TeamDTO;
 import com.boot.service.EmailService;
 import com.boot.service.FollowService;
+import com.boot.service.NotificationService;
 import com.boot.service.TeamService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,9 @@ public class TeamController {
 
 	@Autowired
 	private FollowService followService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@RequestMapping("/profile")
 	public String profile(HttpSession session, Model model) {
@@ -164,6 +168,10 @@ public class TeamController {
 			session.setAttribute("user", dto);
 			TeamDTO user = (TeamDTO) session.getAttribute("user");
 
+			int notification_count = notificationService.notification_count(user.getMf_no());
+			log.info("notification_count => " + notification_count);
+			session.setAttribute("notification_count", notification_count);
+
 			List<Integer> user_follow_list = followService.user_follow_list(user.getMf_no());
 			if (user_follow_list != null) {
 				session.setAttribute("user_follow_list", user_follow_list);
@@ -184,7 +192,7 @@ public class TeamController {
 		System.out.println("log_out124124");
 		System.out.println(session);
 		session.invalidate();
-		return "redirect:/";
+		return "main";
 	}
 
 	// 회원가입 로직
