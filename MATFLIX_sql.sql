@@ -75,17 +75,19 @@ CREATE TABLE tbl_recommend (
 
 -- 레시피 테이블
 CREATE TABLE recipe (
-    rc_recipe_id     INT AUTO_INCREMENT PRIMARY KEY,
+    rc_recipe_id     INT PRIMARY KEY AUTO_INCREMENT,
     rc_name          VARCHAR(100) NOT NULL,
-    rc_description   TEXT, -- Oracle의 CLOB은 MySQL에서는 TEXT 또는 LONGTEXT로 대체
+    rc_description   TEXT,
     rc_category1_id  VARCHAR(20),
-    rc_category2_id  VARCHAR(20) DEFAULT '-',
+    rc_category2_id  VARCHAR(20) DEFAULT 'a',
     rc_cooking_time  VARCHAR(20),
     rc_difficulty    ENUM('easy', 'medium', 'hard'),
     rc_created_at    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    rc_img           VARCHAR(1000), -- 요리 메인 사진(1장)
+    rc_img           VARCHAR(1000),  -- 요리 메인 사진(1장)
     rc_tip           VARCHAR(1000),
-    rc_tag           VARCHAR(1000)
+    rc_tag           VARCHAR(1000),
+    mf_no        INT,
+    star_score DOUBLE default 0
 );
 
 -- 레시피 파일
@@ -127,11 +129,12 @@ CREATE TABLE rc_board (
 );
 
 -- 레시피 댓글
-CREATE TABLE rc_board_comment (
-    rc_commentNo INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    rc_commentWriter VARCHAR(20),
-    rc_commentContent VARCHAR(300),
-    rc_boardNo INT,
-    userNo int,
-    rc_commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE rc_board_comment(
+   rc_commentNo int primary key auto_increment,
+   rc_commentWriter varchar(20),
+   rc_commentContent varchar(300),
+   rc_boardNo int, 
+   rc_commentCreatedTime datetime default current_timestamp,
+   user_star_score int default 0,
+   mf_no INT NOT NULL
 );

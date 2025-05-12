@@ -9,7 +9,7 @@
 		insert into Recipe (
 		rc_name, rc_description, rc_category1_id,
 		rc_cooking_time, rc_difficulty,
-		rc_tip, rc_tag
+		rc_tip, rc_tag, mf_no
 		)
 		VALUES (
 		#{rc_name},
@@ -18,7 +18,8 @@
 		#{rc_cooking_time},
 		#{rc_difficulty},
 		#{rc_tip},
-		#{rc_tag}
+		#{rc_tag},
+		#{mf_no}
 		)
 	</insert>
 
@@ -52,11 +53,11 @@
 	</select>
 	
 	<select id="find_list_all" resultType="com.boot.dto.RecipeDTO">
-		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag from recipe
+		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe
 	</select>
 	
 	<select id="get_recipe_by_id">
-		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag from recipe where rc_recipe_id=#{rc_recipe_id}
+		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe where rc_recipe_id=#{rc_recipe_id}
 	</select>
 	<select id="get_recipe_ingredient_by_id" resultType="com.boot.dto.RcIngredientDTO">
 		select rc_recipe_id, rc_ingredient_id, rc_ingredient_name, rc_ingredient_amount from rc_ingredient where rc_recipe_id = #{rc_recipe_id}
@@ -67,6 +68,23 @@
 
 <!--	페이징처리-->
 	<select id="paging_recipe_list" resultType="com.boot.dto.RecipeDTO">
-		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag from recipe where rc_recipe_id=#{rc_recipe_id}
+		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe where rc_recipe_id=#{rc_recipe_id}
 	</select>
+	
+<!--	마이페이지 내 레시피-->
+	<select id="get_recipe_by_user_id" resultType="com.boot.dto.RecipeDTO">
+		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe where mf_no = #{mf_no}
+	</select>
+	
+<!--	레시피 아이디로 멤버 넘버 출력-->
+	<select id="get_mf_no_by_id" resultType="int">
+		select mf_no from recipe where rc_recipe_id = #{rc_recipe_id}
+	</select>
+	
+<!--	별점 추가-->
+	<update id="update_star_score">
+		UPDATE recipe
+		SET star_score = #{star_score}
+		WHERE rc_recipe_id = #{rc_recipe_id}
+	</update>
 </mapper>

@@ -15,4 +15,6 @@ public class RecipeCommentDTO {
 	private String rc_commentContent;
 	private int rc_boardNo;
 	private Timestamp rc_commentCreatedTime;
+	private int user_star_score;
+	private int mf_no;
 }

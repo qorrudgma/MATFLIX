@@ -1,27 +1,295 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<script src="${pageContext.request.contextPath}/js/jquery.js"></script>
+<%@ page import="com.boot.dto.TeamDTO" %>
+<%
+    // 현재 로그인한 사용자의 닉네임을 세션에서 가져옵니다.
+    TeamDTO user = (TeamDTO) session.getAttribute("user"); // user 세션 속성 사용
+    String writer = "";
+    if (user != null) {
+        writer = user.getMf_nickname();
+    } else {
+        writer = "익명"; // 로그인하지 않은 경우 "익명"으로 표시
+    }
+%>
 <html>
 <head>
     <title>${dto.rc_name} - 레시피 상세</title>
     <style>
-        .recipe-container { max-width: 800px; margin: 0 auto; font-family: sans-serif; }
-        .recipe-header img { max-width: 100%; border-radius: 10px; }
-        .section-title { font-weight: bold; font-size: 1.2em; margin-top: 20px; border-bottom: 1px solid #ccc; }
-        .ingredients, .steps { margin-top: 10px; }
-        .step img { max-width: 100%; margin-top: 10px; }
+        /* 기존 스타일은 그대로 유지합니다. */
+        .recipe-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: sans-serif;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .recipe-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .recipe-header h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .recipe-header img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .recipe-header p {
+            color: #777;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .ingredients ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 5px;
+        }
+
+        .ingredients li {
+            padding: 8px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .ingredients li:last-child {
+            border-bottom: none;
+        }
+
+        .steps ol {
+            list-style-type: decimal;
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+
+        .steps li {
+            padding: 10px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .steps li:last-child {
+            border-bottom: none;
+        }
+
+        .steps .step-image {
+            max-width: 80%;
+            height: auto;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tip p {
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        .comment-section {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .comment-input-area input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+
+        .star-rating-container-comment {
+            display: flex;
+            align-items: center;
+        }
+
+        .star-rating {
+            display: inline-block;
+            font-size: 1.2em;
+            color: #ccc;
+            margin-left: 5px;
+        }
+
+        .star-rating .star {
+            cursor: pointer;
+        }
+
+        .star-rating .filled {
+            color: gold;
+        }
+
+        .comment-input-area button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .comment-input-area button:hover {
+            background-color: #4cae4c;
+        }
+
+        #comment-list {
+            margin-top: 10px;
+        }
+
+        #comment-list .comment-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        #comment-list .comment-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        #comment-list .comment-writer {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        #comment-list .comment-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        #comment-list .comment-content {
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        #comment-list .comment-stars {
+            margin-top: 10px;
+        }
     </style>
+    <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 별점 기능
+            $('.star-rating .star').on('click', function() {
+                const ratingValue = $(this).data('value');
+                $('#user_star_scoreValue').val(ratingValue);
+                $('#commentRatingText').text('(' + ratingValue + '점)');
+                $(this).prevAll('.star').addClass('filled');
+                $(this).addClass('filled');
+                $(this).nextAll('.star').removeClass('filled');
+                $('#commentStarRating').data('current-rating', ratingValue);
+            });
+
+            $('.star-rating .star').on('mouseover', function() {
+                const ratingValue = $(this).data('value');
+                $(this).prevAll('.star').addClass('temp-filled');
+                $(this).addClass('temp-filled');
+                $(this).nextAll('.star').removeClass('temp-filled');
+            }).on('mouseout', function() {
+                const currentRating = $('#commentStarRating').data('current-rating');
+                $('.star-rating .star').removeClass('temp-filled');
+                $('.star-rating .star').slice(0, currentRating).addClass('filled');
+            });
+        });
+
+        const commentWrite = () => {
+            const writer = $("#rc_commentWriter").val();
+            const content = $("#rc_commentContent").val();
+            const boardNo = "${rc_board.rc_boardNo}";
+            const rating = $("#user_star_scoreValue").val();
+
+            if (!content.trim()) {
+                alert("댓글 내용을 입력해주세요.");
+                $("#rc_commentContent").focus();
+                return;
+            }
+
+            console.log("전송되는 writer 값:", writer);
+
+            $.ajax({
+                type: "post",
+                url: "/rc_comment/save",
+                data: {
+                    rc_commentWriter: writer,
+                    rc_commentContent: content,
+                    rc_boardNo: boardNo,
+                    user_star_score: rating
+                },
+                dataType: "json",
+                success: function (commentList) {
+                    alert("댓글이 작성되었습니다.");
+                    //$("#rc_commentContent").val("");  // 입력창 초기화 제거
+                    //$('#user_star_scoreValue').val(0); // 별점 초기화 제거
+                    //$('#commentRatingText').text('(0점)'); // 별점 텍스트 제거
+                    //$('.star-rating .star').removeClass('filled'); // 별점 스타일 제거
+                    window.location.reload(); // 페이지 새로고침
+                    /*
+                    let output = "";
+                    for (let i = 0; i < commentList.length; i++) {
+                        output += "<div class='comment-item'>";
+                        output += "<span class='comment-date'>" + commentList[i].rc_commentCreatedTime + "</span><br>";
+                        output += "<span class='comment-content'>" + commentList[i].rc_commentContent + "</span>";
+                        output += "<div class='comment-stars'>";
+                        for (let j = 1; j <= 5; j++) {
+                            if (j <= commentList[i].user_star_score) {
+                                output += "<span style='color: gold;'>★</span>";
+                            } else {
+                                output += "<span style='color: #ccc;'>★</span>";
+                            }
+                        }
+                        output += "</div>";
+                        output += "</div>";
+                    }
+                    $("#comment-list").html(output);
+                    */
+                },
+                error: function (xhr, status, error) {
+                    console.error("댓글 작성 실패:", error);
+                    alert("댓글 작성에 실패했습니다.");
+                }
+            });
+        };
+    </script>
 </head>
 <body>
 <div class="recipe-container">
-
-    <!-- 대표 이미지 -->
     <div class="recipe-header">
         <h1>${dto.rc_name}</h1>
-        <c:if test="${img_list != null}">
-            <img src="/upload/${img_list.uploadPath}/${img_list.uuid}_${img_list.fileName}" alt="${dto.rc_name}" />
+        <c:if test="${not empty img_list}">
+            <img src="/upload/${img_list.uploadPath}/${img_list.uuid}_${img_list.fileName}"
+                 alt="${dto.rc_name}" />
         </c:if>
-        <p>등록일: ${dto.rc_created_at}</p>
+        <p>작성자: ${mem_dto.mf_nickname}</p> <p>등록일: ${dto.rc_created_at}</p>
         <p>카테고리: ${dto.rc_category1_id} / ${dto.rc_category2_id}</p>
         <p>소요시간: ${dto.rc_cooking_time}분</p>
         <p>난이도: ${dto.rc_difficulty}</p>
@@ -33,7 +301,6 @@
         <p>${dto.rc_description}</p>
     </div>
 
-    <!-- 재료 리스트 -->
     <div class="ingredients">
         <p class="section-title">재료</p>
         <ul>
@@ -43,95 +310,77 @@
         </ul>
     </div>
 
-    <!-- 요리 순서 + 이미지: course_list + course_img_list 조합 -->
     <div class="steps">
         <p class="section-title">요리 순서</p>
-        <c:forEach var="step" items="${course_list}" varStatus="status">
-            <div class="step">
-                <p><strong>Step ${status.index + 1}:</strong> ${step.rc_course_description}</p>
-                <c:forEach var="img" items="${course_img_list}">
-                    <c:if test="${img.rc_recipe_id == dto.rc_recipe_id && img.image && img.fileName.contains('_step' + (status.index + 1))}">
-                        <img src="/upload/${img.uploadPath}/${img.uuid}_${img.fileName}" alt="Step ${status.index + 1}" />
-                    </c:if>
-                </c:forEach>
-            </div>
-        </c:forEach>
+        <ol>
+            <c:forEach var="step" items="${course_list}" varStatus="status">
+                <li>
+                    <p><strong>Step ${status.index + 1}:</strong> ${step.rc_course_description}</p>
+                    <c:forEach var="img" items="${course_img_list}">
+                        <c:if test="${img.rc_recipe_id == dto.rc_recipe_id && img.image && fn:contains(img.fileName, '_step' + (status.index + 1))}">
+                            <img src="/upload/${img_list.uploadPath}/${img_list.uuid}_${img_list.fileName}"
+                                 alt="Step ${status.index + 1}" class="step-image" />
+                        </c:if>
+                    </c:forEach>
+                </li>
+            </c:forEach>
+        </ol>
     </div>
 
-    <!-- 팁 -->
     <div class="tip">
         <p class="section-title">요리 팁</p>
         <p>${dto.rc_tip}</p>
     </div>
 
-    <div>
-        <input type="text" id="rc_commentWriter" placeholder="작성자">
-        <input type="text" id="rc_commentContent" placeholder="내용">
-        <button onclick="commentWrite()">댓글작성</button>
-    </div>
+    <div class="comment-section">
+        <p class="section-title">댓글 작성</p>
+        <div class="comment-input-area">
+            <input type="hidden" id="rc_commentWriter"  value="<%= writer %>"> <%-- hidden으로 변경 --%>
+            <input type="text" id="rc_commentContent" placeholder="내용">
+            <div class="star-rating-container-comment">
+                <label for="user_star_scoreValue" style="margin-right: 5px;">별점:</label>
+                <div class="star-rating" id="commentStarRating" data-current-rating="0">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                </div>
+                <input type="hidden" id="user_star_scoreValue" name="user_star_score" value="0">
+                <span id="commentRatingText" style="margin-left: 8px; font-size: 1em;">(0점)</span>
+            </div>
+            <button onclick="commentWrite()">댓글작성</button>
+        </div>
 
-    <div id="comment-list">
-        <table>
-            <tr>
-                <th>댓글번호</th>
-                <th>작성자</th>
-                <th>내용</th>
-                <th>작성시간</th>
-            </tr>
+        <p class="section-title">댓글 목록</p>
+        <div id="comment-list">
             <c:forEach items="${commentList}" var="comment">
-                <tr>
-                    <td>${comment.rc_commentNo}</td>
-                    <td>${comment.rc_commentWriter}</td>
-                    <td>${comment.rc_commentContent}</td>
-                    <td>${comment.rc_commentCreatedTime}</td>
-                </tr>
+                <div class="comment-item">
+                    <span class="comment-date">${comment.rc_commentCreatedTime}</span><br>
+                    <span class="comment-content">${comment.rc_commentContent}</span>
+                    <div class="comment-stars">
+                        <%-- 별점을 별 모양으로 표시 --%>
+                        <c:forEach begin="1" end="5" var="i">
+                            <c:choose>
+                                <c:when test="${i <= comment.user_star_score}">
+                                    <span style="color: gold;">★</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span style="color: #ccc;">★</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </div>
+                </div>
             </c:forEach>
-        </table>
+            <c:if test="${empty commentList}">
+                <div class="comment-item" style="text-align: center;">작성된 댓글이 없습니다.</div>
+            </c:if>
+        </div>
     </div>
 </div>
-</body>
 <script>
-const commentWrite = () => {
-    const writer = document.getElementById("rc_commentWriter").value;
-    const content = document.getElementById("rc_commentContent").value;
-    const no = "${rc_board.rc_boardNo}";
-
-    $.ajax({
-        type: "post"
-        , data: {
-            rc_commentWriter: writer
-            , rc_commentContent: content
-            , rc_boardNo: no
-        }
-        , url: "/rc_comment/save"
-        , success: function (commentList) {
-            alert("댓글이 작성되었습니다.");
-            console.log("작성 성공");
-            console.log(commentList);
-
-            let output = "<table>";
-            output += "<tr><th>댓글번호</th>";
-            output += "<th>작성자</th>";
-            output += "<th>내용</th>";
-            output += "<th>작성시간</th></tr>";
-            for (let i in commentList) {
-                output += "<tr>";
-                output += "<td>" + commentList[i].rc_commentNo + "</td>";
-                output += "<td>" + commentList[i].rc_commentWriter + "</td>";
-                output += "<td>" + commentList[i].rc_commentContent + "</td>";
-                output += "<td>" + commentList[i].rc_commentCreatedTime + "</td>";
-                output += "</tr>";
-            }
-            output += "</table>";
-            console.log("@# output=>" + output);
-
-            document.getElementById("comment-list").innerHTML = output;
-        }
-        , error: function () {
-            console.log("실패");
-        }
-    });//end of ajax
-}//end of script
+    // Existing commentWrite function remains the same
 </script>
-
+</body>
 </html>

@@ -88,4 +88,29 @@ public class RecipeServiceImpl implements RecipeService {
 		return dto;
 	}
 
+//===========================================================================
+//	마이페이지 내 내레시피
+	@Override
+	public ArrayList<RecipeDTO> get_recipe_by_user_id(String mf_no) {
+		RecipeDAO dao = session.getMapper(RecipeDAO.class);
+		ArrayList<RecipeDTO> dto = dao.get_recipe_by_user_id(mf_no);
+
+		return dto;
+	}
+
+	@Override
+	public int get_mf_no_by_id(int rc_recipe_id) {
+		RecipeDAO dao = session.getMapper(RecipeDAO.class);
+		int mf_no = dao.get_mf_no_by_id(rc_recipe_id);
+		return mf_no;
+	}
+
+//===========================================================================
+//	요리 별점 업데이트
+	@Override
+	public void update_star_score(double star_score, int rc_recipe_id) {
+		RecipeDAO dao = session.getMapper(RecipeDAO.class);
+		dao.update_star_score(star_score, rc_recipe_id);
+	}
+
 }

@@ -37,4 +37,16 @@ public interface RecipeService {
 //===========================================================================
 //	페이징 리스트
 	public RecipeDTO paging_recipe_list(int rc_recipe_id);
+
+//===========================================================================
+//	마이페이지 내 내레시피
+	public ArrayList<RecipeDTO> get_recipe_by_user_id(String mf_no);
+
+//===========================================================================
+//	레시피 아이디로 멤버 넘버 추출
+	public int get_mf_no_by_id(int rc_recipe_id);
+
+//===========================================================================
+//	요리 별점 업데이트
+	public void update_star_score(double star_score, int rc_recipe_id);
 }

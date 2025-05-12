@@ -33,6 +33,15 @@
             list-style: none;
         }
     </style>
+    <style>
+    .star-display {
+        color: #ffc107;
+        font-size: 1.2em;
+    }
+    .star-display .empty {
+        color: #ddd;
+    }
+</style>
 </head>
 <body>
 <button class="add_recipe_btn" onclick="location.href='insert_recipe'"><i class="fas fa-plus"></i> 새 레시피 등록</button>
@@ -44,10 +53,7 @@
         <option value="" <c:out value="${pageMaker.cri.rc_type == null ? 'selected':''}"/>>전체</option>
         <option value="T" <c:out value="${pageMaker.cri.rc_type eq 'T' ? 'selected':''}"/>>제목</option>
         <option value="C" <c:out value="${pageMaker.cri.rc_type eq 'C' ? 'selected':''}"/>>내용</option>
-        <option value="W" <c:out value="${pageMaker.cri.rc_type eq 'W' ? 'selected':''}"/>>작성자</option>
         <option value="TC" <c:out value="${pageMaker.cri.rc_type eq 'TC' ? 'selected':''}"/>>제목 or 내용</option>
-        <option value="TW" <c:out value="${pageMaker.cri.rc_type eq 'TW' ? 'selected':''}"/>>제목 or 작성자</option>
-        <option value="TCW" <c:out value="${pageMaker.cri.rc_type eq 'TCW' ? 'selected':''}"/>>제목 or 내용 or 작성자</option>
     </select>
 
     <!-- Criteria 를 이용해서 키워드 값을 넘김 -->
@@ -72,8 +78,32 @@
 
                 <p>
                     ${recipe.rc_recipe_id}. ${recipe.rc_name} <br/>
-                    (${recipe.rc_created_at})
+                    작성자: 
+                    <c:forEach var="mem" items="${mem_list}">
+                        <c:if test="${mem.mf_no == recipe.mf_no}">
+                            ${mem.mf_nickname}
+                        </c:if>
+                    </c:forEach>
                 </p>
+                <!-- 평균 별점 표시 -->
+                <c:if test="${not empty recipe.star_score}">
+                    <div class="star-display">
+                        <c:forEach begin="1" end="5" var="i">
+                            <c:choose>
+                                <c:when test="${i <= recipe.star_score}">
+                                    &#9733; <!-- filled star -->
+                                </c:when>
+                                <c:when test="${i - 1 < recipe.star_score && recipe.star_score < i}">
+                                    &#9733; <!-- half star로 대체할 수도 있음 -->
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="empty">&#9733;</span> <!-- empty star -->
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                        (${recipe.star_score}점)
+                    </div>
+                </c:if>
             </div>
         </a>
     </c:forEach>
@@ -130,4 +160,25 @@ var actionForm = $("#actionForm");
         actionForm.attr("action", "recipe_board").submit();
     }); // end of paginate_button click
 
+    var searchForm = $("#searchForm");
+			
+			$("#searchForm button").on("click", function () {
+				// alert("검색");
+
+				// 키워드 입력 받을 조건
+				if (searchForm.find("option:selected").val() != ""&& !searchForm.find("input[name='rc_keyword']").val()) {
+					alert("키워드를 입력하세요.");
+					return false;
+				}
+
+				searchForm.attr("action", "recipe_board").submit();
+			}); // end of searchForm click
+
+			// type 콤보박스 변경
+			$("#searchForm select").on("change", function () {
+				if (searchForm.find("option:selected").val() == "") {
+					// 키워드를 널값으로 변경
+					searchForm.find("input[name='rc_keyword']").val("");
+				}
+			}); // end of searchForm click 2
 </script>

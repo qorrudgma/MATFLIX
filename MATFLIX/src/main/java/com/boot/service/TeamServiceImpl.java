@@ -70,4 +70,11 @@ public class TeamServiceImpl implements TeamService {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		dao.nickname(mf_nickname, mf_id);
 	}
+
+	@Override
+	public TeamDTO find_user_by_no(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		TeamDTO dto = dao.find_user_by_no(mf_no);
+		return dto;
+	}
 }

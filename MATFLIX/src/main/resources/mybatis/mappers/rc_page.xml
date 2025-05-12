@@ -4,38 +4,63 @@
 
 <mapper namespace="com.boot.dao.RecipePageDAO">
 
+<!--<sql id="criteria">-->
+<!--    <where>-->
+<!--        <if test="rc_type != null and rc_type.equals('T')">-->
+<!--            rc_name LIKE CONCAT('%', #{rc_keyword}, '%')-->
+<!--        </if>-->
+<!--        <if test="rc_type != null and rc_type.equals('C')">-->
+<!--            rc_description LIKE CONCAT('%', #{rc_keyword}, '%')-->
+<!--        </if>-->
+<!--        <if test="rc_type != null and rc_type.equals('TC')">-->
+<!--            (rc_name LIKE CONCAT('%', #{rc_keyword}, '%')-->
+<!--            OR rc_description LIKE CONCAT('%', #{rc_keyword}, '%'))-->
+<!--        </if>-->
+<!--        <if test="rc_type == null or rc_type.equals('')">  -->
+<!--        	rc_name LIKE CONCAT('%', #{rc_keyword}, '%')-->
+<!--            OR rc_description LIKE CONCAT('%', #{rc_keyword}, '%')-->
+<!--        </if>-->
+<!--    </where>-->
+<!--</sql>-->
+
 <sql id="criteria">
-  <if test="rc_type == 'T'">
-    WHERE rc_name LIKE CONCAT('%', #{keyword}, '%')
-  </if>
-  <if test="rc_type == 'C'">
-    WHERE rc_description LIKE CONCAT('%', #{keyword}, '%')
-  </if>
-  <if test="rc_type == 'TC'">
-    WHERE rc_name LIKE CONCAT('%', #{keyword}, '%')
-      OR rc_description LIKE CONCAT('%', #{keyword}, '%')
-  </if>
+    <where>
+        <if test='rc_type != null and rc_type.equals("T")'>
+            rc_name LIKE CONCAT('%', #{rc_keyword}, '%')
+        </if>
+        <if test='rc_type != null and rc_type.equals("C")'>
+            rc_description LIKE CONCAT('%', #{rc_keyword}, '%')
+        </if>
+        <if test='rc_type != null and rc_type.equals("TC")'>
+            (rc_name LIKE CONCAT('%', #{rc_keyword}, '%')
+            OR rc_description LIKE CONCAT('%', #{rc_keyword}, '%'))
+        </if>
+        <if test='rc_type == null or rc_type.equals("")'>  
+        	rc_name LIKE CONCAT('%', #{rc_keyword}, '%')
+            OR rc_description LIKE CONCAT('%', #{rc_keyword}, '%')
+        </if>
+    </where>
 </sql>
 
- <select id="listWithPaging" resultType="int">
-  <![CDATA[
-    SELECT rc_recipe_id FROM (
-      SELECT row_number() OVER (ORDER BY rc_recipe_id DESC) AS rownum, rc_recipe_id
-      FROM recipe
-      ]]>
-      <include refid="criteria"></include>
-      <![CDATA[
-    ) a
-    WHERE rownum <= (#{rc_pageNum} * #{rc_amount})
-      AND rownum > ((#{rc_pageNum} - 1) * #{rc_amount})
-  ]]>
-</select>
-    
-	<select id="totalList" resultType="int">
-	  SELECT COUNT(*) 
-	  FROM recipe
-	  <include refid="criteria"></include>
-	</select>
+  <select id="listWithPaging" resultType="int">
+    <![CDATA[
+      SELECT rc_recipe_id FROM (
+        SELECT row_number() OVER (ORDER BY rc_recipe_id DESC) AS rownum, rc_recipe_id
+        FROM recipe
+    ]]>
+    <include refid="criteria" />
+    <![CDATA[
+      ) a
+      WHERE rownum <= (#{rc_pageNum} * #{rc_amount})
+        AND rownum > ((#{rc_pageNum} - 1) * #{rc_amount})
+    ]]>
+  </select>
+
+  <select id="totalList" resultType="int">
+    SELECT COUNT(*)
+    FROM recipe
+    <include refid="criteria" />
+  </select>
 </mapper>
 
 

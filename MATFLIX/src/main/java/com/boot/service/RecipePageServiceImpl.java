@@ -19,7 +19,7 @@ public class RecipePageServiceImpl implements RecipePageService {
 	@Override
 	public int[] listWithPaging(RecipeCriteria cri) {
 		log.info("@# PageServiceImpl listWithPaging");
-		log.info("@# cri" + cri);
+		log.info("@# listWithPaginglistWithPaginglistWithPaginglistWithPaging cri" + cri);
 
 		RecipePageDAO dao = sqlSession.getMapper(RecipePageDAO.class);
 		int[] list = dao.listWithPaging(cri);

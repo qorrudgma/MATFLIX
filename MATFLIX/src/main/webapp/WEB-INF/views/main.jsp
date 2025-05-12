@@ -50,7 +50,7 @@
         </form>
     <%}%>
 <!--<a href="profile"><div>마이페이지로 이동</div></a>-->
-<a href="recipe_board"><div>요리게시판으로 이동</div></a>
+<a href="recipe_board?rc_type=&rc_keyword=&rc_pageNum=1&rc_amount=10"><div>요리게시판으로 이동</div></a>
 <div class="category-section">
     <div class="category-title">한식 (Korean Food)</div>
     <div class="image-grid">

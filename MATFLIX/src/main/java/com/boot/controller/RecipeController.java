@@ -12,6 +12,9 @@
 * 2025-05-07   임진우       이미지 파일 업로드 완료
 * 2025-05-08   임진우       main : 이미지 나타내기 로직 구현 => 카테로리별 리스트
 * 2025-05-08   임진우       요리 게시판 리스트 및 해당 요리 뷰 작성
+* 2025-05-12   임진우       테이블에 유저넘버 추가
+* 2025-05-12   임진우       내 레시피 생성
+* 2025-05-12   임진우       레시피 보드에 작성자 이름 및 정보 삽입
 ============================================================*/
 
 package com.boot.controller;
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -53,11 +57,13 @@ import com.boot.dto.RecipeCommentDTO;
 import com.boot.dto.RecipeCriteria;
 import com.boot.dto.RecipeDTO;
 import com.boot.dto.RecipePageDTO;
+import com.boot.dto.TeamDTO;
 import com.boot.service.RecipeBoardService;
 import com.boot.service.RecipeCommentService;
 import com.boot.service.RecipePageService;
 import com.boot.service.RecipeService;
 import com.boot.service.RecipeUploadService;
+import com.boot.service.TeamService;
 
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnailator;
@@ -80,8 +86,11 @@ public class RecipeController {
 	@Autowired
 	private RecipePageService service_page;
 
+	@Autowired
+	private TeamService service_member;
+
 	@RequestMapping("/main")
-	public String main(Model model) {
+	public String main(Model model, HttpServletRequest request) {
 
 //		카테고리 별 레시피id 모음
 		int[] korean_food = service.get_food(1);
@@ -112,6 +121,10 @@ public class RecipeController {
 			dessert_list.add(service_attach.get_upload_by_id(dessert[i]));
 		}
 
+		HttpSession session = request.getSession();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		log.info("@# main : user =>" + user);
+
 		model.addAttribute("korean_food_list", korean_food_list);
 		model.addAttribute("american_food_list", american_food_list);
 		model.addAttribute("japanese_food_list", japanese_food_list);
@@ -139,6 +152,13 @@ public class RecipeController {
 			@RequestParam("rc_img") MultipartFile[] multipartFile, @RequestParam("mf_id") String mf_id, Model model,
 			HttpServletRequest request) {
 
+		HttpSession session = request.getSession();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+
+		log.info("@#user => " + user);
+
+		int mf_no = user.getMf_no();
+
 		// 레시피 정보 저장 (Map으로 구성)
 		HashMap<String, String> recipeData = new HashMap<>();
 		recipeData.put("rc_name", params.get("rc_name"));
@@ -148,8 +168,10 @@ public class RecipeController {
 		recipeData.put("rc_difficulty", params.get("rc_difficulty"));
 		recipeData.put("rc_tip", params.get("rc_tip"));
 		recipeData.put("rc_tag", params.get("rc_tag"));
+		recipeData.put("rc_tag", params.get("rc_tag"));
+		recipeData.put("mf_no", Integer.toString(mf_no));
 
-		System.out.println(recipeData);
+		log.info("@# recipeData => " + recipeData);
 		// insert 및 생성된 ID 추출
 		service.insert_recipe(recipeData);
 
@@ -363,21 +385,29 @@ public class RecipeController {
 	// 요리 게시판
 	// ===================================================================================
 	@RequestMapping("/recipe_board")
-	public String recipe_board(RecipeCriteria cri, Model model) {
+	public String recipe_board(RecipeCriteria cri, Model model, HashMap<String, String> param) {
 		List<RecipeAttachDTO> paging_file_list = new ArrayList<>();
 		List<RecipeDTO> paging_recipe_list = new ArrayList<>();
 		int[] rc_recipe_id_list = service_page.listWithPaging(cri);
 
+		log.info("@# recipe_board RecipeCriteria ==>" + cri);
+
 		for (int i = 0; i < rc_recipe_id_list.length; i++) {
+			log.info("@# recipe_board rc_recipe_id_list ==>" + rc_recipe_id_list[i]);
 			paging_recipe_list.add(service.paging_recipe_list(rc_recipe_id_list[i]));
 			paging_file_list.add(service_attach.get_upload_by_id(rc_recipe_id_list[i]));
 		}
 
-		log.info("@# list  =>  " + service_page.listWithPaging(cri));
-		System.out.println(service_page.listWithPaging(cri));
+		List<TeamDTO> mem_list = service_member.list();
+
 		model.addAttribute("pageMaker", new RecipePageDTO(service_page.totalList(cri), cri));
 		model.addAttribute("recipe_list_all", paging_recipe_list);
 		model.addAttribute("file_list_all", paging_file_list);
+		model.addAttribute("mem_list", mem_list);
+
+		System.out.println("cri => " + cri);
+		System.out.println("model => " + model);
+		System.out.println("param => " + param);
 
 		return "recipe_board";
 	}
@@ -394,6 +424,23 @@ public class RecipeController {
 		RecipeBoardDTO rc_board = service_board.get_board_by_id(rc_recipe_id);
 		int rc_boardNo = rc_board.getRc_boardNo();
 		ArrayList<RecipeCommentDTO> commentList = service_comment.findAll(rc_boardNo);
+		int mf_no = service.get_mf_no_by_id(rc_recipe_id);
+
+		TeamDTO mem_dto = service_member.find_user_by_no(mf_no);
+
+		// 요리 별점 업데이트
+		// ---------------------------------------------------------------
+		int total_score = 0;
+		for (int i = 0; i < commentList.size(); i++) {
+			total_score += commentList.get(i).getUser_star_score();
+			log.info("commentList.get(i).getUser_star_score() =>" + commentList.get(i).getUser_star_score());
+		}
+		double average_score = (double) total_score / commentList.size();
+		double result_score = (double) Math.round(average_score * 10) / 10;
+		service.update_star_score(result_score, rc_recipe_id);
+		// ---------------------------------------------------------------
+
+		log.info("@# average_score =>" + result_score);
 
 		model.addAttribute("dto", dto);
 		model.addAttribute("ing_list", ing_list);
@@ -401,9 +448,33 @@ public class RecipeController {
 		model.addAttribute("img_list", img_list);
 		model.addAttribute("rc_board", rc_board);
 		model.addAttribute("commentList", commentList);
+
+		model.addAttribute("mem_dto", mem_dto);
 		log.info("model" + model);
 
 		return "recipe_content_view";
 	}
 
+	// 마이페이지 내 내레시피
+	// ===================================================================================
+
+	@RequestMapping("/my_recipe")
+	public String my_recipe(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		String mf_no = Integer.toString(user.getMf_no());
+
+		List<RecipeAttachDTO> my_recipe_attach = new ArrayList<>();
+		List<RecipeDTO> my_recipe = service.get_recipe_by_user_id(mf_no);
+
+		for (int i = 0; i < my_recipe.size(); i++) {
+			my_recipe_attach.add(service_attach.get_upload_by_id(my_recipe.get(i).getRc_recipe_id()));
+		}
+		log.info("@# my_recipe_attach =>" + my_recipe_attach);
+
+		model.addAttribute("my_recipe", my_recipe);
+		model.addAttribute("my_recipe_attach", my_recipe_attach);
+
+		return "my_recipe";
+	}
 }

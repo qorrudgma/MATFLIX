@@ -29,4 +29,6 @@ public interface TeamService {
 	// nickname
 	public void nickname(@Param("mf_nickname") String mf_nickname, @Param("mf_id") String mf_id);
 
+	// 멤버넘버로 정보 추출
+	public TeamDTO find_user_by_no(int mf_no);
 }

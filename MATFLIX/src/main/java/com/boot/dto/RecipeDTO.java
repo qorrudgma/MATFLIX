@@ -21,4 +21,6 @@ public class RecipeDTO {
 	private String rc_img;
 	private String rc_tip;
 	private String rc_tag;
+	private String mf_no;
+	private double star_score;
 }

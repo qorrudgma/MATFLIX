@@ -8,8 +8,10 @@
 		insert into rc_board_comment( 		
 			  rc_commentWriter 	
 			 ,rc_commentContent 	
-			 ,rc_boardNo)
-		values(#{rc_commentWriter},#{rc_commentContent},#{rc_boardNo})
+			 ,rc_boardNo
+			 ,user_star_score
+			 ,mf_no)
+		values(#{rc_commentWriter},#{rc_commentContent},#{rc_boardNo},#{user_star_score},#{mf_no})
     </insert>
     
     <select id="findAll" resultType="com.boot.dto.RecipeCommentDTO">
@@ -18,9 +20,16 @@
 			  ,rc_commentContent 	
 			  ,rc_boardNo 			
 			  ,rc_commentCreatedTime
+			  ,user_star_score
+			  ,mf_no
 		  from rc_board_comment
 		 where rc_boardNo=#{rc_boardNo}
 		 order by rc_commentNo
     </select>
     
+    <select id="count_comment_by_id" resultType="int">
+        SELECT COUNT(*) 
+        FROM rc_board_comment 
+        WHERE mf_no = #{mf_no} AND rc_boardNo = #{rc_boardNo}
+    </select>
 </mapper>
