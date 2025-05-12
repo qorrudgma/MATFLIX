@@ -66,7 +66,7 @@
 				<td>
 					${content_view.boardName}
 					<!-- 이부분 좀더 깔끔하게 다듬어 보기 뭔가 좋은 방법이 있을거같음 -->
-					<c:if test="${user != null}">
+					<c:if test="${user != null && user.mf_no != content_view.mf_no}">
 						<c:set var="isFollowing" value="false"/>
 						<c:forEach var="id" items="${sessionScope.user_follow_list}">
 							<c:if test="${id == content_view.mf_no}">
@@ -87,13 +87,29 @@
 			<tr>
 				<td>제목</td>
 				<td>
-					<input type="text" name="boardTitle" value="${content_view.boardTitle}">
+					<c:choose>
+						<c:when test="${user.mf_no == content_view.mf_no}">
+							<input type="text" name="boardTitle" value="${content_view.boardTitle}">
+						</c:when>
+						<c:otherwise>
+							<input type="tex" name="boardTitle" value="${content_view.boardTitle}" readonly>
+						</c:otherwise>
+					</c:choose>
 				</td>
 			</tr>
 			<tr>
 				<td>내용</td>
 				<td>
-					<input type="text" name="boardContent" value="${content_view.boardContent}">
+					<c:choose>
+						<c:when test="${user.mf_no == content_view.mf_no}">
+							<!-- <input type="text" name="boardContent" value="${content_view.boardContent}"> -->
+							<textarea rows="5"  name="boardContent">${content_view.boardContent}</textarea>
+						</c:when>
+						<c:otherwise>
+							<!-- <input type="text" name="boardContent" value="${content_view.boardContent}" readonly> -->
+							<textarea rows="5"  name="boardContent" readonly>${content_view.boardContent}</textarea>
+						</c:otherwise>
+					</c:choose>
 				</td>
 			</tr>
 			<tr>
@@ -120,7 +136,7 @@
 					<!-- <% if(user != null){ %>
 						&nbsp;&nbsp;<button id="recommend" type="button">추천</button>
 					<% } %> -->
-					<c:if test="${user != null}">
+					<c:if test="${user != null && user.mf_no != content_view.mf_no}">
 						&nbsp;&nbsp;<button id="recommend" type="button">
 							<c:choose>
 								<c:when test="${recommend != 1}">
@@ -222,12 +238,18 @@
 			alert("로그인 후 이용 가능합니다.");
 			return;
 		}
+		console.log(w_user+"-"+sessionUserNo+"-"+sessionUserEmail);
+		
+		var followingId = parseInt(w_user, 10);
+		var followerId = parseInt(sessionUserNo, 10);
+		console.log(followingId+"-"+followerId+"-"+sessionUserEmail);
 
 		$.ajax({
 			 type: "POST"
-			,data: {following_id: w_user, follower_id:sessionUserNo, follower_email:sessionUserEmail}
+			,data: {following_id: followingId, follower_id:followerId, follower_email:sessionUserEmail}
 			,url: "/add_follow"
 			,success: function (result) {
+				console.log(result);
 				console.log("팔로우 성공");
 				$("#follow_btn").attr("id", "delete_follow_btn").text("팔로우 취소");
 			}

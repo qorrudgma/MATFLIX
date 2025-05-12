@@ -78,13 +78,14 @@ public class BoardController {
 		// 여기다가 메일 보내는거 적기
 		int following_id = boardDTO.getMf_no();
 		String following_name = boardDTO.getBoardName();
+		int boardNo = boardDTO.getBoardNo();
 		log.info("작성자 고유 id => " + following_id);
 
 		// 알림 테이블에 데이터 넣기
 		List<Integer> follower_id_list = followService.follower_id_list(following_id);
 		for (int i = 0; i < follower_id_list.size(); i++) {
 //			log.info("반복문" + i);
-			notificationService.add_notification(following_id, follower_id_list.get(i), 1);
+			notificationService.add_notification(following_id, follower_id_list.get(i), boardNo, 1);
 		}
 
 		// 메일 보내기

@@ -19,9 +19,9 @@ public class NotificationServiceImpl implements NotificationService {
 	private SqlSession sqlSession;
 
 	@Override
-	public void add_notification(int following_id, int follower_id, int post_id) {
+	public void add_notification(int following_id, int follower_id, int boardNo, int post_id) {
 		NotificationDAO dao = sqlSession.getMapper(NotificationDAO.class);
-		dao.add_notification(following_id, follower_id, post_id);
+		dao.add_notification(following_id, follower_id, boardNo, post_id);
 	}
 
 	@Override

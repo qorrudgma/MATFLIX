@@ -19,6 +19,7 @@ CREATE TABLE follow (
     follow_id INT AUTO_INCREMENT PRIMARY KEY,
     follower_id INT NOT NULL, -- 팔로우를 거는 사람 (내 ID)
     following_id INT NOT NULL, -- 팔로우 당하는 사람 (상대 ID)
+    follower_email VARCHAR(50), -- 팔로우를 거는 사람 이메일 (email)
     follow_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uniq_follow (follower_id, following_id) -- 중복 방지
 );

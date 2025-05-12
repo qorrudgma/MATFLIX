@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface FollowDAO {
 	// 팔로우
-	public void add_follow(@Param("following_id") String following_id, @Param("follower_id") String follower_id,
+	public void add_follow(@Param("following_id") int following_id, @Param("follower_id") int follower_id,
 			@Param("follower_email") String follower_email);
 
 	// 팔로우 한 사람들 메일

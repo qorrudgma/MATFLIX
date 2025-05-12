@@ -18,10 +18,11 @@ public class FollowServiceImpl implements FollowService {
 	private SqlSession sqlSession;
 
 	@Override
-	public void add_follow(String following_id, String follower_id, String follower_email) {
-		log.info("테이블에 넣으러 옴");
+	public void add_follow(int following_id, int follower_id, String follower_email) {
+		log.info("FollowServiceImpl 테이블에 넣으러 옴");
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
 		dao.add_follow(following_id, follower_id, follower_email);
+		log.info("FollowServiceImpl 테이블에 데이터 넣음");
 	}
 
 	@Override

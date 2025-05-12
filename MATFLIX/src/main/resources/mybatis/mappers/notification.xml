@@ -6,13 +6,15 @@
 
 	<!-- 알림 추가 -->
 	<insert id="add_notification">
-		INSERT INTO notifications (follower_id, following_id, post_id)
-		VALUES (#{follower_id},#{following_id},#{post_id})
+		INSERT INTO notifications (follower_id, following_id, boardNo, post_id)
+		VALUES (#{follower_id},#{following_id},#{boardNo},#{post_id})
 	</insert>
 
 	<!-- 게시글 보기 -->
     <select id="notification_list" resultType="com.boot.dto.NotificationDTO">
-    	select following_id
+    	select follower_id
+    		 , following_id
+    		 , boardNo
     		 , post_id
     		 , created_at
     	  from notifications
