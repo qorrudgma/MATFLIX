@@ -1,7 +1,10 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="com.boot.dto.TeamDTO" %>
+<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <html>
 <head>
     <title>Recipe Main</title>
@@ -32,19 +35,20 @@
 <body>
 	<!-- 헤더 -->
 	<jsp:include page="header.jsp" />
-	
-    <!-- 알림 -->
-	<jsp:include page="notification.jsp" />
-
+	<% if(user != null){ %>
+        <!-- 알림 -->
+        <jsp:include page="notification.jsp" />
+    <%}%>
 	<!-- 게시글 -->
 	<a href="list">게시글</a>
-
-	<!-- 프로필 -->
-	<form id="user_profile" class="profile" action="profile" method="post">
-		<div class="form_profile">
-	    	<input type="submit" class="mypage_btn" value="mypage">
-		</div>
-	</form>
+    <% if(user != null){ %>
+        <!-- 프로필 -->
+        <form id="user_profile" class="profile" action="profile" method="post">
+            <div class="form_profile">
+                <input type="submit" class="mypage_btn" value="mypage">
+            </div>
+        </form>
+    <%}%>
 <!--<a href="profile"><div>마이페이지로 이동</div></a>-->
 <a href="recipe_board"><div>요리게시판으로 이동</div></a>
 <div class="category-section">

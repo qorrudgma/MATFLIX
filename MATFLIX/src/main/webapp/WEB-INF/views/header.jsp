@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="com.boot.dto.TeamDTO" %>
+<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 	<header class="header">
 
 		<div>
@@ -31,29 +33,30 @@
 				<button type="submit">검색</button>
 			</form>
 		</div>
-		<!-- if -->
-	 	<div class="header_actions">
-			<div class="profile_image profile">
-				<img onclick="my_page()" alt="MATFLIX" src="${pageContext.request.contextPath}">
-			</div>
-			<div>
-				<div class="profile_info">
-					<span><span id="profile_name">name</span>님 환영합니다.</span>
-				</div>
-				<input type="button" value="로그아웃" id="log_out" onclick="location.href='${pageContext.request.contextPath}/log_out'">
-			</div>
-		</div>
 
-		<!-- else -->
-		<div class="header_actions">
-			<div class="user_actions">
-				<!-- 로그인 버튼 클릭 시 login.jsp로 이동 -->
-				<button class="btn_login" onclick="location.href='${pageContext.request.contextPath}/login'">로그인</button>
-				<!-- 회원가입 버튼 클릭 시 recruit.jsp로 이동 -->
-				<button class="btn_register" onclick="location.href='${pageContext.request.contextPath}/recruit'">회원가입</button>
+		<% if(user != null){ %>
+			<div class="header_actions">
+				<div class="profile_image profile">
+					<img onclick="my_page()" alt="MATFLIX" src="${pageContext.request.contextPath}">
+				</div>
+				<div>
+					<div class="profile_info">
+						<span><span id="profile_name"><%= user.getMf_nickname()%></span>님 환영합니다.</span>
+					</div>
+					<input type="button" value="로그아웃" id="log_out" onclick="location.href='${pageContext.request.contextPath}/log_out'">
+				</div>
 			</div>
-		</div>
-	<!-- 닫기 -->
+		<% }else{ %>
+			<div class="header_actions">
+				<div class="user_actions">
+					<!-- 로그인 버튼 클릭 시 login.jsp로 이동 -->
+					<button class="btn_login" onclick="location.href='${pageContext.request.contextPath}/login'">로그인</button>
+					<!-- 회원가입 버튼 클릭 시 recruit.jsp로 이동 -->
+					<button class="btn_register" onclick="location.href='${pageContext.request.contextPath}/recruit'">회원가입</button>
+				</div>
+			</div>
+		<% } %>
+		<!-- 닫기 -->
 		<button id="page_up">
 			<i class="fas fa-chevron-up"></i>
 		</button>
