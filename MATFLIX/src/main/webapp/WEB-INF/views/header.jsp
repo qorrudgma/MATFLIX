@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="com.boot.dto.TeamDTO" %>
 <% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 	<header class="header">
 
 		<div>
@@ -64,7 +65,7 @@
 
 	<div id="header_nav">
 		<div> 레시피 </div>
-		<div> 랭킹 </div>
+		<a href="${pageContext.request.contextPath}/user_rank"><div> 랭킹 </div></a>
 		<div> 게시판 </div>
 		<div> 공지사항 </div>
 		<div> 더보기 </div>

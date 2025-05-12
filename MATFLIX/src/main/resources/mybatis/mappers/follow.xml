@@ -46,4 +46,14 @@
 		 where following_id = #{following_id}
 	</select>
 	
+	<!-- 팔로우 랭킹 -->
+	<select id="user_rank" resultType="map">
+		SELECT following_id
+			 , COUNT(*) AS follower_count
+		  FROM follow
+		 GROUP BY following_id
+		 ORDER BY follower_count DESC
+		 LIMIT 100;
+	</select>
+	
 </mapper>

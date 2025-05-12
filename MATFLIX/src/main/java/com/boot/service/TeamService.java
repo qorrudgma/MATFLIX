@@ -2,6 +2,7 @@ package com.boot.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -31,4 +32,7 @@ public interface TeamService {
 
 	// 멤버넘버로 정보 추출
 	public TeamDTO find_user_by_no(int mf_no);
+
+	// 랭킹에있는 유저 정보 가져오기
+	public Map<String, Object> rank_user(int mf_no);
 }

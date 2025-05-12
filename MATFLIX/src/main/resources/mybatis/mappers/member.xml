@@ -40,14 +40,6 @@
 		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}
 	</select>
 
-	<!-- 다른유저 -->
-	<select id="user"
-		resultType="com.boot.dto.TeamDTO">
-		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
-		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}
-	</select>
-	<!-- 다른유저 -->
-
 	<update id="update_ok" parameterType="hashmap">
 	    UPDATE matflix
 	    SET 
@@ -57,7 +49,6 @@
 	        mf_email = #{mf_email}
 	    WHERE mf_id = #{mf_id}
 	</update>
-
 	
 	<delete id="delete_ok">
 		delete from matflix where mf_id=#{mf_id}
@@ -73,4 +64,16 @@
 	<select id="find_user_by_no" resultType="com.boot.dto.TeamDTO">
 		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_name, mf_nickname, mf_email, mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_no = #{mf_no}
 	</select>
+
+	<!-- 랭킹에 있는 유저 정보 가져오기 -->
+	<select id="rank_user" resultType="map">
+		select mf_no
+			 , mf_nickname
+			 , mf_email
+			 , mf_gender
+			 , mf_regdate
+		  from matflix
+		 where mf_no=#{mf_no}
+	</select>
+	
 </mapper>

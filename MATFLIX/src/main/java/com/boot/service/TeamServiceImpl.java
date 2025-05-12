@@ -2,6 +2,7 @@ package com.boot.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
@@ -77,4 +78,12 @@ public class TeamServiceImpl implements TeamService {
 		TeamDTO dto = dao.find_user_by_no(mf_no);
 		return dto;
 	}
+
+	@Override
+	public Map<String, Object> rank_user(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		Map<String, Object> rank_user = dao.rank_user(mf_no);
+		return rank_user;
+	}
+
 }

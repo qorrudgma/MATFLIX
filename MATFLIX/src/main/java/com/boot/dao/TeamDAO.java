@@ -2,6 +2,7 @@ package com.boot.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,4 +26,7 @@ public interface TeamDAO {
 	public void nickname(@Param("mf_nickname") String mf_nickname, @Param("mf_id") String mf_id);
 
 	public TeamDTO find_user_by_no(int mf_no);
+
+	// 랭킹에있는 유저 정보 가져오기
+	public Map<String, Object> rank_user(int mf_no);
 }

@@ -80,6 +80,7 @@ $(document).ready(function() {
                 <p>소셜 계정으로 로그인</p>
                 <div class="social_buttons">
 				<!-- a태그 -->
+					
                     <a href="#" class="social_button naver">
                         <i class="fas fa-n"></i> 네이버 로그인
                     </a>

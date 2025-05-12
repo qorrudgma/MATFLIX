@@ -27,12 +27,12 @@ CREATE TABLE follow (
 -- 알림 테이블
 CREATE TABLE notifications (
     notifications_id INT AUTO_INCREMENT PRIMARY KEY,
-    follower_id INT NOT NULL, 			-- 팔로우를 거는 사람 (알림 받는 대상)
-    following_id INT NOT NULL, 			-- 팔로우 당하는 사람 (알림 생성하는 행동하는 사람)
-    boardNo INT NOT NULL, 				-- 해당 게시판 고유넘버 (알림 생성하는 게시판)
-    post_id INT,                      	-- 어떤 알림인지 (게시글,댓글,레시피)
-    is_read int DEFAULT 0,		    	-- 알림 읽음 여부
-    created_at DATETIME DEFAULT NOW() 	-- 생성 시간
+    follower_id INT NOT NULL,          -- 팔로우를 거는 사람 (알림 받는 대상)
+    following_id INT NOT NULL,          -- 팔로우 당하는 사람 (알림 생성하는 행동하는 사람)
+    boardNo INT NOT NULL,             -- 해당 게시판 고유넘버 (알림 생성하는 게시판)
+    post_id INT,                         -- 어떤 알림인지 (게시글,댓글,레시피)
+    is_read int DEFAULT 0,             -- 알림 읽음 여부
+    created_at DATETIME DEFAULT NOW()    -- 생성 시간
 );
 
 -- 게시판 테이블
@@ -93,27 +93,27 @@ CREATE TABLE recipe (
 -- 레시피 파일
 CREATE TABLE rc_attach (
     uuid VARCHAR(100) NOT NULL PRIMARY KEY,     -- 파일 고유 식별자 (UUID)
-    uploadPath VARCHAR(200) NOT NULL,       	-- 업로드 경로
-    fileName VARCHAR(255) NOT NULL,        	 	-- 파일 이름
-    image BOOLEAN DEFAULT FALSE,           	 	-- 이미지 여부 (true: 이미지, false: 일반 파일)
-    rc_recipe_id INT NOT NULL             	  	-- 참조하는 레시피 ID
+    uploadPath VARCHAR(200) NOT NULL,          -- 업로드 경로
+    fileName VARCHAR(255) NOT NULL,               -- 파일 이름
+    image BOOLEAN DEFAULT FALSE,                  -- 이미지 여부 (true: 이미지, false: 일반 파일)
+    rc_recipe_id INT NOT NULL                     -- 참조하는 레시피 ID
     );
 
 -- 재료 테이블
 CREATE TABLE rc_ingredient (
     rc_recipe_id INT, -- 외래키
-    rc_ingredient_id INT AUTO_INCREMENT PRIMARY KEY, 	-- 자동 증가 재료 ID
-    rc_ingredient_name VARCHAR(1000), 					-- 주재료명
-    rc_ingredient_amount VARCHAR(1000),					-- 주재료양
+    rc_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,    -- 자동 증가 재료 ID
+    rc_ingredient_name VARCHAR(1000),                -- 주재료명
+    rc_ingredient_amount VARCHAR(1000),               -- 주재료양
     FOREIGN KEY (rc_recipe_id) REFERENCES recipe(rc_recipe_id) ON DELETE CASCADE
 );
 
 -- 조리 과정 테이블
 CREATE TABLE rc_course (
     rc_recipe_id INT, -- 외래키
-    rc_course_id INT AUTO_INCREMENT PRIMARY KEY, 		-- 자동 증가 과정 ID
-    rc_course_description VARCHAR(1000) DEFAULT '', 	-- 조리과정 설명
-    rc_course_img VARCHAR(1000),   						-- 조리과정 사진
+    rc_course_id INT AUTO_INCREMENT PRIMARY KEY,       -- 자동 증가 과정 ID
+    rc_course_description VARCHAR(1000) DEFAULT '',    -- 조리과정 설명
+    rc_course_img VARCHAR(1000),                     -- 조리과정 사진
     FOREIGN KEY (rc_recipe_id) REFERENCES recipe(rc_recipe_id) ON DELETE CASCADE
 );
 

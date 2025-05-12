@@ -1,6 +1,7 @@
 package com.boot.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,14 @@ public class FollowServiceImpl implements FollowService {
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
 		List<Integer> follower_id_list = dao.follower_id_list(following_id);
 		return follower_id_list;
+	}
+
+	// 유저 랭킹
+	@Override
+	public List<Map<String, Object>> user_rank() {
+		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		List<Map<String, Object>> user_rank = dao.user_rank();
+
+		return user_rank;
 	}
 }

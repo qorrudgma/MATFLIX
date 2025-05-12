@@ -1,6 +1,7 @@
 package com.boot.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -18,4 +19,7 @@ public interface FollowService {
 	public void follow_unfollow(@Param("following_id") int following_id, @Param("follower_id") int follower_id);
 
 	public void delete_follow(@Param("following_id") int following_id, @Param("follower_id") int follower_id);
+
+	// 유저 랭킹
+	public List<Map<String, Object>> user_rank();
 }
