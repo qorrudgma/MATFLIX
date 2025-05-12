@@ -29,7 +29,7 @@
 
 	<select id="list" resultType="com.boot.dto.TeamDTO">
 		select mf_no, mf_id, mf_pw,
-		mf_pw_chk, mf_name, mf_email,
+		mf_pw_chk, mf_name, mf_nickname, mf_email,
 		mf_phone, mf_birth, mf_gender from
 		matflix
 	</select>

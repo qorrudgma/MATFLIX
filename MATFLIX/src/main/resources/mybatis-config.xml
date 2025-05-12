@@ -6,6 +6,7 @@
 	<mappers>
 		<!-- 로그인 & 회원가입 -->
 		<mapper resource="mybatis/mappers/member.xml"/>
+		<mapper resource="mybatis/mappers/KakaoUserMapper.xml"/>
 
 		<!-- 팔로우 -->
 		<mapper resource="mybatis/mappers/follow.xml"/>

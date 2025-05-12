@@ -357,6 +357,7 @@
             <c:forEach items="${commentList}" var="comment">
                 <div class="comment-item">
                     <span class="comment-date">${comment.rc_commentCreatedTime}</span><br>
+					<span class="comment-writer"><%= writer %></span><br>
                     <span class="comment-content">${comment.rc_commentContent}</span>
                     <div class="comment-stars">
                         <%-- 별점을 별 모양으로 표시 --%>

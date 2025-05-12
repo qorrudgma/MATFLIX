@@ -1,0 +1,50 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    
+<mapper namespace="com.boot.dao.KakaoUserDAO">
+
+    <!-- 아이디로 사용자 조회 -->
+    <select id="findById"
+            parameterType="String"
+            resultType="com.boot.dto.TeamDTO">
+        SELECT mf_no,
+               mf_id,
+               mf_pw,
+               mf_pw_chk,
+               mf_name,
+               mf_nickname,
+               mf_email,
+               mf_phone,
+               mf_birth,
+               mf_gender,
+               mf_regdate,
+               mf_role
+          FROM matflix
+         WHERE mf_id = #{mf_id}
+    </select>
+
+    <!-- 신규 사용자 등록 -->
+    <insert id="register"
+            parameterType="com.boot.dto.TeamDTO">
+        INSERT INTO matflix (
+            mf_id,
+            mf_pw,
+            mf_pw_chk,
+            mf_name,
+            mf_nickname,
+            mf_email,
+            mf_role
+        ) VALUES (
+            #{mf_id},
+            #{mf_pw},
+            #{mf_pw_chk},
+            #{mf_name},
+            #{mf_nickname},
+            #{mf_email},
+            #{mf_role}
+        )
+    </insert>
+
+</mapper>
