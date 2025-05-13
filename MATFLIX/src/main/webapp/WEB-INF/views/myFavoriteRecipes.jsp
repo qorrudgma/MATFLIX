@@ -30,6 +30,7 @@
 </head>
 <body>
 <div class="container">
+    <jsp:include page="header.jsp" />
     <h1>나의 즐겨찾는 레시피</h1>
 
     <c:if test="${not empty errorMessage}">
@@ -43,7 +44,7 @@
                     <li class="favorite-item" id="favorite-item-${fav.recipeId}">
                         <div>
 							<h3>
-							    <a href="/recipe/detail/${fav.recipeId}" class="recipe-link">
+                                <a href="${pageContext.request.contextPath}/recipe_content_view?rc_recipe_id=${fav.recipeId}" class="recipe-link">
 							        레시피 ID: ${fav.recipeId}
 							    </a>
 							</h3>

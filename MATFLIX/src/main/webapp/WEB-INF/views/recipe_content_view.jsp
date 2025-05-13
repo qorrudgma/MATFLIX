@@ -425,6 +425,7 @@
     </script>
 </head>
 <body>
+<jsp:include page="header.jsp" />
 <div class="recipe-container">
     <div class="recipe-header">
         <h1>${dto.rc_name}</h1>

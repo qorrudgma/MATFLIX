@@ -33,6 +33,7 @@
 		</head>
 
 		<body>
+			<jsp:include page="header.jsp" />
 			<table width="500" border="1">
 				<form id="actionForm" method="post" action="notice_modify">
 					<input type="hidden" name="notice_boardNo" value="${pageMaker.notice_boardNo}">
