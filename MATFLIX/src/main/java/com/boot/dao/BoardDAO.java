@@ -2,6 +2,8 @@ package com.boot.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.boot.dto.BoardDTO;
 
@@ -19,4 +21,7 @@ public interface BoardDAO {
 	public void hitUp(HashMap<String, String> param);
 
 	public void hitDown(int boardNo);
+
+	// 유저가 작성한 게시글
+	public List<Map<String, Object>> profile_board_list(int mf_no);
 }

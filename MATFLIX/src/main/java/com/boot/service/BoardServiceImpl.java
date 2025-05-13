@@ -2,6 +2,8 @@ package com.boot.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,5 +91,11 @@ public class BoardServiceImpl implements BoardService {
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
 
 		dao.hitDown(boardNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> profile_board_list(int mf_no) {
+		List<Map<String, Object>> profile_board_list = new ArrayList<>();
+		return profile_board_list;
 	}
 }

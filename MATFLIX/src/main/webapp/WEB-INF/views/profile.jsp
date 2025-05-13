@@ -59,7 +59,7 @@
 
     <!-- 탭 메뉴 -->
     <div class="mypage_tabs">
-        <button class="tab_btn active" data-tab="my_recipes">내 레시피</button>
+        <button class="tab_btn active" onclick="location.href='my_recipe'">내 레시피</button>
         <button class="tab_btn" data-tab="saved_recipes">저장한 레시피</button>
         <button class="tab_btn" data-tab="liked_recipes">좋아요한 레시피</button>
         <button class="tab_btn" data-tab="account_settings">계정 설정</button>

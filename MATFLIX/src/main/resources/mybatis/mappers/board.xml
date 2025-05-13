@@ -47,4 +47,13 @@
 	    update tbl_board set boardHit = boardHit -1 where boardNo=#{boardNo}
     </update>
     
+    <!-- 유저넘으로 게시글 찾기 -->
+    <select id="profile_board_list" resultType="map">
+	    select boardNo
+		     , boardTitle
+		     , boardDate
+		     , mf_no
+		  from tbl_board
+		 where mf_no = #{mf_no};
+	 </select>
 </mapper>

@@ -18,6 +18,15 @@ public interface FollowDAO {
 	// 본인의 팔로우 리스트
 	public List<Integer> user_follow_list(int follower_id);
 
+	// 본인의 팔로우 리스트
+	public List<Integer> user_follower_list(int follower_id);
+
+	// 본인의 팔로우 리스트
+	public int user_follow_count(int follower_id);
+
+	// 본인의 팔로우 리스트
+	public int user_follower_count(int follower_id);
+
 	// 팔로우 한 사람들 아이디
 	public List<Integer> follower_id_list(int following_id);
 

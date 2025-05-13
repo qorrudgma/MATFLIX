@@ -49,6 +49,7 @@
             </div>
         </form>
     <%}%>
+    <a href="other_profile">게시글</a>
 <!--<a href="profile"><div>마이페이지로 이동</div></a>-->
 <a href="recipe_board?rc_type=&rc_keyword=&rc_pageNum=1&rc_amount=10"><div>요리게시판으로 이동</div></a>
 <div class="category-section">

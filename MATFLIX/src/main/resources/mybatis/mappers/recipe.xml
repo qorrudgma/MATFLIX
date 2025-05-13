@@ -87,4 +87,5 @@
 		SET star_score = #{star_score}
 		WHERE rc_recipe_id = #{rc_recipe_id}
 	</update>
+	
 </mapper>

@@ -32,6 +32,20 @@
 		 where follower_id =#{follower_id}
 	</select>
 	
+	<!-- 본인의 팔로우 수 -->
+	<select id="user_follow_count" resultType="int">
+		select count(*)
+		  from follow
+		 where following_id =#{follower_id}
+	</select>
+
+	<!-- 본인의 팔로워 리스트 -->
+	<select id="user_follower_count" resultType="int">
+		select count(*)
+		  from follow
+		 where follower_id =#{follower_id}
+	</select>
+	
 	<!-- 메일 보낼 사람 찾기(메일) -->
 	<select id="follower_list" resultType="String">
 		select follower_email
