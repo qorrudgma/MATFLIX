@@ -12,6 +12,7 @@
         writer = "익명"; // 로그인하지 않은 경우 "익명"으로 표시
     }
 %>
+
 <html>
 <head>
     <title>${dto.rc_name} - 레시피 상세</title>
@@ -195,6 +196,33 @@
         #comment-list .comment-stars {
             margin-top: 10px;
         }
+		
+		
+		.favorite-toggle-button {
+		        padding: 8px 15px;
+		        font-size: 1em;
+		        cursor: pointer;
+		        border: 1px solid #ccc;
+		        border-radius: 5px;
+		        background-color: #f8f8f8;
+		        color: #333;
+		        margin-bottom: 15px; /* 다른 요소와의 간격 */
+		        transition: background-color 0.2s, color 0.2s;
+		    }
+		    .favorite-toggle-button:hover {
+		        background-color: #e9e9e9;
+		    }
+		    .favorite-toggle-button.favorited {
+		        background-color: #FFD700; /* 금색 배경 */
+		        color: #fff; /* 흰색 텍스트 */
+		        border-color: #FFC107;
+		    }
+		    .favorite-toggle-button.favorited .fa-star { /* 아이콘 스타일 변경 */
+		        font-weight: 900; /* Font Awesome Solid 스타일 */
+		    }
+		    .favorite-toggle-button .fa-star {
+		        margin-right: 5px;
+		    }
     </style>
     <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
     <script>
@@ -279,12 +307,139 @@
                 }
             });
         };
+		
+		
+		// --------------------------------	여기 추가됨(즐겨찾기)	----------------------------------------------
+		
+		$(document).ready(function() {
+		    const favoriteButton = $('#favoriteToggleButton');
+		    const recipeId = favoriteButton.data('recipe-id');
+
+		    if (recipeId && favoriteButton.length > 0) {
+		        const ajaxHeaders = {
+		            'Content-Type': 'application/json'
+		        };
+		        checkFavoriteStatus(recipeId);
+
+		        // --- 버튼 클릭 이벤트 핸들러 ---
+		        favoriteButton.on('click', function() {
+		            const isCurrentlyFavorited = $(this).data('is-favorited');
+		            if (isCurrentlyFavorited) {
+		                removeRecipeFromFavorites(recipeId);
+		            } else {
+		                addRecipeToFavorites(recipeId);
+		            }
+		        });
+
+		        // --- 서버에 현재 즐겨찾기 상태를 물어보는 함수 ---
+		        function checkFavoriteStatus(currentRecipeId) {
+		            console.log("페이지 로드: 즐겨찾기 상태 확인 시작 (Recipe ID: " + currentRecipeId + ")");
+		            $.ajax({
+		                url: '${pageContext.request.contextPath}/favorites/recipe/status', // 서버의 상태 확인 API 경로
+		                type: 'GET',
+		                data: { recipeId: currentRecipeId },
+		                dataType: 'json',
+		                success: function(response) {
+		                    console.log("서버 응답 (즐겨찾기 상태):", response);
+		                    if (response && typeof response.isFavorited !== 'undefined') {
+		                        updateFavoriteButtonUI(response.isFavorited, currentRecipeId);
+		                    } else {
+		                        console.warn('즐겨찾기 상태 확인 실패: 서버 응답 형식이 올바르지 않음', response);
+		                        updateFavoriteButtonUI(false, currentRecipeId);
+		                    }
+		                },
+		                error: function(xhr, status, error) {
+		                    console.error('즐겨찾기 상태 확인 중 AJAX 오류:', status, error);
+		                    updateFavoriteButtonUI(false, currentRecipeId);
+		                }
+		            });
+		        }
+
+		        // --- 즐겨찾기 추가 함수 ---
+		        function addRecipeToFavorites(currentRecipeId) {
+		            console.log("즐겨찾기 추가 시도 (Recipe ID: " + currentRecipeId + ")");
+		            $.ajax({
+		                url: '${pageContext.request.contextPath}/favorites/recipe/add',
+		                type: 'POST',
+		                headers: ajaxHeaders,
+		                data: JSON.stringify({ recipeId: currentRecipeId }),
+		                dataType: 'json',
+		                success: function(response) {
+		                    if (response.success) {
+		                        alert(response.message || '즐겨찾기에 추가되었습니다.');
+		                        updateFavoriteButtonUI(true, currentRecipeId);
+		                    } else {
+		                        alert(response.message || '즐겨찾기 추가에 실패했습니다.');
+		                    }
+		                },
+		                error: function(xhr, status, error) {
+		                    console.error('즐겨찾기 추가 중 AJAX 오류:', error);
+		                    alert('즐겨찾기 추가 중 오류가 발생했습니다.');
+		                }
+		            });
+		        }
+
+		        // --- 즐겨찾기 삭제 함수 ---
+		        function removeRecipeFromFavorites(currentRecipeId) {
+		            console.log("즐겨찾기 삭제 시도 (Recipe ID: " + currentRecipeId + ")"); // 디버깅용
+		            $.ajax({
+		                url: '${pageContext.request.contextPath}/favorites/recipe/remove', // 서버의 삭제 API 경로
+		                type: 'POST',
+		                headers: ajaxHeaders, // POST 요청 시 CSRF 토큰 등이 필요할 수 있음
+		                data: JSON.stringify({ recipeId: currentRecipeId }),
+		                dataType: 'json',
+		                success: function(response) {
+		                    if (response.success) {
+		                        alert(response.message || '즐겨찾기에서 삭제되었습니다.');
+		                        updateFavoriteButtonUI(false, currentRecipeId);
+		                    } else {
+		                        alert(response.message || '즐겨찾기 삭제에 실패했습니다.');
+		                    }
+		                },
+		                error: function(xhr, status, error) {
+		                    console.error('즐겨찾기 삭제 중 AJAX 오류:', error);
+		                    alert('즐겨찾기 삭제 중 오류가 발생했습니다.');
+		                }
+		            });
+		        }
+
+		        // --- 버튼 UI 업데이트 함수 ---
+		        function updateFavoriteButtonUI(isFavorited, currentRecipeId) {
+		            console.log("버튼 UI 업데이트: isFavorited = " + isFavorited + " (Recipe ID: " + currentRecipeId + ")"); // 디버깅용
+		            const button = $('#favoriteToggleButton[data-recipe-id="' + currentRecipeId + '"]');
+		            button.data('is-favorited', isFavorited); // data 속성 업데이트
+
+		            if (isFavorited) {
+		                button.html('<i class="fa-solid fa-star"></i> <span>즐겨찾기됨</span>'); // 아이콘과 텍스트 변경
+		                button.addClass('favorited');    // CSS 클래스 변경
+		            } else {
+		                button.html('<i class="fa-regular fa-star"></i> <span>즐겨찾기 추가</span>');
+		                button.removeClass('favorited');
+		            }
+		        }
+		    } else {
+		    }
+		});
+		</script>
+		
     </script>
 </head>
 <body>
 <div class="recipe-container">
     <div class="recipe-header">
         <h1>${dto.rc_name}</h1>
+		    <% if(user != null) { // 스크립틀릿으로 세션의 user 객체 확인 %>
+		        <button type="button" id="favoriteToggleButton"
+		                class="favorite-toggle-button"
+		                data-recipe-id="${dto.rc_recipe_id}"
+		                data-is-favorited="false">
+		            <i class="fa-regular fa-star"></i> <span>즐겨찾기 추가</span>
+		        </button>
+		    <% } else { %>
+		        <p style="color: #777; font-size: 0.9em;">
+		            <a href="${pageContext.request.contextPath}/login">로그인</a> 후 즐겨찾기 기능을 이용할 수 있습니다.
+		        </p>
+		    <% } %>
         <c:if test="${not empty img_list}">
             <img src="/upload/${img_list.uploadPath}/${img_list.uuid}_${img_list.fileName}"
                  alt="${dto.rc_name}" />

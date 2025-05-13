@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.FavoriteDAO">
+
+    <resultMap id="favoriteResultMap" type="com.boot.dto.FavoriteDTO">
+        <id property="favoriteId" column="favorite_id"/>
+        <result property="mfNo" column="mf_no"/>
+        <result property="recipeId" column="rc_recipe_id"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="addFavorite" parameterType="com.boot.dto.FavoriteDTO"
+            useGeneratedKeys="true" keyProperty="favoriteId" keyColumn="favorite_id">
+        INSERT INTO recipe_favorites (mf_no, rc_recipe_id, created_at)
+        VALUES (#{mfNo}, #{recipeId}, NOW())
+    </insert>
+
+    <delete id="removeFavoriteById" parameterType="long">
+        DELETE FROM recipe_favorites
+        WHERE favorite_id = #{favoriteId}
+    </delete>
+
+    <delete id="removeFavoriteByUserAndRecipe" parameterType="map">
+        DELETE FROM recipe_favorites
+        WHERE mf_no = #{mfNo} AND rc_recipe_id = #{recipeId}
+    </delete>
+
+    <select id="getFavoritesByUserNo" parameterType="int" resultMap="favoriteResultMap">
+        SELECT favorite_id, mf_no, rc_recipe_id, created_at
+        FROM recipe_favorites
+        WHERE mf_no = #{mfNo}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="getFavoriteByUserAndRecipe" resultType="com.boot.dto.FavoriteDTO">
+        SELECT * 
+        FROM recipe_favorites
+        WHERE mf_no = #{mfNo} AND rc_recipe_id = #{recipeId}
+    </select>
+
+    <select id="getFavoriteById" parameterType="long" resultMap="favoriteResultMap">
+        SELECT favorite_id, mf_no, rc_recipe_id, created_at
+        FROM recipe_favorites
+        WHERE favorite_id = #{favoriteId}
+    </select>
+
+    <select id="countFavoritesByUserNo" parameterType="int" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM recipe_favorites
+        WHERE mf_no = #{mfNo}
+    </select>
+
+</mapper>
