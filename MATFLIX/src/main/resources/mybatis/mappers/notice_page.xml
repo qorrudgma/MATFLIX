@@ -1,0 +1,64 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.NoticePageDAO">
+
+    <!-- 검색 조건 정의 -->
+    <sql id="criteria">
+        <if test='notice_type == "T"'>
+            WHERE notice_boardTitle LIKE CONCAT('%', #{notice_keyword}, '%')
+        </if>
+        <if test='notice_type == "C"'>
+            WHERE notice_boardContent LIKE CONCAT('%', #{notice_keyword}, '%')
+        </if>
+        <if test='notice_type == "W"'>
+            WHERE notice_boardName LIKE CONCAT('%', #{notice_keyword}, '%')
+        </if>
+        <if test='notice_type == "TC"'>
+            WHERE notice_boardTitle LIKE CONCAT('%', #{notice_keyword}, '%') 
+               OR notice_boardContent LIKE CONCAT('%', #{notice_keyword}, '%')
+        </if>
+        <if test='notice_type == "TW"'>
+            WHERE notice_boardTitle LIKE CONCAT('%', #{notice_keyword}, '%') 
+               OR notice_boardName LIKE CONCAT('%', #{notice_keyword}, '%')
+        </if>
+        <if test='notice_type == "TCW"'>
+            WHERE notice_boardTitle LIKE CONCAT('%', #{notice_keyword}, '%') 
+               OR notice_boardContent LIKE CONCAT('%', #{notice_keyword}, '%') 
+               OR notice_boardName LIKE CONCAT('%', #{notice_keyword}, '%')
+        </if>
+    </sql>
+
+    <!-- 페이징 + 검색 리스트 -->
+    <select id="listWithPaging" resultType="com.boot.dto.NoticeBoardDTO">
+        <![CDATA[
+        SELECT notice_boardNo, notice_boardName, notice_boardTitle, 
+               notice_boardContent, notice_boardDate, notice_boardHit
+          FROM (
+              SELECT ROWNUM AS rownum, notice_boardNo, notice_boardName, 
+                     notice_boardTitle, notice_boardContent, 
+                     notice_boardDate, notice_boardHit
+                FROM (
+                    SELECT ROW_NUMBER() OVER (ORDER BY notice_boardNo DESC) AS rownum,
+                           notice_boardNo, notice_boardName, notice_boardTitle, 
+                           notice_boardContent, notice_boardDate, notice_boardHit
+                      FROM notice_board
+        ]]>
+        <include refid="criteria" />
+        <![CDATA[
+                    ORDER BY notice_boardNo DESC
+                ) a
+               WHERE rownum <= (#{notice_pageNum} * #{notice_amount})
+          ) aa
+         WHERE rownum > ((#{notice_pageNum} - 1) * #{notice_amount})
+        ]]>
+    </select>
+
+    <!-- 검색 조건 포함 총 게시글 수 조회 -->
+    <select id="totalList" resultType="int">
+        SELECT COUNT(*) FROM notice_board
+        <include refid="criteria" />
+    </select>
+
+</mapper>

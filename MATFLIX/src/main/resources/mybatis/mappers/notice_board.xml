@@ -1,0 +1,45 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.NoticeBoardDAO">
+
+    <!-- 게시글 목록 조회 -->
+    <select id="list" resultType="com.boot.dto.NoticeBoardDTO">
+        SELECT notice_boardNo, notice_boardName, notice_boardTitle, 
+               notice_boardContent, notice_boardDate, notice_boardHit 
+          FROM notice_board
+    </select>
+
+    <!-- 게시글 등록 -->
+    <insert id="write" useGeneratedKeys="true" keyProperty="notice_boardNo">
+        INSERT INTO notice_board(
+            notice_boardName, notice_boardTitle, notice_boardContent, mf_no
+        ) VALUES (
+            #{notice_boardName}, #{notice_boardTitle}, #{notice_boardContent}, #{mf_no}
+        )
+    </insert>
+
+    <!-- 게시글 상세 보기 -->
+    <select id="contentView" resultType="com.boot.dto.NoticeBoardDTO">
+        SELECT notice_boardNo, notice_boardName, notice_boardTitle, 
+               notice_boardContent, notice_boardDate, notice_boardHit, mf_no
+          FROM notice_board
+         WHERE notice_boardNo = #{notice_boardNo}
+    </select>
+
+    <!-- 게시글 수정 -->
+    <update id="modify">
+        UPDATE notice_board 
+           SET notice_boardName = #{notice_boardName},
+               notice_boardTitle = #{notice_boardTitle},
+               notice_boardContent = #{notice_boardContent}
+         WHERE notice_boardNo = #{notice_boardNo}
+    </update>
+
+    <!-- 게시글 삭제 -->
+    <delete id="delete">
+        DELETE FROM notice_board WHERE notice_boardNo = #{notice_boardNo}
+    </delete>
+
+</mapper>
