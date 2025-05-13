@@ -53,6 +53,7 @@
 		     , boardTitle
 		     , boardDate
 		     , mf_no
+		     , boardHit
 		  from tbl_board
 		 where mf_no = #{mf_no};
 	 </select>

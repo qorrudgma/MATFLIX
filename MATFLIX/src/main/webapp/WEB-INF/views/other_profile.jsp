@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.boot.dto.TeamDTO" %>
+<% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
 <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
 <style>
         .recipe_grid {
@@ -61,6 +63,7 @@
         </div>
         
         <!-- 레시피 -->
+        <h2>레시피</h2>
         <div class="recipe_grid">
             <c:forEach var="recipe" items="${recipe_list}">
                 <c:set var="recipe_id" value="${recipe.rc_recipe_id}" />
@@ -94,6 +97,29 @@
                         </c:if>
                     </div>
                 </a>
+            </c:forEach>
+        </div>
+
+        
+        
+        <!-- 게시글 리스트 -->
+        <h2>게시글</h2>
+        <div>
+            <c:forEach var="board" items="${profile_board_list}">
+                <a href="content_view?pageNum=1&amount=10&type=&keyword=&boardNo=${board.boardNo}">
+                    <div>
+                        제목: ${board.boardTitle}
+                    </div>
+                </a>
+                <div>
+                    추천수: ${board.recommend_count}
+                </div>
+                <div>
+                    조회수: ${board.boardHit}
+                </div>
+                <div>
+                    생성일: ${board.boardDate}
+                </div>
             </c:forEach>
         </div>
     </section>

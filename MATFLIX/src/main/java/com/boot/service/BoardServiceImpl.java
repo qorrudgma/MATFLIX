@@ -95,7 +95,9 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public List<Map<String, Object>> profile_board_list(int mf_no) {
-		List<Map<String, Object>> profile_board_list = new ArrayList<>();
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		List<Map<String, Object>> profile_board_list = dao.profile_board_list(mf_no);
+
 		return profile_board_list;
 	}
 }

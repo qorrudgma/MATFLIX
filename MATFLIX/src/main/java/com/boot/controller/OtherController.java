@@ -18,6 +18,7 @@ import com.boot.service.FollowService;
 import com.boot.service.NotificationService;
 import com.boot.service.RecipeService;
 import com.boot.service.RecipeUploadService;
+import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,12 +45,26 @@ public class OtherController {
 	@Autowired
 	private RecipeUploadService recipeUploadService;
 
+	@Autowired
+	private RecommendService recommendService;
+
 	@RequestMapping("/other_profile")
 	public String other_profile(@RequestParam("mf_no") int mf_no, Model model) {
 		TeamDTO user = teamService.find_user_by_no(mf_no);
 		int follow_count = followService.user_follow_count(mf_no);
 		int follower_count = followService.user_follower_count(mf_no);
-		List<Map<String, Object>> profile_board_list = boardService.profile_board_list(mf_no);
+
+		List<Map<String, Object>> profile_board = boardService.profile_board_list(mf_no);
+		List<Map<String, Object>> profile_board_list = new ArrayList<>();
+		for (Map<String, Object> board : profile_board) {
+			int board_no = (int) board.get("boardNo");
+			int recommend_count = recommendService.total_recommend(board_no);
+
+			board.put("recommend_count", recommend_count);
+
+			profile_board_list.add(board);
+		}
+
 		List<RecipeDTO> recipe_list = recipeService.get_recipe_by_user_id(Integer.toString(mf_no));
 		List<RecipeAttachDTO> upload_list = new ArrayList<>();
 		for (int i = 0; i < recipe_list.size(); i++) {
@@ -62,8 +77,8 @@ public class OtherController {
 		model.addAttribute("profile_board_list", profile_board_list);
 		model.addAttribute("recipe_list", recipe_list);
 		model.addAttribute("upload_list", upload_list);
-		log.info("recipe_list => " + recipe_list);
-		log.info("upload_list => " + upload_list);
+		log.info("profile_board_list => " + profile_board_list);
+//		log.info("upload_list => " + upload_list);
 
 		return "other_profile";
 	}
