@@ -67,6 +67,6 @@
 		<div> 레시피 </div>
 		<a href="${pageContext.request.contextPath}/user_rank"><div> 랭킹 </div></a>
 		<div> 게시판 </div>
-		<div> 공지사항 </div>
+		<a href="${pageContext.request.contextPath}/notice_list"><div> 공지사항 </div></a>
 		<div> 더보기 </div>
 	</div>

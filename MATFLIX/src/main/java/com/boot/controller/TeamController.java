@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.TeamDTO;
+import com.boot.service.BoardService;
 import com.boot.service.EmailService;
 import com.boot.service.FollowService;
 import com.boot.service.NotificationService;
@@ -57,6 +58,8 @@ public class TeamController {
 
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private BoardService boardService;
 
 	@RequestMapping("/profile")
 	public String profile(HttpSession session, Model model) {
@@ -67,7 +70,10 @@ public class TeamController {
 		}
 
 		TeamDTO dto = service.find_list(user.getMf_id());
+		List<Map<String, Object>> profile_board = boardService.profile_board_list(user.getMf_no());
 		model.addAttribute("dto", dto);
+		model.addAttribute("profile_board", profile_board);
+
 		return "profile";
 	}
 

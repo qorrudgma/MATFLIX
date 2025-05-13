@@ -35,6 +35,21 @@ CREATE TABLE notifications (
     created_at DATETIME DEFAULT NOW()    -- 생성 시간
 );
 
+-- 즐겨찾기 테이블 생성
+CREATE TABLE recipe_favorites (
+    favorite_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '즐겨찾기 고유 ID',
+    mf_no INT NOT NULL COMMENT '사용자 번호 (matflix 테이블의 mf_no 참조)',
+    rc_recipe_id INT NOT NULL COMMENT '레시피 ID (recipe 테이블의 rc_recipe_id 참조)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '즐겨찾기 추가 시간',
+
+    -- 외래 키 설정 (사용자, 레시피 테이블 참조)
+    CONSTRAINT fk_favorite_user FOREIGN KEY (mf_no) REFERENCES matflix(mf_no) ON DELETE CASCADE,
+    CONSTRAINT fk_favorite_recipe FOREIGN KEY (rc_recipe_id) REFERENCES recipe(rc_recipe_id) ON DELETE CASCADE,
+
+    -- 한 사용자가 같은 레시피를 중복해서 즐겨찾기 할 수 없도록 설정
+    UNIQUE KEY uk_user_recipe (mf_no, rc_recipe_id)
+);
+
 -- 게시판 테이블
 CREATE TABLE tbl_board (
     boardNo int AUTO_INCREMENT PRIMARY KEY,
@@ -137,4 +152,15 @@ CREATE TABLE rc_board_comment(
    rc_commentCreatedTime datetime default current_timestamp,
    user_star_score int default 0,
    mf_no INT NOT NULL
+);
+
+-- 공지사항
+create table notice_board(
+notice_boardNo int primary key auto_increment, 
+notice_boardName varchar(20),
+notice_boardTitle varchar(100),
+notice_boardContent varchar(300),
+notice_boardDate timestamp default current_timestamp,
+notice_boardHit int default 0,
+mf_no int default 0
 );

@@ -50,7 +50,7 @@
 
     <!-- 탭 메뉴 -->
     <div class="mypage_tabs">
-        <button class="tab_btn active" data-tab="my_recipes">내 레시피</button>
+        <a href="my_recipe">내레시피</a>
         <a href="${pageContext.request.contextPath}/favorites/recipe/myFavoriteRecipes" class="btn btn-primary">나의 즐겨찾기 보기</a>
         <button class="tab_btn" data-tab="liked_recipes">추천한 레시피</button>
         <button class="tab_btn" data-tab="account_settings">계정 설정</button>
@@ -58,4 +58,23 @@
 
     <!-- 내 레시피 탭 -->
 
+
+    <!-- 내 게시글 탭 -->
+    <c:forEach var="board" items="${profile_board_list}">
+        <div>
+            제목: 
+            <a href="content_view?pageNum=1&amount=10&type=&keyword=&boardNo=${board.boardNo}">
+                ${board.boardTitle}
+            </a>
+        </div>
+        <div>
+            추천수: ${board.recommend_count}
+        </div>
+        <div>
+            조회수: ${board.boardHit}
+        </div>
+        <div>
+            생성일: ${board.boardDate}
+        </div>
+    </c:forEach>
 </div>
