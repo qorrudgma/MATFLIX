@@ -154,9 +154,14 @@ public class TeamController {
 		return "recruit";
 	}
 
-	// 로그인
+//	 로그인
 	@RequestMapping("/login")
 	public String login() {
+		return "login";
+	}
+
+	@RequestMapping("/custom_login")
+	public String custom_login() {
 		return "login";
 	}
 

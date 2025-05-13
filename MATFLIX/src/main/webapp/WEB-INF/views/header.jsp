@@ -47,11 +47,15 @@
 					<input type="button" value="로그아웃" id="log_out" onclick="location.href='${pageContext.request.contextPath}/log_out'">
 				</div>
 			</div>
+			<meta name="_csrf" content="${_csrf.token}" />
+				<meta name="_csrf_header" content="${_csrf.headerName}" />
+				
 		<% }else{ %>
 			<div class="header_actions">
 				<div class="user_actions">
 					<!-- 로그인 버튼 클릭 시 login.jsp로 이동 -->
-					<button class="btn_login" onclick="location.href='${pageContext.request.contextPath}/login'">로그인</button>
+<!--					<button class="btn_login" onclick="location.href='${pageContext.request.contextPath}/login'">로그인</button>-->
+					<button class="btn_login" onclick="location.href='${pageContext.request.contextPath}/custom_login'">로그인</button>
 					<!-- 회원가입 버튼 클릭 시 recruit.jsp로 이동 -->
 					<button class="btn_register" onclick="location.href='${pageContext.request.contextPath}/recruit'">회원가입</button>
 				</div>
