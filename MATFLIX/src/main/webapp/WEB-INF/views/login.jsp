@@ -14,13 +14,6 @@
     <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
     <script>
         $(document).ready(function() {
-            $("#user_login").on("keydown", function(event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    user_login();
-                }
-            });
-            
             // 비밀번호 표시/숨기기
             $("#togglePassword").on("click", function() {
                 const passwordField = document.getElementById("mf_pw");
@@ -28,6 +21,13 @@
                 passwordField.type = type;
                 $(this).toggleClass("fa-eye fa-eye-slash");
             });
+        });
+		// 로그인 버튼 엔터키도 가능
+        $("#user_login").on("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                user_login();
+            }
         });
     </script>
 </head>
