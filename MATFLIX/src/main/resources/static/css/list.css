@@ -1,0 +1,139 @@
+/* 게시판 목록 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table td, table th {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+table th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+}
+
+table tr:last-child td {
+  border-bottom: none;
+}
+
+table a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+table a:hover {
+  text-decoration: underline;
+}
+
+/* 페이지네이션 */
+.div_page {
+  margin: 20px 0;
+}
+
+.div_page ul {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  padding: 0;
+  gap: 5px;
+}
+
+.paginate_button {
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.paginate_button:hover {
+  background-color: #f0f0f0;
+}
+
+.paginate_button a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.paginate_button.active {
+  background-color: var(--primary-color);
+}
+
+.paginate_button.active a {
+  color: white;
+}
+
+/* 검색 폼 */
+#searchForm {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+#searchForm select, 
+#searchForm input[type="text"] {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+#searchForm select {
+  min-width: 120px;
+}
+
+#searchForm input[type="text"] {
+  flex: 1;
+}
+
+#searchForm button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#searchForm button:hover {
+  background-color: #d44637;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+  
+  table td, table th {
+    padding: 8px 10px;
+  }
+  
+  #searchForm {
+    flex-direction: column;
+  }
+  
+  .div_page ul {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,224 @@
+/* 글쓰기 페이지 스타일 */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.content h2 {
+  font-size: 28px;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.content p {
+  color: var(--light-text);
+  margin-bottom: 30px;
+}
+
+/* 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+table td {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+table tr:last-child td {
+  border-bottom: none;
+}
+
+table td:first-child {
+  width: 120px;
+  font-weight: 600;
+  color: var(--text-color);
+  background-color: var(--light-bg);
+}
+
+/* 입력 필드 스타일 */
+table input[type="text"],
+table textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 15px;
+  transition: var(--transition);
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+table input[type="text"]:focus,
+table textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+  outline: none;
+}
+
+table textarea {
+  resize: vertical;
+  min-height: 200px;
+}
+
+/* 버튼 스타일 */
+.button-row {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.button-row button,
+.button-row a {
+  display: inline-block;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.button-row button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.button-row a {
+  background-color: #e0e0e0;
+  color: var(--text-color);
+  border: none;
+}
+
+.button-row button:hover {
+  background-color: #d44637;
+}
+
+.button-row a:hover {
+  background-color: #d0d0d0;
+}
+
+/* 파일 첨부 섹션 */
+.file-section {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 25px;
+  margin-top: 30px;
+}
+
+.file-section h3 {
+  font-size: 20px;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.uploadDiv {
+  margin-bottom: 20px;
+}
+
+.uploadDiv input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  background-color: var(--light-bg);
+  cursor: pointer;
+}
+
+/* 업로드 결과 목록 */
+.uploadResult {
+  margin-top: 20px;
+}
+
+.uploadResult ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.uploadResult li {
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 150px;
+}
+
+.uploadResult li div {
+  padding: 10px;
+}
+
+.uploadResult li span {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  word-break: break-all;
+}
+
+.uploadResult li span:last-child {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(231, 76, 60, 0.8);
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.uploadResult li img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 5px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  table td:first-child {
+    width: 100px;
+  }
+  
+  .button-row button,
+  .button-row a {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .uploadResult li {
+    width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 480px) {
+  table td {
+    display: block;
+    width: 100%;
+  }
+  
+  table td:first-child {
+    width: 100%;
+    border-bottom: none;
+    padding-bottom: 5px;
+  }
+  
+  .uploadResult li {
+    width: 100%;
+  }
+}

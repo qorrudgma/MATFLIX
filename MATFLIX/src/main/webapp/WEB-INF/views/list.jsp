@@ -2,113 +2,112 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.boot.dto.TeamDTO" %>
 <% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
+<!DOCTYPE html>
 <html>
-
 <head>
    <meta charset="UTF-8">
-   <title>Insert title here</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>MATFLIX - 게시판</title>
+   <!-- 공통 CSS -->
+   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
+   <!-- 게시판 CSS -->
    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/list.css">
+   <!-- 폰트어썸 아이콘 -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+   <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
 </head>
-<style>
-   .div_page ul {
-      display: flex;
-      list-style: none;
-   }
-</style>
-
 <body>
-   <%= user %><br>
-	<a href="${pageContext.request.contextPath}/main">
-      <button type="button">메인페이지</button> 
-   </a>
-   <table width="700" border="1">
-      <tr>
-         <td>번호</td>
-         <td>이름(닉네임이 나오게 수정하기)</td>
-         <td>제목</td>
-         <td>날짜</td>
-         <td>히트</td>
-      </tr>
-      <c:forEach var="dto" items="${list}">
-         <tr>
-            <td>${dto.boardNo}</td>
-            <td>${dto.boardName}</td>
-            <td>
-               <%-- ${dto.boardTitle} --%>
-                  <a class="move_link" href="${dto.boardNo}">${dto.boardTitle}</a>
-            </td>
-            <td>${dto.boardDate}</td>
-            <td>${dto.boardHit}</td>
-         </tr>
-      </c:forEach>
-      <tr>
-         <td colspan="5">
-			<% if(user != null){ %>
-	            <a href="write_view">글작성</a>
-			<% }else{ %>
-	            <a href="#" id="write_a">글작성</a>
-			<% } %>
-         </td>
-      </tr>
-   </table>
+   <jsp:include page="header.jsp" />
+   
+   <div class="content">
+       <h2>레시피 커뮤니티</h2>
+       <p>맛플릭스 회원들과 함께 레시피와 요리 경험을 공유해보세요!</p>
+       <form method="get" id="searchForm">
+          <select name="type">
+             <option value="" <c:out value="${pageMaker.cri.type == null ? 'selected':''}"/>>전체 목록조회</option>
+             <option value="T" <c:out value="${pageMaker.cri.type eq 'T' ? 'selected':''}"/>>제목</option>
+             <option value="C" <c:out value="${pageMaker.cri.type eq 'C' ? 'selected':''}"/>>내용</option>
+             <option value="W" <c:out value="${pageMaker.cri.type eq 'W' ? 'selected':''}"/>>작성자</option>
+             <option value="TC" <c:out value="${pageMaker.cri.type eq 'TC' ? 'selected':''}"/>>제목 + 내용</option>
+             <option value="TW" <c:out value="${pageMaker.cri.type eq 'TW' ? 'selected':''}"/>>제목 + 작성자</option>
+             <option value="CW" <c:out value="${pageMaker.cri.type eq 'TCW' ? 'selected':''}"/>>내용 + 작성자</option>
+          </select>
 
-   <form method="get" id="searchForm">
-      <select name="type">
-         <option value="" <c:out value="${pageMaker.cri.type == null ? 'selected':''}"/>>전체 목록조회</option>
-         <option value="T" <c:out value="${pageMaker.cri.type eq 'T' ? 'selected':''}"/>>제목</option>
-         <option value="C" <c:out value="${pageMaker.cri.type eq 'C' ? 'selected':''}"/>>내용</option>
-         <option value="W" <c:out value="${pageMaker.cri.type eq 'W' ? 'selected':''}"/>>작성자</option>
-         <option value="TC" <c:out value="${pageMaker.cri.type eq 'TC' ? 'selected':''}"/>>제목 + 내용</option>
-         <option value="TW" <c:out value="${pageMaker.cri.type eq 'TW' ? 'selected':''}"/>>제목 + 작성자</option>
-         <option value="CW" <c:out value="${pageMaker.cri.type eq 'TCW' ? 'selected':''}"/>>내용 + 작성자</option>
-      </select>
+          <input type="text" name="keyword" value="${pageMaker.cri.keyword}" placeholder="검색어를 입력하세요">
+          <input type="hidden" name="pageNum" value="1">
+          <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+          <button>검색</button>
+       </form>
+       <table>
+          <tr>
+             <th>번호</th>
+             <th>이름</th>
+             <th>제목</th>
+             <th>날짜</th>
+             <th>조회수</th>
+          </tr>
+          <c:forEach var="dto" items="${list}">
+             <tr>
+                <td>${dto.boardNo}</td>
+                <td>${dto.boardName}</td>
+                <td>
+                   <a class="move_link" href="${dto.boardNo}">${dto.boardTitle}</a>
+                </td>
+                <td>${dto.boardDate}</td>
+                <td>${dto.boardHit}</td>
+             </tr>
+          </c:forEach>
+          <tr>
+             <td colspan="5" class="write-btn-cell">
+                <% if(user != null){ %>
+                    <a href="write_view" class="write-btn">글작성</a>
+                <% }else{ %>
+                    <a href="#" id="write_a" class="write-btn">글작성</a>
+                <% } %>
+             </td>
+          </tr>
+       </table>
 
-      <input type="text" name="keyword" value="${pageMaker.cri.keyword}">
-      <input type="hidden" name="pageNum" value="1">
-      <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
-      <button>입력</button>
-   </form>
 
-<!--   <h3>${pageMaker}</h3>-->
-   <div class="div_page">
-      <ul>
-         <c:if test="${pageMaker.prev}">
-            <li class="paginate_button">
-               <a href="${pageMaker.startPage -1}">
-                  [Previous]
-               </a>
-            </li>
-         </c:if>
 
-         <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-            <li class="paginate_button" ${pageMaker.cri.pageNum==num ? "style='color: red;'" :""}>
-               <a href="${num}">
-                  [${num}]
-               </a>&nbsp;&nbsp;&nbsp;&nbsp;
-            </li>
-         </c:forEach>
+       <div class="div_page">
+          <ul>
+             <c:if test="${pageMaker.prev}">
+                <li class="paginate_button">
+                   <a href="${pageMaker.startPage -1}">
+                      [이전]
+                   </a>
+                </li>
+             </c:if>
 
-         <c:if test="${pageMaker.next}">
-            <li class="paginate_button">
-               <a href="${pageMaker.endPage +1}">
-                  [Next]
-               </a>
-            </li>
-         </c:if>
-      </ul>
+             <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+                <li class="paginate_button ${pageMaker.cri.pageNum==num ? 'active' :''}">
+                   <a href="${num}">
+                      [${num}]
+                   </a>
+                </li>
+             </c:forEach>
+
+             <c:if test="${pageMaker.next}">
+                <li class="paginate_button">
+                   <a href="${pageMaker.endPage +1}">
+                      [다음]
+                   </a>
+                </li>
+             </c:if>
+          </ul>
+       </div>
+
+       <form id="actionForm" action="list" method="get">
+          <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+          <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+          <input type="hidden" name="type" value="${pageMaker.cri.type}">
+          <input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
+       </form>
    </div>
+   
+   <jsp:include page="footer.jsp" />
 
-   <form id="actionForm" action="list" method="get">
-      <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
-      <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
-      <input type="hidden" name="type" value="${pageMaker.cri.type}">
-      <input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
-   </form>
-
-</body>
-
-</html>
-<script src="${pageContext.request.contextPath}/js/jquery.js"></script>
 <script>
    // 변수
    <% if (user != null) { %>
@@ -117,11 +116,11 @@
       var sessionUserNo = null;
    <% } %>
 
-	$("#write_a").on("click", function(e){
-		e.preventDefault();
-      alert("로그인 후 이용 가능한 콘텐츠 입니다.");
-	});
-	
+    $("#write_a").on("click", function(e){
+        e.preventDefault();
+        alert("로그인 후 이용 가능한 콘텐츠 입니다.");
+    });
+    
    var actionForm = $("#actionForm");
    // 페이지번호 처리
    $(".paginate_button a").on("click", function (e) {
@@ -171,3 +170,5 @@
       }
    }); // end of searchForm click 2
 </script>
+</body>
+</html>

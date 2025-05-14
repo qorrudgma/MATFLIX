@@ -1,0 +1,65 @@
+/* 공통 스타일 */
+:root {
+  --primary-color: #e74c3c;
+  --secondary-color: #f39c12;
+  --text-color: #333;
+  --light-text: #777;
+  --background-color: #f5f5f5;
+  --white: #fff;
+  --border-color: #ddd;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.content h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.content p {
+  color: var(--light-text);
+  margin-bottom: 20px;
+}
+
+button,
+.btn {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .content {
+    padding: 20px;
+  }
+
+  .content h2 {
+    font-size: 24px;
+  }
+}

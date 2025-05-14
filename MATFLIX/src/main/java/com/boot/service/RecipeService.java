@@ -46,6 +46,9 @@ public interface RecipeService {
 //	레시피 아이디로 멤버 넘버 추출
 	public int get_mf_no_by_id(int rc_recipe_id);
 
+// 멤버 넘버로 레시피 아이디 추출
+	public int my_recipe_count(int mf_no);
+
 //===========================================================================
 //	요리 별점 업데이트
 	public void update_star_score(double star_score, int rc_recipe_id);

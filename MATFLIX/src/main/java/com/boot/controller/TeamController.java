@@ -17,7 +17,9 @@
 
 package com.boot.controller;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +35,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.FavoriteDTO;
+import com.boot.dto.RecipeAttachDTO;
+import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.EmailService;
+import com.boot.service.FavoriteService;
 import com.boot.service.FollowService;
 import com.boot.service.NotificationService;
+import com.boot.service.RecipeService;
+import com.boot.service.RecipeUploadService;
 import com.boot.service.TeamService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,9 +68,15 @@ public class TeamController {
 	private NotificationService notificationService;
 	@Autowired
 	private BoardService boardService;
+	@Autowired
+	private RecipeService recipeService;
+	@Autowired
+	private RecipeUploadService recipeUploadService;
+	@Autowired
+	private FavoriteService favoriteService;
 
 	@RequestMapping("/profile")
-	public String profile(HttpSession session, Model model) {
+	public String profile(HttpSession session, Model model) throws Exception {
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		if (user == null) {
 			log.info("@#user => " + user);
@@ -71,17 +85,53 @@ public class TeamController {
 
 		TeamDTO dto = service.find_list(user.getMf_id());
 		List<Map<String, Object>> profile_board = boardService.profile_board_list(user.getMf_no());
+		String mf_no = Integer.toString(user.getMf_no());
+		List<RecipeAttachDTO> my_recipe_attach = new ArrayList<>();
+		List<RecipeDTO> my_recipe = recipeService.get_recipe_by_user_id(mf_no);
+
+		for (int i = 0; i < my_recipe.size(); i++) {
+			my_recipe_attach.add(recipeUploadService.get_upload_by_id(my_recipe.get(i).getRc_recipe_id()));
+		}
+
+		int mfNo = user.getMf_no();
+
+		// 즐겨찾기
+		List<FavoriteDTO> originalFavoriteList = favoriteService.getUserFavoriteRecipes(mfNo);
+
+		List<Map<String, Object>> favoritesForView = new ArrayList<>();
+
+		for (FavoriteDTO f_dto : originalFavoriteList) {
+			Map<String, Object> favoriteMap = new HashMap<>();
+			favoriteMap.put("favoriteId", f_dto.getFavoriteId());
+			favoriteMap.put("mfNo", f_dto.getMfNo());
+			favoriteMap.put("recipeId", f_dto.getRecipeId());
+
+			if (f_dto.getCreatedAt() != null) {
+				Date createdAtAsDate = Date.from(f_dto.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant());
+				favoriteMap.put("createdAt", createdAtAsDate);
+			} else {
+				favoriteMap.put("createdAt", null);
+			}
+
+			favoritesForView.add(favoriteMap);
+		}
+		int my_recipe_count = recipeService.my_recipe_count(mfNo);
+
+		model.addAttribute("favorites", favoritesForView);
+		model.addAttribute("my_recipe", my_recipe);
+		model.addAttribute("my_recipe_attach", my_recipe_attach);
 		model.addAttribute("dto", dto);
 		model.addAttribute("profile_board", profile_board);
+		model.addAttribute("my_recipe_count", my_recipe_count);
 
 		return "profile";
 	}
 
-//	@RequestMapping("/delete_member")
-//	public String delete_member(@RequestParam("mf_id") String mf_id, Model model) {
-//		model.addAttribute("mf_id", mf_id);
-//		return "delete_member";
-//	}
+//   @RequestMapping("/delete_member")
+//   public String delete_member(@RequestParam("mf_id") String mf_id, Model model) {
+//      model.addAttribute("mf_id", mf_id);
+//      return "delete_member";
+//   }
 
 	// 탈퇴 페이지 이동
 	@RequestMapping("/delete_member")
@@ -154,14 +204,9 @@ public class TeamController {
 		return "recruit";
 	}
 
-//	 로그인
+	// 로그인
 	@RequestMapping("/login")
 	public String login() {
-		return "login";
-	}
-
-	@RequestMapping("/custom_login")
-	public String custom_login() {
 		return "login";
 	}
 
@@ -203,7 +248,7 @@ public class TeamController {
 		System.out.println("log_out124124");
 		System.out.println(session);
 		session.invalidate();
-		return "main";
+		return "redirect:main";
 	}
 
 	// 회원가입 로직
@@ -244,7 +289,7 @@ public class TeamController {
 		log.info("보냄");
 
 		session.setAttribute("authCode", code);
-//		session.setAttribute("authCodeTime", System.currentTimeMillis());
+//      session.setAttribute("authCodeTime", System.currentTimeMillis());
 		log.info(session.getAttribute("authCode") + "");
 		return code;
 	}
@@ -276,16 +321,16 @@ public class TeamController {
 	}
 
 	// 닉네임 변경
-//	@RequestMapping("/nickname")
-//	public String nickname(@RequestParam("mf_nickname") String mf_nickname, @RequestParam("mf_id") String mf_id,
-//			Model model, HttpServletRequest request) {
-//		System.out.println("nickname  test1");
-//		service.nickname(mf_nickname, mf_id);
-//		System.out.println("nickname  test2");
-//		model.addAttribute("mf_id", mf_id);
+//   @RequestMapping("/nickname")
+//   public String nickname(@RequestParam("mf_nickname") String mf_nickname, @RequestParam("mf_id") String mf_id,
+//         Model model, HttpServletRequest request) {
+//      System.out.println("nickname  test1");
+//      service.nickname(mf_nickname, mf_id);
+//      System.out.println("nickname  test2");
+//      model.addAttribute("mf_id", mf_id);
 //
-//		return "redirect:profile";
-//	}
+//      return "redirect:profile";
+//   }
 	@RequestMapping("/nickname")
 	public String nickname(@RequestParam("mf_nickname") String mf_nickname, @RequestParam("mf_id") String mf_id,
 			Model model, HttpSession session) {

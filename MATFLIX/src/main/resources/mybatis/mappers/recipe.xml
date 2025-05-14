@@ -88,4 +88,11 @@
 		WHERE rc_recipe_id = #{rc_recipe_id}
 	</update>
 	
+	<!-- 레시피 카운트 -->
+	<select id="my_recipe_count" resultType="int">
+		select count(*)
+		  from recipe
+		 where mf_no = #{mf_no}
+	</select>
+	
 </mapper>

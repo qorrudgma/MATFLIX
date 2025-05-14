@@ -1,0 +1,206 @@
+:root {
+  --primary-color: #ff6b6b;
+  --secondary-color: #ffa8a8;
+  --text-color: #333;
+  --light-text: #777;
+  --footer-bg: #2d3436;
+  --footer-text: #f5f5f5;
+  --footer-light: #b2bec3;
+  --footer-border: rgba(255, 255, 255, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* 푸터 기본 스타일 */
+.footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  padding: 50px 0 20px;
+  margin-top: 60px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 푸터 콘텐츠 레이아웃 */
+.footer_content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+/* 푸터 로고 영역 */
+.footer_logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.footer_logo img {
+  width: 50px;
+  height: auto;
+}
+
+.footer_logo h3 {
+  color: var(--footer-text);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.footer_description {
+  max-width: 300px;
+  color: var(--footer-light);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* 푸터 링크 영역 */
+.footer_links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
+}
+
+.footer_section {
+  min-width: 160px;
+}
+
+.footer_section h4 {
+  color: var(--secondary-color);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.footer_section h4::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.footer_section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer_section li {
+  margin-bottom: 12px;
+}
+
+.footer_section a {
+  color: var(--footer-light);
+  text-decoration: none;
+  font-size: 15px;
+  transition: var(--transition);
+  display: inline-block;
+}
+
+.footer_section a:hover {
+  color: var(--footer-text);
+  transform: translateX(3px);
+}
+
+/* 소셜 미디어 아이콘 */
+.social_icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.social_icons a {
+  color: var(--footer-light);
+  font-size: 20px;
+  transition: var(--transition);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social_icons a:hover {
+  color: var(--footer-text);
+  background-color: var(--primary-color);
+  transform: translateY(-3px);
+}
+
+/* 푸터 하단 영역 */
+.footer_bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--footer-border);
+}
+
+.footer_bottom p {
+  color: var(--footer-light);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 992px) {
+  .footer_content {
+    gap: 30px;
+  }
+
+  .footer_links {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 0 20px;
+  }
+
+  .footer_content {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer_links {
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .footer_section {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer_links {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .footer_section {
+    width: 100%;
+    text-align: center;
+  }
+
+  .footer_section h4::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .social_icons {
+    justify-content: center;
+  }
+}

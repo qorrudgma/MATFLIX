@@ -23,7 +23,7 @@
         WHERE favorite_id = #{favoriteId}
     </delete>
 
-    <delete id="removeFavoriteByUserAndRecipe" parameterType="map">
+    <delete id="removeFavoriteByUserAndRecipe">
         DELETE FROM recipe_favorites
         WHERE mf_no = #{mfNo} AND rc_recipe_id = #{recipeId}
     </delete>
@@ -35,8 +35,8 @@
         ORDER BY created_at DESC
     </select>
 
-    <select id="getFavoriteByUserAndRecipe" resultType="com.boot.dto.FavoriteDTO">
-        SELECT * 
+    <select id="getFavoriteByUserAndRecipe" resultMap="favoriteResultMap">
+        SELECT favorite_id, mf_no, rc_recipe_id, created_at
         FROM recipe_favorites
         WHERE mf_no = #{mfNo} AND rc_recipe_id = #{recipeId}
     </select>

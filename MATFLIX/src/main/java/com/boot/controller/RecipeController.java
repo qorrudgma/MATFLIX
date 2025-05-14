@@ -105,31 +105,49 @@ public class RecipeController {
 		List<RecipeAttachDTO> chinese_food_list = new ArrayList<>();
 		List<RecipeAttachDTO> dessert_list = new ArrayList<>();
 
+		List<RecipeDTO> korean_food_recipe_list = new ArrayList<>();
+		List<RecipeDTO> american_food_recipe_list = new ArrayList<>();
+		List<RecipeDTO> japanese_food_recipe_list = new ArrayList<>();
+		List<RecipeDTO> chinese_food_recipe_list = new ArrayList<>();
+		List<RecipeDTO> dessert_recipe_list = new ArrayList<>();
+
 		for (int i = 0; i < korean_food.length; i++) { // 한식 파일 리스트
 			korean_food_list.add(service_attach.get_upload_by_id(korean_food[i]));
+			korean_food_recipe_list.add(service.get_recipe_by_id(korean_food[i]));
 		}
 		for (int i = 0; i < american_food.length; i++) { // 양식 파일 리스트
 			american_food_list.add(service_attach.get_upload_by_id(american_food[i]));
+			american_food_recipe_list.add(service.get_recipe_by_id(american_food[i]));
 		}
 		for (int i = 0; i < japanese_food.length; i++) { // 일식 파일 리스트
 			japanese_food_list.add(service_attach.get_upload_by_id(japanese_food[i]));
+			japanese_food_recipe_list.add(service.get_recipe_by_id(japanese_food[i]));
 		}
 		for (int i = 0; i < chinese_food.length; i++) { // 중식 파일 리스트
 			chinese_food_list.add(service_attach.get_upload_by_id(chinese_food[i]));
+			chinese_food_recipe_list.add(service.get_recipe_by_id(chinese_food[i]));
 		}
 		for (int i = 0; i < dessert.length; i++) { // 디저트 파일 리스트
 			dessert_list.add(service_attach.get_upload_by_id(dessert[i]));
+			dessert_recipe_list.add(service.get_recipe_by_id(dessert[i]));
 		}
 
 		HttpSession session = request.getSession();
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		log.info("@# main : user =>" + user);
 
+		// 레시피 이미지 정보
 		model.addAttribute("korean_food_list", korean_food_list);
 		model.addAttribute("american_food_list", american_food_list);
 		model.addAttribute("japanese_food_list", japanese_food_list);
 		model.addAttribute("chinese_food_list", chinese_food_list);
 		model.addAttribute("dessert_list", dessert_list);
+		// 레시피 정보
+		model.addAttribute("korean_food_recipe_list", korean_food_recipe_list);
+		model.addAttribute("american_food_recipe_list", american_food_recipe_list);
+		model.addAttribute("japanese_food_recipe_list", japanese_food_recipe_list);
+		model.addAttribute("chinese_food_recipe_list", chinese_food_recipe_list);
+		model.addAttribute("dessert_recipe_list", dessert_recipe_list);
 
 		return "main";
 	}
@@ -400,6 +418,7 @@ public class RecipeController {
 
 		List<TeamDTO> mem_list = service_member.list();
 
+		cri.setRc_amount(12);
 		model.addAttribute("pageMaker", new RecipePageDTO(service_page.totalList(cri), cri));
 		model.addAttribute("recipe_list_all", paging_recipe_list);
 		model.addAttribute("file_list_all", paging_file_list);

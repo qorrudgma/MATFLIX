@@ -14,7 +14,7 @@ public class RecipeCriteria {
 	private String rc_keyword;
 
 	public RecipeCriteria() {
-		this(1, 10);
+		this(1, 12);
 	}
 
 	public RecipeCriteria(int rc_pageNum, int rc_amount) {
