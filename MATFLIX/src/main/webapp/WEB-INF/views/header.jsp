@@ -90,30 +90,199 @@
 		<% } %>
     
     // 알림 버튼 클릭
-    $(document).on("click", "#notification_btn", function (e) {
-        e.preventDefault();
-        $("#notification_div").toggleClass("active");
+    // $(document).on("click", "#notification_btn", function (e) {
+    //     e.preventDefault();
+    //     $("#notification_div").toggleClass("active");
 
+    //     var followerId = parseInt(sessionUserNo, 10);
+        
+    //     $.ajax({
+    //          type: "POST"
+    //         ,url: "/notification_list"
+    //         ,data: {follower_id: followerId}
+    //         ,dataType: "json"
+    //         ,success: function (notification_list) {
+    //             console.log("notification_list 받아옴");
+
+    //             let notification_data="";
+
+    //             console.log(notification_count);
+    //             if (notification_count != 0 && notification_count != null) {
+    //                 notification_data += "<div class='notification_header'><h3>알림 " + notification_count + "개</h3></div>";
+    //             } else {
+    //                 notification_data += "<div class='notification_header'><h3>새로운 알림이 없습니다</h3></div>";
+    //             }
+                
+    //             for (let i = 0; i < notification_list.length && i < 10; i++) {
+    //                 if (notification_list[i].is_read == 1) {
+    //                     notification_data += "<div id='notification_card' class='read_true'>";
+    //                 } else {
+    //                     notification_data += "<div id='notification_card'>";
+    //                 }
+    //                 notification_data += "<div>상태: " + (notification_list[i].is_read == 1 ? "읽음" : "안읽음") + "</div>";
+    //                 notification_data += "<div>시간: " + notification_list[i].created_at + "</div>";
+    //                 notification_data += "<div>작성자: " + notification_list[i].following_id + "</div>";
+    //                 notification_data += "<div>게시글 번호: " + notification_list[i].boardNo + "</div>";
+    //                 notification_data += "<div>유형: " + (notification_list[i].post_id ? "댓글" : "게시글") + "</div>";
+    //                 notification_data += '<button type="button" class="move_board" data-board_no="'+notification_list[i].boardNo+'" data-notifications_id="'+notification_list[i].notifications_id+'">보러가기</button>';
+    //                 notification_data += "</div>";
+    //             }
+    //             console.log(notification_data);
+    //             document.getElementById("notification_div").innerHTML = notification_data;
+    //             document.getElementById("notification_div").value = "";
+    //         }
+    //         ,error: function (error) {
+    //             console.log(error);
+    //         }
+    //     });
+    // });
+
+    // 전역 변수
+    let eventSource;
+    let notificationCount = 0;
+
+    $(document).ready(function() {
+        // SSE 연결 설정
+        connectSSE();
+        
+        // 초기 알림 로드
+        loadInitialNotifications();
+    });
+
+    function connectSSE() {
+        // 기존 연결이 있으면 닫기
+        if (eventSource) {
+            eventSource.close();
+        }
+        
+        // SSE 연결 생성 (사용자 ID를 URL에 포함)
+        eventSource = new EventSource('/notifications/stream?userId=' + sessionUserNo);
+        
+        // 연결 성공 시
+        eventSource.onopen = function() {
+            console.log('SSE 연결 성공');
+        };
+        
+        // 일반 메시지 수신 시
+        eventSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log('새 알림 수신:', data);
+            
+            // 알림 카운트 업데이트
+            updateNotificationBadge(++notificationCount);
+            
+            // 브라우저 알림 표시
+            showBrowserNotification(data.message || '새 알림이 있습니다');
+            
+            // 알림 패널이 열려있는 경우 내용 업데이트
+            if ($("#notification_div").hasClass("active")) {
+                loadNotifications();
+            }
+        };
+        
+        // 특정 이벤트 수신 시 (서버에서 event: notification 형식으로 보낼 경우)
+        eventSource.addEventListener('notification', function(event) {
+            const data = JSON.parse(event.data);
+            console.log('알림 이벤트 수신:', data);
+            
+            // 알림 카운트 업데이트
+            updateNotificationBadge(++notificationCount);
+            
+            // 브라우저 알림 표시
+            showBrowserNotification(data.message || '새 알림이 있습니다');
+            
+            // 알림 패널이 열려있는 경우 내용 업데이트
+            if ($("#notification_div").hasClass("active")) {
+                loadNotifications();
+            }
+        });
+        
+        // 오류 발생 시
+        eventSource.onerror = function(error) {
+            console.error('SSE 오류:', error);
+            
+            // 연결 종료 시 재연결 시도 (EventSource는 자동 재연결을 시도하지만, 
+            // 명시적으로 처리할 수도 있음)
+            if (eventSource.readyState === EventSource.CLOSED) {
+                console.log('SSE 연결 종료. 재연결 시도...');
+                setTimeout(connectSSE, 3000);
+            }
+        };
+    }
+
+    // 초기 알림 로드
+    function loadInitialNotifications() {
         var followerId = parseInt(sessionUserNo, 10);
         
         $.ajax({
-             type: "POST"
-            ,url: "/notification_list"
-            ,data: {follower_id: followerId}
-            ,dataType: "json"
-            ,success: function (notification_list) {
-                console.log("notification_list 받아옴");
+            type: "POST",
+            url: "/notification_list",
+            data: {follower_id: followerId},
+            dataType: "json",
+            success: function(notification_list) {
+                // 읽지 않은 알림 개수 저장 및 표시
+                notificationCount = notification_list.filter(item => item.is_read === 0).length;
+                updateNotificationBadge(notificationCount);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    }
 
-                let notification_data="";
+    // 알림 배지 업데이트
+    function updateNotificationBadge(count) {
+        // 기존 배지 제거
+        $("#notification_btn .notification-badge").remove();
+        
+        // 알림이 있으면 배지 추가
+        if (count > 0) {
+            $("#notification_btn").append('<span class="notification-badge">' + count + '</span>');
+        }
+    }
 
-                console.log(notification_count);
-                if (notification_count != 0 && notification_count != null) {
-                    notification_data += "<div class='notification_header'><h3>알림 " + notification_count + "개</h3></div>";
+    // 브라우저 알림 표시
+    function showBrowserNotification(message) {
+        // 브라우저 알림 권한 확인
+        if (Notification.permission === "granted") {
+            new Notification("새 알림", {
+                body: message,
+                icon: "/path/to/notification-icon.png"
+            });
+        } else if (Notification.permission !== "denied") {
+            // 권한 요청
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("새 알림", {
+                        body: message,
+                        icon: "/path/to/notification-icon.png"
+                    });
+                }
+            });
+        }
+    }
+
+    // 알림 목록 로드 (기존 코드와 유사)
+    function loadNotifications() {
+        var followerId = parseInt(sessionUserNo, 10);
+        
+        $.ajax({
+            type: "POST",
+            url: "/notification_list",
+            data: {follower_id: followerId},
+            dataType: "json",
+            success: function(notification_list) {
+                // 기존 코드와 동일한 UI 업데이트 로직
+                let notification_data = "";
+                
+                if (notification_list.length > 0) {
+                    notification_data += "<div class='notification_header'><h3>알림 " + notification_list.length + "개</h3></div>";
                 } else {
                     notification_data += "<div class='notification_header'><h3>새로운 알림이 없습니다</h3></div>";
                 }
                 
                 for (let i = 0; i < notification_list.length && i < 10; i++) {
+                    // 기존 코드와 동일
                     if (notification_list[i].is_read == 1) {
                         notification_data += "<div id='notification_card' class='read_true'>";
                     } else {
@@ -127,15 +296,40 @@
                     notification_data += '<button type="button" class="move_board" data-board_no="'+notification_list[i].boardNo+'" data-notifications_id="'+notification_list[i].notifications_id+'">보러가기</button>';
                     notification_data += "</div>";
                 }
-                console.log(notification_data);
+                
                 document.getElementById("notification_div").innerHTML = notification_data;
-                document.getElementById("notification_div").value = "";
-            }
-            ,error: function (error) {
+                
+                // 알림을 확인했으므로 카운트 리셋
+                if ($("#notification_div").hasClass("active")) {
+                    notificationCount = 0;
+                    updateNotificationBadge(notificationCount);
+                }
+            },
+            error: function(error) {
                 console.log(error);
             }
         });
+    }
+
+    // 기존 클릭 이벤트는 유지하되 약간 수정
+    $(document).on("click", "#notification_btn", function(e) {
+        e.preventDefault();
+        $("#notification_div").toggleClass("active");
+        
+        // 알림 패널을 열 때 최신 데이터로 업데이트
+        if ($("#notification_div").hasClass("active")) {
+            loadNotifications();
+        }
     });
+
+    // 페이지 언로드 시 SSE 연결 종료
+    $(window).on('beforeunload', function() {
+        if (eventSource) {
+            eventSource.close();
+        }
+    });
+
+    //-----------------------------------------
 
     // 해당 게시글로 이동
     $(document).on("click", ".move_board", function (e) {

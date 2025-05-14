@@ -56,4 +56,5 @@ public class NotificationController {
 
 		notificationService.is_read_true(notifications_id);
 	}
+
 }

@@ -317,10 +317,10 @@
                         <label><i class="fas fa-venus-mars"></i> 성별 <span class="required">*</span></label>
                         <div class="gender_options">
                             <label class="radio_label">
-                                <input type="radio" name="mf_gender" value="m" checked> 남
+                                <input type="radio" name="mf_gender" value="M" checked> 남
                             </label>
                             <label class="radio_label">
-                                <input type="radio" name="mf_gender" value="f"> 여
+                                <input type="radio" name="mf_gender" value="F"> 여
                             </label>
                         </div>
                     </div>

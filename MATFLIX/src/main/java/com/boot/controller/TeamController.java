@@ -66,12 +66,16 @@ public class TeamController {
 
 	@Autowired
 	private NotificationService notificationService;
+
 	@Autowired
 	private BoardService boardService;
+
 	@Autowired
 	private RecipeService recipeService;
+
 	@Autowired
 	private RecipeUploadService recipeUploadService;
+
 	@Autowired
 	private FavoriteService favoriteService;
 
@@ -116,6 +120,8 @@ public class TeamController {
 			favoritesForView.add(favoriteMap);
 		}
 		int my_recipe_count = recipeService.my_recipe_count(mfNo);
+		int user_follow_count = followService.user_follow_count(mfNo);
+		int user_follower_count = followService.user_follower_count(mfNo);
 
 		model.addAttribute("favorites", favoritesForView);
 		model.addAttribute("my_recipe", my_recipe);
@@ -123,6 +129,8 @@ public class TeamController {
 		model.addAttribute("dto", dto);
 		model.addAttribute("profile_board", profile_board);
 		model.addAttribute("my_recipe_count", my_recipe_count);
+		model.addAttribute("user_follow_count", user_follow_count);
+		model.addAttribute("user_follower_count", user_follower_count);
 
 		return "profile";
 	}

@@ -73,27 +73,27 @@
        <div class="div_page">
           <ul>
              <c:if test="${pageMaker.prev}">
-                <li class="paginate_button">
-                   <a href="${pageMaker.startPage -1}">
-                      [이전]
-                   </a>
-                </li>
+               <a href="${pageMaker.startPage -1}">
+                	<li class="paginate_button">
+                      이전
+				     </li>
+				  </a>
              </c:if>
 
              <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-                <li class="paginate_button ${pageMaker.cri.pageNum==num ? 'active' :''}">
-                   <a href="${num}">
-                      [${num}]
-                   </a>
-                </li>
+               	<a href="${num}">
+                	<li class="paginate_button ${pageMaker.cri.pageNum==num ? 'active' :''}">
+                      ${num}
+               		</li>
+               	</a>
              </c:forEach>
 
              <c:if test="${pageMaker.next}">
-                <li class="paginate_button">
-                   <a href="${pageMaker.endPage +1}">
-                      [다음]
-                   </a>
-                </li>
+                <a href="${pageMaker.endPage +1}">
+    	           <li class="paginate_button">
+                      다음
+	               </li>
+                </a>
              </c:if>
           </ul>
        </div>

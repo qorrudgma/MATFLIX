@@ -148,7 +148,7 @@
                     <label for="commentContent">내용</label>
                     <input type="text" id="commentContent" placeholder="댓글을 입력하세요">
                 </div>
-                <button onclick="commentWrite()" class="btn-comment">댓글작성</button>
+                <button type="button" onclick="commentWrite()" class="btn-comment">댓글작성</button>
             </div>
 
             <!-- 댓글 목록 -->
@@ -180,7 +180,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <c:if test="${count>5}">
+                            <c:if test="${count > 5}">
                                 <td colspan="5">
                                     <button onclick="loadMoreComments()" class="btn-load-more">더보기</button>
                                 </td>
@@ -209,8 +209,8 @@
     <% } %>
     var no = "${content_view.boardNo}";
     var w_user = "${content_view.mf_no}";
-    var endNo = 5;
-    var comment_count="${count}";
+    var endNo = 5; // 초기에 표시할 댓글 수
+    var comment_count = ${count}; // 전체 댓글 수
     
     // 팔로우 버튼
     $(document).on("click", "#follow_btn", function (e) {
@@ -220,18 +220,15 @@
             alert("로그인 후 이용 가능합니다.");
             return;
         }
-        console.log(w_user+"-"+sessionUserNo+"-"+sessionUserEmail);
         
         var followingId = parseInt(w_user, 10);
         var followerId = parseInt(sessionUserNo, 10);
-        console.log(followingId+"-"+followerId+"-"+sessionUserEmail);
 
         $.ajax({
              type: "POST"
             ,data: {following_id: followingId, follower_id:followerId, follower_email:sessionUserEmail}
             ,url: "/add_follow"
             ,success: function (result) {
-                console.log(result);
                 console.log("팔로우 성공");
                 $("#follow_btn").attr("id", "delete_follow_btn").text("팔로우 취소").addClass("following");
             }
@@ -293,9 +290,9 @@
         });
     });
 
-    // 댓글 작성 기능
-    const commentWrite = () => {
-        console.log("유저 넘 => "+sessionUserNo);
+    // 댓글 관련 함수들
+    function commentWrite() {
+        console.log("유저 넘 => " + sessionUserNo);
         const writer = document.getElementById("commentWriter").value;
         const content = document.getElementById("commentContent").value;
 
@@ -305,66 +302,38 @@
         }
 
         $.ajax({
-            type: "post"
-            , data: {
-                commentWriter: writer
-                , commentContent: content
-                , boardNo: no
-                , userNo: sessionUserNo
-            }
-            , url: "/comment/save"
-            , success: function (commentList) {
+            type: "post",
+            data: {
+                commentWriter: writer,
+                commentContent: content,
+                boardNo: no,
+                userNo: sessionUserNo
+            },
+            url: "/comment/save",
+            success: function(commentList) {
                 console.log("작성 성공");
-                console.log(commentList);
-
-                let output = "<table class='comment-table'>";
-                output += "<thead><tr><th>번호</th>";
-                output += "<th>작성자</th>";
-                output += "<th>내용</th>";
-                output += "<th>작성시간</th>";
-                output += "<th>액션</th></tr></thead>";
-                output += "<tbody>";
-                
-                for (let i = 0; i < commentList.length && i < endNo; i++) {
-                    output += "<tr>";
-                    output += "<td>" + commentList[i].commentNo + "</td>";
-                    output += "<td>" + commentList[i].commentWriter + "</td>";
-                    output += "<td>" + commentList[i].commentContent + "</td>";
-                    output += "<td>" + commentList[i].commentCreatedTime + "</td>";
-                    
-                    if (commentList[i].userNo == sessionUserNo) {
-                        output += "<td><button onclick='deleteComment(" + commentList[i].commentNo + ")' class='btn-delete-comment'>삭제</button></td>";
-                    } else {
-                        output += "<td></td>";
-                    }
-                    output += "</tr>";
-                }
-                output += "</tbody><tfoot><tr>";
-                if (commentList.length>5 && comment_count>=endNo) {
-                    output += "<td colspan='5'><button onclick='loadMoreComments()' class='btn-load-more'>더보기</button></td>";
-                }
-                if (commentList.length>5 && endNo>5) {
-                    output += "<td colspan='5'><button onclick='hideComments()' class='btn-hide-more'>접기</button></td>";
-                }
-                output += "</tr></tfoot></table>";
-
-                document.getElementById("comment-list").innerHTML = output;
                 document.getElementById("commentContent").value = "";
-            }
-            , error: function () {
+                // 댓글 작성 후 댓글 수 업데이트
+                comment_count++;
+                // 댓글 목록 새로고침
+                loadComments();
+            },
+            error: function() {
                 console.log("실패");
             }
         });
     }
 
     // 댓글 삭제 기능
-    function deleteComment(commentNo){
+    function deleteComment(commentNo) {
         $.ajax({
             type: "post",
             url: "/comment/delete",
             data: { commentNo: commentNo },
             success: function(response) {
                 console.log("댓글 삭제 성공");
+                // 댓글 삭제 후 댓글 수 업데이트
+                comment_count--;
                 loadComments();
             },
             error: function() {
@@ -373,58 +342,84 @@
         });
     }
 
+    // 댓글 목록 로드
     function loadComments() {
-        const no = "${content_view.boardNo}";
-
         $.ajax({
             type: "get",
             url: "/comment/list",
             data: { boardNo: no },
-            success: function (commentList) {
-                let output = "<table class='comment-table'>";
-                output += "<thead><tr><th>번호</th><th>작성자</th><th>내용</th><th>작성시간</th><th>액션</th></tr></thead>";
-                output += "<tbody>";
-                
-                for (let i = 0; i < commentList.length && i < endNo; i++) {
-                    output += "<tr>";
-                    output += "<td>" + commentList[i].commentNo + "</td>";
-                    output += "<td>" + commentList[i].commentWriter + "</td>";
-                    output += "<td>" + commentList[i].commentContent + "</td>";
-                    output += "<td>" + commentList[i].commentCreatedTime + "</td>";
-                    if (commentList[i].userNo == sessionUserNo) {
-                        output += "<td><button onclick='deleteComment(" + commentList[i].commentNo + ")' class='btn-delete-comment'>삭제</button></td>";
-                    } else {
-                        output += "<td></td>";
-                    }
-                    output += "</tr>";
-                }
-                output += "</tbody><tfoot><tr>";
-                if (commentList.length>5 && comment_count>=endNo) {
-                    output += "<td colspan='5'><button onclick='loadMoreComments()' class='btn-load-more'>더보기</button></td>";
-                }
-                if (commentList.length > 5 && endNo>5) {
-                    output += "<td colspan='5'><button onclick='hideComments()' class='btn-hide-more'>접기</button></td>";
-                }
-                output += "</tr></tfoot></table>";
-                document.getElementById("comment-list").innerHTML = output;
+            success: function(commentList) {
+                renderCommentList(commentList);
             },
-            error: function () {
+            error: function() {
                 console.log("댓글 목록 불러오기 실패");
             }
         });
     }
 
+    // 댓글 목록 렌더링
+    function renderCommentList(commentList) {
+        let output = "<table class='comment-table'>";
+        output += "<thead><tr><th>번호</th><th>작성자</th><th>내용</th><th>작성시간</th><th>액션</th></tr></thead>";
+        output += "<tbody>";
+        
+        // 표시할 댓글 수 계산 (endNo가 전체 댓글 수보다 크면 전체 댓글 수로 제한)
+        const displayCount = Math.min(endNo, commentList.length);
+        
+        for (let i = 0; i < displayCount; i++) {
+            output += "<tr>";
+            output += "<td>" + commentList[i].commentNo + "</td>";
+            output += "<td>" + commentList[i].commentWriter + "</td>";
+            output += "<td>" + commentList[i].commentContent + "</td>";
+            output += "<td>" + commentList[i].commentCreatedTime + "</td>";
+            if (commentList[i].userNo == sessionUserNo) {
+                output += "<td><button onclick='deleteComment(" + commentList[i].commentNo + ")' class='btn-delete-comment'>삭제</button></td>";
+            } else {
+                output += "<td></td>";
+            }
+            output += "</tr>";
+        }
+        output += "</tbody>";
+        
+        // 푸터에 버튼 추가 (더보기/접기)
+        output += "<tfoot><tr>";
+        
+        // 더보기 버튼 - 표시된 댓글 수가 전체 댓글 수보다 적을 때만 표시
+        if (displayCount < commentList.length) {
+            output += "<td colspan='5'><button onclick='loadMoreComments()' class='btn-load-more'>더보기</button></td>";
+        }
+        
+        output += "</tr><tr>";
+        
+        // 접기 버튼 - 5개 이상 표시 중일 때만 표시
+        if (endNo > 5) {
+            output += "<td colspan='5'><button onclick='hideComments()' class='btn-hide-more'>접기</button></td>";
+        }
+        
+        output += "</tr></tfoot></table>";
+        
+        document.getElementById("comment-list").innerHTML = output;
+    }
+
     // 댓글 더보기 버튼
     function loadMoreComments() {
-        endNo += 5;
+        endNo += 5; // 5개씩 더 표시
         loadComments();
     }
 
     // 댓글 접기 버튼
     function hideComments() {
-        endNo -= 5;
+        endNo = 5; // 기본 표시 개수로 되돌림
         loadComments();
     }
+    
+    // 페이지 로드 시 댓글 목록 초기화
+    $(document).ready(function() {
+        // 초기 댓글 목록 로드
+        if (comment_count > 0) {
+            loadComments();
+        }
+    });
 </script>
 </body>
 </html>

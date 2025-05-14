@@ -96,7 +96,7 @@
                 <c:if test="${pageMaker.rc_prev}">
                     <li class="paginate_button">
                         <a href="${pageMaker.rc_startPage -1}">
-                            [이전]
+                            이전
                         </a>
                     </li>
                 </c:if>
@@ -104,7 +104,7 @@
                 <c:forEach var="num" begin="${pageMaker.rc_startPage}" end="${pageMaker.rc_endPage}">
                     <li class="paginate_button" ${pageMaker.cri.rc_pageNum==num ? "style='color: red;'" :""}>
                         <a href="${num}">
-                            [${num}]
+                            ${num}
                         </a>
                     </li>
                 </c:forEach>
@@ -112,7 +112,7 @@
                 <c:if test="${pageMaker.rc_next}">
                     <li class="paginate_button">
                         <a href="${pageMaker.rc_endPage +1}">
-                            [다음]
+                            다음
                         </a>
                     </li>
                 </c:if>

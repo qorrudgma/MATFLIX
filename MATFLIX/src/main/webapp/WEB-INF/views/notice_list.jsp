@@ -4,6 +4,7 @@
 <%
     TeamDTO user = (TeamDTO) session.getAttribute("user");
 %>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -11,19 +12,12 @@
     <title>MATFLIX - 공지사항</title>
     <!-- 공통 CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-    <!-- 헤더 CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <!-- 공지사항 CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/notice.css">
-    <!-- 폰트어썸 아이콘 (선택사항) -->
+    <!-- 폰트어썸 아이콘 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
 </head>
-<style>
-    .div_page ul {
-        display: flex;
-        list-style: none;
-    }
-</style>
 <body>
     <jsp:include page="header.jsp" />
     
@@ -35,53 +29,65 @@
         
         <div class="notice-title">
             <h1>공지사항</h1>
+            <p>맛플릭스의 중요 소식과 업데이트를 확인하세요</p>
         </div>
         
-        <!-- 검색 폼 - 기존 코드 유지 -->
+        <!-- 검색 폼 -->
         <form method="get" id="searchForm">
             <select name="notice_type">
                 <option value="" <c:out value="${pageMaker.notice_cri.notice_type == null ? 'selected':''}"/>>전체</option>
                 <option value="T" <c:out value="${pageMaker.notice_cri.notice_type eq 'T' ? 'selected':''}"/>>제목</option>
                 <option value="C" <c:out value="${pageMaker.notice_cri.notice_type eq 'C' ? 'selected':''}"/>>내용</option>
                 <option value="W" <c:out value="${pageMaker.notice_cri.notice_type eq 'W' ? 'selected':''}"/>>작성자</option>
-                <option value="TC" <c:out value="${pageMaker.notice_cri.notice_type eq 'TC' ? 'selected':''}"/>>제목 or 내용</option>
-                <option value="TW" <c:out value="${pageMaker.notice_cri.notice_type eq 'TW' ? 'selected':''}"/>>제목 or 작성자</option>
-                <option value="TCW" <c:out value="${pageMaker.notice_cri.notice_type eq 'TCW' ? 'selected':''}"/>>제목 or 내용 or 작성자</option>
+                <option value="TC" <c:out value="${pageMaker.notice_cri.notice_type eq 'TC' ? 'selected':''}"/>>제목 + 내용</option>
+                <option value="TW" <c:out value="${pageMaker.notice_cri.notice_type eq 'TW' ? 'selected':''}"/>>제목 + 작성자</option>
+                <option value="TCW" <c:out value="${pageMaker.notice_cri.notice_type eq 'TCW' ? 'selected':''}"/>>제목 + 내용 + 작성자</option>
             </select>
             <input type="text" name="notice_keyword" value="${pageMaker.notice_cri.notice_keyword}" placeholder="검색어를 입력하세요">
             <input type="hidden" name="notice_pageNum" value="1">
             <input type="hidden" name="notice_amount" value="${pageMaker.notice_cri.notice_amount}">
-            <button>검색</button>
+            <button><i class="fas fa-search"></i> 검색</button>
         </form>
         
-        <!-- 공지사항 테이블 - 기존 코드에 클래스만 추가 -->
-        <table width="500" border="1" class="notice-table">
+        <!-- 공지사항 테이블 -->
+        <table class="notice-table">
             <tr>
-                <th style="width: 60px;">번호</th>
-                <th style="width: 100px;">이름</th>
-                <th style="width: 50%;">제목</th>
-                <th style="width: 120px;">날짜</th>
-                <th style="width: 60px;">조회수</th>
+                <th>번호</th>
+                <th>작성자</th>
+                <th>제목</th>
+                <th>작성일</th>
+                <th>조회수</th>
             </tr>
             <c:forEach var="dto" items="${list}" varStatus="status">
                 <tr style="--row-index: ${status.index}">
-                    <td>${dto.notice_boardNo}</td>
-                    <td>${dto.notice_boardName}</td>
-                    <td><a class="move_link notice-link" href="${dto.notice_boardNo}">${dto.notice_boardTitle}</a></td>
-                    <td>${dto.notice_boardDate}</td>
-                    <td>${dto.notice_boardHit}</td>
+                    <td class="text-center">${dto.notice_boardNo}</td>
+                    <td class="text-center">${dto.notice_boardName}</td>
+                    <td>
+                        <a class="move_link notice-link" href="${dto.notice_boardNo}">
+                            <i class="fas fa-bullhorn"></i> ${dto.notice_boardTitle}
+                        </a>
+                    </td>
+                    <td class="text-center">${dto.notice_boardDate}</td>
+                    <td class="text-center">${dto.notice_boardHit}</td>
                 </tr>
             </c:forEach>
+            <c:if test="${empty list}">
+                <tr>
+                    <td colspan="5" class="text-center">등록된 공지사항이 없습니다.</td>
+                </tr>
+            </c:if>
             <c:if test="${user != null && user.mf_role == 'ADMIN'}">
                 <tr>
                     <td colspan="5" style="text-align: right;">
-                        <a href="notice_write_view" class="notice-btn">📢 공지사항 작성</a>
+                        <a href="notice_write_view" class="notice-btn">
+                            <i class="fas fa-bullhorn"></i> 공지사항 작성
+                        </a>
                     </td>
                 </tr>
             </c:if>
         </table>
 
-        <!-- 페이지네이션 - 기존 코드 유지 -->
+        <!-- 페이지네이션 -->
         <div class="div_page">
             <ul>
                 <c:if test="${pageMaker.notice_prev}">
@@ -94,9 +100,7 @@
 
                 <c:forEach var="num" begin="${pageMaker.notice_startPage}" end="${pageMaker.notice_endPage}">
                     <li class="paginate_button" ${pageMaker.notice_cri.notice_pageNum==num ? "style='color: red;'" :""}>
-                        <a href="${num}">
-                            ${num}
-                        </a>
+                        <a href="${num}">${num}</a>
                     </li>
                 </c:forEach>
 
@@ -110,7 +114,7 @@
             </ul>
         </div>
 
-        <!-- 액션 폼 - 기존 코드 유지 -->
+        <!-- 액션 폼 -->
         <form id="actionForm" action="notice_list" method="get">
             <input type="hidden" name="notice_pageNum" value="${pageMaker.notice_cri.notice_pageNum}">
             <input type="hidden" name="notice_amount" value="${pageMaker.notice_cri.notice_amount}">
@@ -119,9 +123,11 @@
         </form>
     </div>
 
-    <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
+    <jsp:include page="footer.jsp" />
+
     <script>
         var actionForm = $("#actionForm");
+        
         // 페이지번호 처리
         $(".paginate_button a").on("click", function (e) {
             e.preventDefault();
@@ -150,7 +156,8 @@
 
         var searchForm = $("#searchForm");
         
-        $("#searchForm button").on("click", function () {
+        $("#searchForm button").on("click", function (e) {
+            e.preventDefault();
             // 키워드 입력 받을 조건
             if (searchForm.find("option:selected").val() != "" && !searchForm.find("input[name='notice_keyword']").val()) {
                 alert("키워드를 입력하세요.");
@@ -167,6 +174,20 @@
                 searchForm.find("input[name='notice_keyword']").val("");
             }
         });
+        
+        // 테이블 행에 마우스 오버 효과
+        $(".notice-table tr:not(:first-child):not(:last-child)").hover(
+            function() {
+                $(this).css("background-color", "#f0f0f0");
+            },
+            function() {
+                if ($(this).index() % 2 === 0) {
+                    $(this).css("background-color", "");
+                } else {
+                    $(this).css("background-color", "#f9f9f9");
+                }
+            }
+        );
     </script>
 </body>
 </html>

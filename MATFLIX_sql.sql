@@ -9,7 +9,7 @@ CREATE TABLE matflix (
     mf_email VARCHAR(50),
     mf_phone VARCHAR(20),
     mf_birth DATE,
-    mf_gender CHAR(1) DEFAULT 'm' CHECK (mf_gender IN ('m', 'f')),
+    mf_gender CHAR(1) DEFAULT 'M' CHECK (mf_gender IN ('M', 'F')),
     mf_regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
     mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN'))
 );

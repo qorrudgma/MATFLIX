@@ -108,7 +108,7 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	public int my_recipe_count(int mf_no) {
 		RecipeDAO dao = session.getMapper(RecipeDAO.class);
-		int my_recipe_count = dao.get_mf_no_by_id(mf_no);
+		int my_recipe_count = dao.my_recipe_count(mf_no);
 		return my_recipe_count;
 	}
 

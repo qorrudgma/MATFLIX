@@ -20,10 +20,6 @@
     <jsp:include page="header.jsp"/>
     
     <div class="content">
-        <a href="${pageContext.request.contextPath}/main" class="back-button">
-            <i class="fas fa-arrow-left"></i> 메인페이지로 돌아가기
-        </a>
-        
         <!-- 프로필 섹션 -->
         <section class="profile_section">
             <div class="profile_header">
@@ -135,7 +131,7 @@
                     </h2>
                     
                     <div class="board_list">
-                        <c:forEach var="board" items="${profile_board_list}">
+                        <c:forEach var="board" items="${profile_board_list}" begin="0" end="5">
                             <a href="content_view?pageNum=1&amount=10&type=&keyword=&boardNo=${board.boardNo}" class="board_card">
                                 <div class="board_title">${board.boardTitle}</div>
                                 <div class="board_stats">

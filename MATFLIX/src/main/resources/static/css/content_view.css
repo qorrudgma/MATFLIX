@@ -259,69 +259,68 @@
   margin: 0 auto;
 }
 
-/* 댓글 섹션 */
+/* 댓글 섹션 스타일 */
 .comment-section {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: var(--shadow);
-  padding: 20px;
+  margin-top: 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
 }
 
 .comment-section h3 {
   font-size: 20px;
-  color: var(--primary-color);
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  color: #333;
+  border-bottom: 2px solid #e50914;
+  padding-bottom: 10px;
 }
 
 /* 댓글 작성 폼 */
 .comment-form {
-  display: grid;
-  grid-template-columns: 1fr 3fr auto;
-  gap: 15px;
-  margin-bottom: 20px;
-  align-items: end;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  margin-bottom: 15px;
 }
 
 .form-group label {
-  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
   font-weight: 600;
-  color: var(--text-color);
+  color: #555;
 }
 
 .form-group input {
+  width: 100%;
   padding: 10px 15px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 15px;
-  transition: var(--transition);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .form-group input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+  border-color: #e50914;
   outline: none;
 }
 
 .btn-comment {
-  background-color: var(--primary-color);
+  background-color: #e50914;
   color: white;
   border: none;
-  border-radius: 8px;
   padding: 10px 20px;
-  font-weight: 600;
+  border-radius: 4px;
   cursor: pointer;
-  transition: var(--transition);
-  height: 42px;
+  font-weight: 600;
+  transition: background-color 0.2s;
 }
 
 .btn-comment:hover {
-  background-color: #d44637;
+  background-color: #c30812;
 }
 
 /* 댓글 목록 */
@@ -331,82 +330,69 @@
   margin-top: 20px;
 }
 
-.comment-table th, .comment-table td {
+.comment-table th {
+  background-color: #f5f5f5;
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.comment-table th {
-  background-color: var(--light-bg);
   font-weight: 600;
-  color: var(--text-color);
+  color: #333;
+  border-bottom: 2px solid #ddd;
 }
 
-.comment-table tr:last-child td {
-  border-bottom: none;
+.comment-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.comment-table tbody tr:hover {
+  background-color: #f9f9f9;
 }
 
 .btn-delete-comment {
-  background-color: #e74c3c;
+  background-color: #f44336;
   color: white;
   border: none;
-  border-radius: 4px;
   padding: 5px 10px;
-  font-size: 12px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: var(--transition);
+  font-size: 14px;
+  transition: background-color 0.2s;
 }
 
 .btn-delete-comment:hover {
-  background-color: #c0392b;
+  background-color: #d32f2f;
 }
 
-.btn-load-more, .btn-hide-more {
-  background-color: var(--light-bg);
-  color: var(--text-color);
-  border: none;
-  border-radius: 4px;
+/* 더보기/접기 버튼 */
+.btn-load-more,
+.btn-hide-more {
+  background-color: #f5f5f5;
+  color: #555;
+  border: 1px solid #ddd;
   padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
   font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition);
-  display: block;
-  margin: 15px auto 0;
+  margin: 10px 0;
+  transition: all 0.2s;
   width: 100%;
+  text-align: center;
 }
 
-.btn-load-more:hover, .btn-hide-more:hover {
-  background-color: #e0e0e0;
+.btn-load-more:hover,
+.btn-hide-more:hover {
+  background-color: #e9e9e9;
+  color: #333;
 }
 
-/* 이미지 확대 보기 */
-.bigPicture {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  cursor: pointer;
+.comment-table tfoot tr {
+  background-color: transparent;
 }
 
-.bigPic {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 0%;
-  height: 0%;
-}
-
-.bigPic img {
-  max-width: 90%;
-  max-height: 90%;
-  object-fit: contain;
+.comment-table tfoot td {
+  padding: 10px 0;
+  border-bottom: none;
 }
 
 /* 반응형 스타일 */

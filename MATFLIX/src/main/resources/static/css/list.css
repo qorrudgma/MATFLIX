@@ -53,7 +53,7 @@ table a:hover {
 }
 
 .paginate_button {
-  padding: 8px 12px;
+  padding: 8px 15px;
   border-radius: 4px;
   background-color: white;
   box-shadow: var(--shadow);
@@ -117,6 +117,11 @@ table a:hover {
 
 #searchForm button:hover {
   background-color: #d44637;
+}
+
+.write-btn-cell{
+	text-align: right;
+	font-weight: 900;
 }
 
 /* 반응형 */
