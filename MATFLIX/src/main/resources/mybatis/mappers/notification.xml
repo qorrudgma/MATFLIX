@@ -21,6 +21,7 @@
     		 , created_at
     	  from notifications
     	 where follower_id = #{follower_id}
+    	 ORDER BY notifications_id DESC
     </select>
     
     <!-- 알림 읽음 처리 -->

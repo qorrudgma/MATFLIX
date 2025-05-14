@@ -402,6 +402,78 @@
 .board_stat i {
   color: #e50914;
 }
+/* 닉네임 */
+.nickname-form {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-row label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+}
+
+.form-row input[type="text"] {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.nickname-submit, .nickname-cancel {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nickname-submit {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.nickname-submit:hover {
+    background-color: #d44637;
+}
+
+.nickname-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+.nickname-cancel:hover {
+    background-color: #5a6268;
+}
+
+@media (max-width: 576px) {
+    .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .form-row input[type="text"] {
+        width: 100%;
+    }
+    
+    .form-row .nickname-submit,
+    .form-row .nickname-cancel {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
 
 /* 더보기/접기 버튼 스타일 */
 .board_buttons {

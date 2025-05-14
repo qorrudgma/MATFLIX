@@ -29,6 +29,11 @@
     <jsp:include page="header.jsp" />
     
     <div class="content">
+        <!-- 장식 요소 추가 -->
+        <div class="decoration-element one"></div>
+        <div class="decoration-element two"></div>
+        <div class="decoration-element three"></div>
+        
         <div class="content-header">
             <h2>게시글 보기</h2>
             <p>맛플릭스 커뮤니티의 게시글입니다</p>
@@ -66,10 +71,14 @@
                                 </c:forEach>
                                 <c:choose>
                                     <c:when test="${isFollowing}">
-                                        <button type="button" id="delete_follow_btn" class="follow-btn following">팔로우 취소</button>
+                                        <button type="button" id="delete_follow_btn" class="follow-btn following">
+                                            <i class="fas fa-user-minus"></i> 팔로우 취소
+                                        </button>
                                     </c:when>
                                     <c:otherwise>
-                                        <button type="button" id="follow_btn" class="follow-btn">팔로우</button>
+                                        <button type="button" id="follow_btn" class="follow-btn">
+                                            <i class="fas fa-user-plus"></i> 팔로우
+                                        </button>
                                     </c:otherwise>
                                 </c:choose>
                             </c:if>
@@ -110,14 +119,20 @@
                 
                 <div class="post-actions">
                     <c:if test="${content_view.mf_no == user.mf_no}">
-                        <button type="submit" class="btn-primary">수정</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-edit"></i> 수정
+                        </button>
                     </c:if>
-                    <button type="submit" formaction="list" class="btn-secondary">목록보기</button>
+                    <button type="submit" formaction="list" class="btn-secondary">
+                        <i class="fas fa-list"></i> 목록보기
+                    </button>
                     <c:if test="${content_view.mf_no == user.mf_no}">
-                        <button type="submit" formaction="delete" class="btn-danger">삭제</button>
+                        <button type="submit" formaction="delete" class="btn-danger">
+                            <i class="fas fa-trash-alt"></i> 삭제
+                        </button>
                     </c:if>
                     <c:if test="${user != null && user.mf_no != content_view.mf_no}">
-                        <button id="recommend" type="button" class="btn-like">
+                        <button id="recommend" type="button" class="btn-like ${recommend == 1 ? 'active' : ''}">
                             <i class="fas fa-heart"></i>
                             <c:choose>
                                 <c:when test="${recommend != 1}">
@@ -134,9 +149,57 @@
         </div>
 
 
-        <!-- 댓글 섹션 -->
+        <!-- 댓글 섹션 - 새로운 디자인 -->
         <div class="comment-section">
             <h3>댓글</h3>
+            
+            <!-- 댓글 목록 -->
+            <div id="comment-list" class="comments-list">
+                <c:forEach items="${commentList}" var="comment" begin="0" end="4">
+                    <div class="comment-item">
+                        <div class="comment-profile">
+                            <div class="comment-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="comment-author">
+                                    ${comment.commentWriter}
+                                    <c:if test="${comment.userNo == content_view.mf_no}">
+                                        <span class="author-tag">작성자</span>
+                                    </c:if>
+                                </span>
+                            </div>
+                            <div class="comment-text">${comment.commentContent}</div>
+                            <div class="comment-footer">
+                                <span class="comment-date">${fn:substring(comment.commentCreatedTime, 0, 16)}</span>
+                                <span class="comment-like"><i class="far fa-heart"></i></span>
+                            </div>
+                        </div>
+                        <c:if test="${comment.userNo == user.mf_no}">
+                            <div class="comment-actions">
+                                <button class="comment-menu">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                                <div class="comment-dropdown">
+                                    <div class="dropdown-item delete" onclick="deleteComment('${comment.commentNo}')">
+                                        <i class="fas fa-trash-alt"></i> 삭제
+                                    </div>
+                                </div>
+                            </div>
+                        </c:if>
+                    </div>
+                </c:forEach>
+            </div>
+            
+            <!-- 더보기/접기 버튼 -->
+            <div class="comments-actions">
+                <c:if test="${count > 5}">
+                    <button onclick="loadMoreComments()" class="btn-load-more">더보기</button>
+                </c:if>
+                <button onclick="hideComments()" class="btn-hide-more" style="display: none;">접기</button>
+            </div>
             
             <!-- 댓글 작성 폼 -->
             <div class="comment-form">
@@ -149,45 +212,6 @@
                     <input type="text" id="commentContent" placeholder="댓글을 입력하세요">
                 </div>
                 <button type="button" onclick="commentWrite()" class="btn-comment">댓글작성</button>
-            </div>
-
-            <!-- 댓글 목록 -->
-            <div id="comment-list">
-                <table class="comment-table">
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>작성자</th>
-                            <th>내용</th>
-                            <th>작성시간</th>
-                            <th>액션</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${commentList}" var="comment" begin="0" end="4">
-                            <tr>
-                                <td>${comment.commentNo}</td>
-                                <td>${comment.commentWriter}</td>
-                                <td>${comment.commentContent}</td>
-                                <td>${comment.commentCreatedTime}</td>
-                                <td>
-                                    <c:if test="${comment.userNo == user.mf_no}">
-                                        <button onclick="deleteComment('${comment.commentNo}')" class="btn-delete-comment">삭제</button>
-                                    </c:if>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <c:if test="${count > 5}">
-                                <td colspan="5">
-                                    <button onclick="loadMoreComments()" class="btn-load-more">더보기</button>
-                                </td>
-                            </c:if>
-                        </tr>
-                    </tfoot>
-                </table>
             </div>
         </div>
         
@@ -212,6 +236,32 @@
     var endNo = 5; // 초기에 표시할 댓글 수
     var comment_count = ${count}; // 전체 댓글 수
     
+    // 페이지 로드 시 애니메이션 효과
+    $(document).ready(function() {
+        // 게시글 내용에 이미지가 있으면 클릭 시 확대 보기 기능 추가
+        $(".post-body img").on("click", function() {
+            var imgSrc = $(this).attr("src");
+            $(".bigPic").html("<img src='" + imgSrc + "'>");
+            $(".bigPicture").css("display", "flex").hide().fadeIn();
+        });
+        
+        // 확대 보기 닫기
+        $(".bigPicture").on("click", function() {
+            $(this).fadeOut();
+        });
+        
+        // 댓글 메뉴 토글
+        $(document).on("click", ".comment-menu", function(e) {
+            e.stopPropagation();
+            $(this).next(".comment-dropdown").toggleClass("active");
+        });
+        
+        // 다른 곳 클릭 시 드롭다운 닫기
+        $(document).on("click", function() {
+            $(".comment-dropdown").removeClass("active");
+        });
+    });
+    
     // 팔로우 버튼
     $(document).on("click", "#follow_btn", function (e) {
         e.preventDefault();
@@ -230,7 +280,9 @@
             ,url: "/add_follow"
             ,success: function (result) {
                 console.log("팔로우 성공");
-                $("#follow_btn").attr("id", "delete_follow_btn").text("팔로우 취소").addClass("following");
+                $("#follow_btn").attr("id", "delete_follow_btn")
+                    .html('<i class="fas fa-user-minus"></i> 팔로우 취소')
+                    .addClass("following");
             }
             ,error: function () {
                 console.log("팔로우 실패");
@@ -253,7 +305,9 @@
             ,url: "/delete_follow"
             ,success: function (result) {
                 console.log("팔로우 삭제 성공");
-                $("#delete_follow_btn").attr("id", "follow_btn").text("팔로우").removeClass("following");
+                $("#delete_follow_btn").attr("id", "follow_btn")
+                    .html('<i class="fas fa-user-plus"></i> 팔로우')
+                    .removeClass("following");
             }
             ,error: function () {
                 console.log("팔로우 실패");
@@ -279,9 +333,15 @@
                 if(result == "recommend") {
                     $("#recommend").html('<i class="fas fa-heart"></i> 추천 취소');
                     $("#recommend").addClass("active");
+                    // 추천 수 업데이트
+                    var currentLikes = parseInt($(".post-likes .value").text());
+                    $(".post-likes .value").text(currentLikes + 1);
                 } else {
                     $("#recommend").html('<i class="fas fa-heart"></i> 추천');
                     $("#recommend").removeClass("active");
+                    // 추천 수 업데이트
+                    var currentLikes = parseInt($(".post-likes .value").text());
+                    $(".post-likes .value").text(currentLikes - 1);
                 }
             }
             ,error: function () {
@@ -359,46 +419,61 @@
 
     // 댓글 목록 렌더링
     function renderCommentList(commentList) {
-        let output = "<table class='comment-table'>";
-        output += "<thead><tr><th>번호</th><th>작성자</th><th>내용</th><th>작성시간</th><th>액션</th></tr></thead>";
-        output += "<tbody>";
+        let output = "";
         
         // 표시할 댓글 수 계산 (endNo가 전체 댓글 수보다 크면 전체 댓글 수로 제한)
         const displayCount = Math.min(endNo, commentList.length);
         
         for (let i = 0; i < displayCount; i++) {
-            output += "<tr>";
-            output += "<td>" + commentList[i].commentNo + "</td>";
-            output += "<td>" + commentList[i].commentWriter + "</td>";
-            output += "<td>" + commentList[i].commentContent + "</td>";
-            output += "<td>" + commentList[i].commentCreatedTime + "</td>";
+            const comment = commentList[i];
+            
+            output += `<div class="comment-item">
+			                <div class="comment-profile">
+			                    <div class="comment-avatar">
+			                        <i class="fas fa-user"></i>
+			                    </div>
+			                </div>
+			                <div class="comment-content">
+			                    <div class="comment-header">
+                        			<span class="comment-author">`
+                          			 +commentList[i].commentWriter;
+					if(commentList[i].userNo == w_user){
+							output += `<span class='author-tag'>작성자</span>`;
+					}
+       						output += `</span>
+			                    </div>
+			                    <div class="comment-text">`+commentList[i].commentContent+`</div>
+			                    <div class="comment-footer">
+			                        <span class="comment-date">`+commentList[i].commentCreatedTime.substring(0, 16)+`</span>
+			                        <span class="comment-like"><i class="far fa-heart"></i></span>
+			                    </div>
+			                </div>`;
+                
             if (commentList[i].userNo == sessionUserNo) {
-                output += "<td><button onclick='deleteComment(" + commentList[i].commentNo + ")' class='btn-delete-comment'>삭제</button></td>";
-            } else {
-                output += "<td></td>";
+                 output += `<div class="comment-actions">
+		                        <div class="dropdown-item delete" onclick="deleteComment(`+commentList[i].commentNo+`)">
+		                            <i class="fas fa-trash-alt"></i> 삭제
+		                        </div>
+							</div>`;
             }
-            output += "</tr>";
+            
+            output += `</div>`;
         }
-        output += "</tbody>";
-        
-        // 푸터에 버튼 추가 (더보기/접기)
-        output += "<tfoot><tr>";
-        
-        // 더보기 버튼 - 표시된 댓글 수가 전체 댓글 수보다 적을 때만 표시
-        if (displayCount < commentList.length) {
-            output += "<td colspan='5'><button onclick='loadMoreComments()' class='btn-load-more'>더보기</button></td>";
-        }
-        
-        output += "</tr><tr>";
-        
-        // 접기 버튼 - 5개 이상 표시 중일 때만 표시
-        if (endNo > 5) {
-            output += "<td colspan='5'><button onclick='hideComments()' class='btn-hide-more'>접기</button></td>";
-        }
-        
-        output += "</tr></tfoot></table>";
         
         document.getElementById("comment-list").innerHTML = output;
+        
+        // 더보기/접기 버튼 표시 여부 설정
+        if (displayCount < commentList.length) {
+            $(".btn-load-more").show();
+        } else {
+            $(".btn-load-more").hide();
+        }
+        
+        if (endNo > 5) {
+            $(".btn-hide-more").show();
+        } else {
+            $(".btn-hide-more").hide();
+        }
     }
 
     // 댓글 더보기 버튼

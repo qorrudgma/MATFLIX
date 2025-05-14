@@ -20,8 +20,14 @@
    <jsp:include page="header.jsp" />
    
    <div class="content">
+       <!-- 장식 요소 추가 -->
+       <div class="decoration-element one"></div>
+       <div class="decoration-element two"></div>
+       <div class="decoration-element three"></div>
+       
        <h2>레시피 커뮤니티</h2>
        <p>맛플릭스 회원들과 함께 레시피와 요리 경험을 공유해보세요!</p>
+       
        <form method="get" id="searchForm">
           <select name="type">
              <option value="" <c:out value="${pageMaker.cri.type == null ? 'selected':''}"/>>전체 목록조회</option>
@@ -33,11 +39,12 @@
              <option value="CW" <c:out value="${pageMaker.cri.type eq 'TCW' ? 'selected':''}"/>>내용 + 작성자</option>
           </select>
 
-          <input type="text" name="keyword" value="${pageMaker.cri.keyword}" placeholder="검색어를 입력하세요">
+          <input type="text" name="keyword" value="${pageMaker.cri.keyword}" placeholder= "모든 게시물을 보는 옵션입니다. 검색을 눌러주세요!">
           <input type="hidden" name="pageNum" value="1">
           <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
-          <button>검색</button>
+          <button><i class="fas fa-search"></i> 검색</button>
        </form>
+       
        <table>
           <tr>
              <th>번호</th>
@@ -46,54 +53,63 @@
              <th>날짜</th>
              <th>조회수</th>
           </tr>
-          <c:forEach var="dto" items="${list}">
-             <tr>
+          <c:forEach var="dto" items="${list}" varStatus="status">
+             <tr style="--row-index: ${status.index}">
                 <td>${dto.boardNo}</td>
                 <td>${dto.boardName}</td>
                 <td>
-                   <a class="move_link" href="${dto.boardNo}">${dto.boardTitle}</a>
+                   <a class="move_link" href="${dto.boardNo}">
+                      <i class="fas fa-utensils"></i> ${dto.boardTitle}
+                   </a>
                 </td>
                 <td>${dto.boardDate}</td>
                 <td>${dto.boardHit}</td>
              </tr>
           </c:forEach>
+          <c:if test="${empty list}">
+             <tr>
+                <td colspan="5" style="text-align: center; padding: 30px;">
+                   등록된 게시글이 없습니다.
+                </td>
+             </tr>
+          </c:if>
           <tr>
              <td colspan="5" class="write-btn-cell">
                 <% if(user != null){ %>
-                    <a href="write_view" class="write-btn">글작성</a>
+                    <a href="write_view" class="write-btn">
+                       <i class="fas fa-pencil-alt"></i> 글작성
+                    </a>
                 <% }else{ %>
-                    <a href="#" id="write_a" class="write-btn">글작성</a>
+                    <a href="#" id="write_a" class="write-btn">
+                       <i class="fas fa-pencil-alt"></i> 글작성
+                    </a>
                 <% } %>
              </td>
           </tr>
        </table>
 
-
-
        <div class="div_page">
           <ul>
              <c:if test="${pageMaker.prev}">
-               <a href="${pageMaker.startPage -1}">
-                	<li class="paginate_button">
-                      이전
-				     </li>
-				  </a>
+               <li class="paginate_button">
+                  <a href="${pageMaker.startPage -1}">
+                     <i class="fas fa-chevron-left"></i>
+                  </a>
+               </li>
              </c:if>
 
              <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-               	<a href="${num}">
-                	<li class="paginate_button ${pageMaker.cri.pageNum==num ? 'active' :''}">
-                      ${num}
-               		</li>
-               	</a>
+               <li class="paginate_button ${pageMaker.cri.pageNum==num ? 'active' :''}">
+                  <a href="${num}">${num}</a>
+               </li>
              </c:forEach>
 
              <c:if test="${pageMaker.next}">
-                <a href="${pageMaker.endPage +1}">
-    	           <li class="paginate_button">
-                      다음
-	               </li>
-                </a>
+               <li class="paginate_button">
+                  <a href="${pageMaker.endPage +1}">
+                     <i class="fas fa-chevron-right"></i>
+                  </a>
+               </li>
              </c:if>
           </ul>
        </div>
@@ -141,7 +157,7 @@
       var targetBno = $(this).attr("href");
 
       var bno= actionForm.find("input[name='boardNo']").val();
-      if (bno != "") {
+      if (bno != undefined) {
          actionForm.find("input[name='boardNo']").remove();
       }
       actionForm.append("<input type='hidden' name='boardNo' value='" + targetBno + "'>");
@@ -152,7 +168,8 @@
 
    var searchForm = $("#searchForm");
 
-   $("#searchForm button").on("click", function () {
+   $("#searchForm button").on("click", function (e) {
+      e.preventDefault();
       // 키워드 입력 받을 조건
       if (searchForm.find("option:selected").val() != ""&& !searchForm.find("input[name='keyword']").val()) {
          alert("키워드를 입력하세요.");
@@ -161,14 +178,31 @@
 
       searchForm.attr("action", "list").submit();
    }); // end of searchForm click
-
    // type 콤보박스 변경
    $("#searchForm select").on("change", function () {
       if (searchForm.find("option:selected").val() == "") {
          // 키워드를 널값으로 변경
          searchForm.find("input[name='keyword']").val("");
-      }
+         searchForm.find("input[name='keyword']").attr({placeholder: "모든 게시물을 보는 옵션입니다. 검색을 눌러주세요!", readonly: true});
+      }else{
+         searchForm.find("input[name='keyword']").attr({placeholder: "검색어를 입력하세요.", readonly: false});
+	  }
+	  
    }); // end of searchForm click 2
+   
+   // 테이블 행에 마우스 오버 효과
+   $("table tr:not(:first-child):not(:last-child)").hover(
+      function() {
+         $(this).css("background-color", "#f0f0f0");
+      },
+      function() {
+         if ($(this).index() % 2 === 0) {
+            $(this).css("background-color", "");
+         } else {
+            $(this).css("background-color", "#f9f9f9");
+         }
+      }
+   );
 </script>
 </body>
 </html>

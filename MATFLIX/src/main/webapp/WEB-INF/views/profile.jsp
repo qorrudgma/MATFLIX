@@ -24,15 +24,23 @@
                     <button class="edit_profile_image"><i class="fas fa-camera"></i></button>
                 </div>
                 <div class="profile_info_container">
-                    <div class="profile_info">
+					<div class="profile_info">
                         <h2>
                             ${user.getMf_nickname()}
-                            <form action="${pageContext.request.contextPath}/nickname_form" method="get" style="display:inline;">
-                                <input type="hidden" name="mf_id" value="${user.getMf_id()}"/>
-                                <button type="submit" class="edit_profile_btn">
-                                    <i class="fas fa-edit user_nick_name"></i>닉네임 수정
-                                </button>
-                            </form>
+                            <button type="button" id="show_nickname_form" class="edit_profile_btn">
+                                <i class="fas fa-edit user_nick_name"></i>닉네임 수정
+                            </button>
+                            <div id="nickname_change_form" style="display:none; margin-top: 10px;">
+                                <form action="${pageContext.request.contextPath}/nickname" method="post" class="nickname-form">
+                                    <input type="hidden" name="mf_id" value="${user.getMf_id()}">
+                                    <div class="form-row">
+                                        <label for="mf_nickname">새 닉네임:</label>
+                                        <input type="text" id="mf_nickname" name="mf_nickname" required>
+                                        <input type="submit" value="변경" class="nickname-submit">
+                                        <button type="button" id="cancel_nickname" class="nickname-cancel">취소</button>
+                                    </div>
+                                </form>
+                            </div>
                         </h2>
                     </div>
 
@@ -267,6 +275,9 @@
                 </div>
             </div>
         </div>
+		
+		<!-- 닉네임 수정 -->
+		
     </div>
     
     <jsp:include page="footer.jsp" />
@@ -379,6 +390,35 @@
                 }
             });
         }
+		
+		// 닉네임 수정 폼 표시/숨김 처리
+		        $("#show_nickname_form").click(function() {
+		            $("#nickname_change_form").slideDown(300);
+		            $(this).hide();
+		        });
+
+		        $("#cancel_nickname").click(function() {
+		            $("#nickname_change_form").slideUp(300);
+		            $("#show_nickname_form").show();
+		        });
+
+		        // 닉네임 변경 폼 제출
+		        $(".nickname-form").submit(function(e) {
+		            e.preventDefault();
+		            
+		            $.ajax({
+		                type: "POST",
+		                url: $(this).attr("action"),
+		                data: $(this).serialize(),
+		                success: function(response) {
+		                    alert("닉네임이 성공적으로 변경되었습니다.");
+		                    location.reload(); // 페이지 리로드
+		                },
+		                error: function() {
+		                    alert("닉네임 변경 중 오류가 발생했습니다.");
+		                }
+		            });
+		        });
     </script>
 </body>
 </html>

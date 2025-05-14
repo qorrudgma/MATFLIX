@@ -18,6 +18,11 @@
     <jsp:include page="header.jsp" />
     
     <div class="content">
+        <!-- 장식 요소 추가 -->
+        <div class="decoration-element one"></div>
+        <div class="decoration-element two"></div>
+        <div class="decoration-element three"></div>
+        
         <h2>레시피 목록</h2>
         <p>다양한 레시피를 찾아보고 나만의 요리를 시작해보세요!</p>
         
@@ -33,14 +38,14 @@
             <input type="text" name="rc_keyword" value="${pageMaker.cri.rc_keyword}" placeholder="검색어를 입력하세요">
             <input type="hidden" name="rc_pageNum" value="1">
             <input type="hidden" name="rc_amount" value="${pageMaker.cri.rc_amount}">
-            <button>검색</button>
+            <button><i class="fas fa-search"></i> 검색</button>
         </form>
         
         <!-- 레시피 그리드 -->
         <div class="recipe_grid">
-            <c:forEach var="recipe" items="${recipe_list_all}">
+            <c:forEach var="recipe" items="${recipe_list_all}" varStatus="status">
                 <c:set var="recipe_id" value="${recipe.rc_recipe_id}" />
-                <a href="recipe_content_view?rc_recipe_id=${recipe.rc_recipe_id}" class="recipe_card">
+                <a href="recipe_content_view?rc_recipe_id=${recipe.rc_recipe_id}" class="recipe_card" style="--card-index: ${status.index}">
                     <div class="recipe_image_container">
                         <c:set var="found_image" value="false" />
                         <c:forEach var="attach" items="${file_list_all}">
@@ -88,6 +93,13 @@
                     </div>
                 </a>
             </c:forEach>
+            
+            <c:if test="${empty recipe_list_all}">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 50px 0;">
+                    <i class="fas fa-utensils" style="font-size: 48px; color: #ddd; margin-bottom: 20px;"></i>
+                    <p>등록된 레시피가 없습니다.</p>
+                </div>
+            </c:if>
         </div>
 
         <!-- 페이지네이션 -->
@@ -96,7 +108,7 @@
                 <c:if test="${pageMaker.rc_prev}">
                     <li class="paginate_button">
                         <a href="${pageMaker.rc_startPage -1}">
-                            이전
+                            <i class="fas fa-chevron-left"></i>
                         </a>
                     </li>
                 </c:if>
@@ -112,7 +124,7 @@
                 <c:if test="${pageMaker.rc_next}">
                     <li class="paginate_button">
                         <a href="${pageMaker.rc_endPage +1}">
-                            다음
+                            <i class="fas fa-chevron-right"></i>
                         </a>
                     </li>
                 </c:if>
@@ -148,7 +160,8 @@ var actionForm = $("#actionForm");
 
     var searchForm = $("#searchForm");
     
-    $("#searchForm button").on("click", function () {
+    $("#searchForm button").on("click", function (e) {
+        e.preventDefault();
         if (searchForm.find("option:selected").val() != "" && !searchForm.find("input[name='rc_keyword']").val()) {
             alert("키워드를 입력하세요.");
             return false;
@@ -163,6 +176,18 @@ var actionForm = $("#actionForm");
             searchForm.find("input[name='rc_keyword']").val("");
         }
     });
+    
+    // 레시피 카드 호버 효과
+    $(".recipe_card").hover(
+        function() {
+            $(this).css("transform", "translateY(-5px)");
+            $(this).css("box-shadow", "0 10px 20px rgba(0, 0, 0, 0.1)");
+        },
+        function() {
+            $(this).css("transform", "");
+            $(this).css("box-shadow", "");
+        }
+    );
 </script>
 </body>
 </html>
