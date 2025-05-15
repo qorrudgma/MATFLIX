@@ -46,6 +46,7 @@ import com.boot.service.FollowService;
 import com.boot.service.NotificationService;
 import com.boot.service.RecipeService;
 import com.boot.service.RecipeUploadService;
+import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -79,6 +80,9 @@ public class TeamController {
 	@Autowired
 	private FavoriteService favoriteService;
 
+	@Autowired
+	private RecommendService recommendService;
+
 	@RequestMapping("/profile")
 	public String profile(HttpSession session, Model model) throws Exception {
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
@@ -89,6 +93,14 @@ public class TeamController {
 
 		TeamDTO dto = service.find_list(user.getMf_id());
 		List<Map<String, Object>> profile_board = boardService.profile_board_list(user.getMf_no());
+		log.info(profile_board + "");
+		for (int i = 0; i < profile_board.size(); i++) {
+			Map<String, Object> board = profile_board.get(i);
+			int boardNo = (int) board.get("boardNo");
+			int recommend_count = recommendService.total_recommend(boardNo);
+			board.put("recommend_count", recommend_count);
+		}
+
 		String mf_no = Integer.toString(user.getMf_no());
 		List<RecipeAttachDTO> my_recipe_attach = new ArrayList<>();
 		List<RecipeDTO> my_recipe = recipeService.get_recipe_by_user_id(mf_no);

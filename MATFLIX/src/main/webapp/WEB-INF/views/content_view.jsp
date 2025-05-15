@@ -52,15 +52,15 @@
                             <span class="value">${content_view.boardNo}</span>
                         </div>
                         <div class="post-views">
-                            <span class="label">조회수</span>
-                            <span class="value">${content_view.boardHit}</span>
+                            <span class="label">작성자</span>
+                            <span class="value">${content_view.boardName}</span>
                         </div>
                     </div>
                     
                     <div class="post-author">
-                        <span class="label">작성자</span>
+                        <span class="label">조회수</span>
                         <div class="author-info">
-                            <span class="value">${content_view.boardName}</span>
+                            <span class="value">${content_view.boardHit}</span>
                             <!-- 팔로우 버튼 -->
                             <c:if test="${user != null && user.mf_no != content_view.mf_no}">
                                 <c:set var="isFollowing" value="false"/>
@@ -428,33 +428,33 @@
             const comment = commentList[i];
             
             output += `<div class="comment-item">
-			                <div class="comment-profile">
-			                    <div class="comment-avatar">
-			                        <i class="fas fa-user"></i>
-			                    </div>
-			                </div>
-			                <div class="comment-content">
-			                    <div class="comment-header">
-                        			<span class="comment-author">`
-                          			 +commentList[i].commentWriter;
-					if(commentList[i].userNo == w_user){
-							output += `<span class='author-tag'>작성자</span>`;
-					}
-       						output += `</span>
-			                    </div>
-			                    <div class="comment-text">`+commentList[i].commentContent+`</div>
-			                    <div class="comment-footer">
-			                        <span class="comment-date">`+commentList[i].commentCreatedTime.substring(0, 16)+`</span>
-			                        <span class="comment-like"><i class="far fa-heart"></i></span>
-			                    </div>
-			                </div>`;
+                         <div class="comment-profile">
+                             <div class="comment-avatar">
+                                 <i class="fas fa-user"></i>
+                             </div>
+                         </div>
+                         <div class="comment-content">
+                             <div class="comment-header">
+                                 <span class="comment-author">`
+                                    +commentList[i].commentWriter;
+               if(commentList[i].userNo == w_user){
+                     output += `<span class='author-tag'>작성자</span>`;
+               }
+                         output += `</span>
+                             </div>
+                             <div class="comment-text">`+commentList[i].commentContent+`</div>
+                             <div class="comment-footer">
+                                 <span class="comment-date">`+commentList[i].commentCreatedTime.substring(0, 16)+`</span>
+                                 <span class="comment-like"><i class="far fa-heart"></i></span>
+                             </div>
+                         </div>`;
                 
             if (commentList[i].userNo == sessionUserNo) {
                  output += `<div class="comment-actions">
-		                        <div class="dropdown-item delete" onclick="deleteComment(`+commentList[i].commentNo+`)">
-		                            <i class="fas fa-trash-alt"></i> 삭제
-		                        </div>
-							</div>`;
+                              <div class="dropdown-item delete" onclick="deleteComment(`+commentList[i].commentNo+`)">
+                                  <i class="fas fa-trash-alt"></i> 삭제
+                              </div>
+                     </div>`;
             }
             
             output += `</div>`;

@@ -120,7 +120,7 @@
         </c:if>
 
         <div class="comment-section">
-            <p class="section-title">댓글 작성</p>
+            <p class="section-title">리뷰 작성</p>
             <div class="comment-input-area">
                 <input type="hidden" id="rc_commentWriter" value="<%= writer %>">
                 <input type="text" id="rc_commentContent" placeholder="맛있게 드셨나요? 여러분의 의견을 남겨주세요.">
@@ -136,10 +136,10 @@
                     <input type="hidden" id="user_star_scoreValue" name="user_star_score" value="0">
                     <span id="commentRatingText">(0점)</span>
                 </div>
-                <button onclick="commentWrite()">댓글 등록</button>
+                <button onclick="commentWrite()">리뷰 등록</button>
             </div>
 
-            <p class="section-title">댓글 목록</p>
+            <p class="section-title">리뷰 목록</p>
             <div id="comment-list">
                 <c:forEach items="${commentList}" var="comment">
                     <div class="comment-item">
@@ -175,12 +175,11 @@
 <script>
     $(document).ready(function() {
         // 별점 기능
-        $('.star-rating .star').on('click', function() {
+        $(document).on('click', '.star-rating .star', function() {
             const ratingValue = $(this).data('value');
             $('#user_star_scoreValue').val(ratingValue);
             $('#commentRatingText').text('(' + ratingValue + '점)');
-            
-            // 별점 시각적 표시
+
             $('.star-rating .star').each(function(index) {
                 if (index < ratingValue) {
                     $(this).html('<i class="fas fa-star"></i>');
@@ -188,7 +187,7 @@
                     $(this).html('<i class="far fa-star"></i>');
                 }
             });
-            
+
             $('#commentStarRating').data('current-rating', ratingValue);
         });
         

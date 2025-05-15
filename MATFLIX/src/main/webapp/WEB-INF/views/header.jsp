@@ -20,7 +20,7 @@
 	<header class="header">
 		<div class="header_container">
 			<!-- 로고 (중앙) -->
-            <img src="${pageContext.request.contextPath}/image/MATFLIX.png" alt="MATFLIX로고">
+            <img src="${pageContext.request.contextPath}/image/main_logo.png" alt="MATFLIX로고">
 			<div class="header_logo" onclick="location.href='${pageContext.request.contextPath}/main'">
 				<h1>MATFLIX</h1>
 			</div>
