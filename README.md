@@ -36,18 +36,8 @@
 - 🗃 Database<br>
        <img src="https://img.shields.io/badge/MySQL-005C84?style=flat&logo=mysql&logoColor=white" height="25" />
 
-- 🔍 Data Processing & Search<br>
-<img src="https://img.shields.io/badge/Hadoop-66CCFF?style=flat&logo=apachehadoop&logoColor=black" height="25" /> <img src="https://img.shields.io/badge/Spark-FF9900?style=flat&logo=apachespark&logoColor=white" height="25" /> <img src="https://img.shields.io/badge/Elasticsearch-005571?style=flat&logo=elasticsearch&logoColor=white" height="25" />
-
-- ☁️ 실행 환경 (Infra)<br>
-<img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" height="25" /> <img src="https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white" height="25" /><br>
-`Elasticsearch / Redis 실행 환경 구성용`
-
-- 🔗 API & 외부 데이터<br>
-<img src="https://img.shields.io/badge/Kakao%20Map-FFCD00?style=flat&logo=kakaotalk&logoColor=black" height="25" /> <img src="https://img.shields.io/badge/Public%20Data%20API-0064FF?style=flat&logo=data&logoColor=white" height="25" />
-
 - 🛠 개발 도구 & 빌드<br>
-<img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white" height="25" /> <img src="https://img.shields.io/badge/Visual%20C++-00599C?style=flat&logo=visualstudio&logoColor=white" height="25" />
+<img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white" height="25" />
 
 
 ---
