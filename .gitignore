@@ -1,1 +1,4 @@
 /.metadata/
+
+# ===== 비밀 파일 =====
+MATFLIX/MATFLIX/src/main/resources/application-secret.properties
