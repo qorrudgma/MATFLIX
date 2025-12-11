@@ -39,7 +39,7 @@
 					<!-- 프로필 정보 -->
 					<div class="user_container">
 						<div class="profile_image profile">
-							<img onclick="my_page()" alt="MATFLIX" src="${pageContext.request.contextPath}">
+							<img onclick="my_page()" alt="MATFLIX" src="${pageContext.request.contextPath}/image/MATFLIX.png">
 						</div>
 						<div class="user_info">
 							<div class="profile_info">
@@ -149,6 +149,8 @@
         loadInitialNotifications();
     });
 
+	// 여기부터 SSE
+	/*
     function connectSSE() {
         // 기존 연결이 있으면 닫기
         if (eventSource) {
@@ -209,6 +211,8 @@
             }
         };
     }
+	*/
+	// 여기까지
 
     // 초기 알림 로드
     function loadInitialNotifications() {
@@ -322,7 +326,6 @@
         }
     });
 
-    // 페이지 언로드 시 SSE 연결 종료
     $(window).on('beforeunload', function() {
         if (eventSource) {
             eventSource.close();

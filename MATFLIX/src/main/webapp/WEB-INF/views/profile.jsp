@@ -20,7 +20,7 @@
         <section class="profile_section">
             <div class="profile_header">
                 <div class="profile_image_large">
-                    <img src="${pageContext.request.contextPath}/resources/image/MATFLIX.png" alt="프로필 이미지">
+                    <img src="${pageContext.request.contextPath}/image/MATFLIX.png" alt="프로필 이미지">
                     <button class="edit_profile_image"><i class="fas fa-camera"></i></button>
                 </div>
                 <div class="profile_info_container">
