@@ -6,7 +6,7 @@ let touchEndX = 0;
 
 // DOM이 완전히 로드된 후 실행
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('메인 스크립트 초기화 중...');
+    //console.log('메인 스크립트 초기화 중...');
     
     // 배너 슬라이더 초기화
     initBannerSlider();
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 레시피 슬라이더 초기화
     initRecipeSliders();
     
-    console.log('메인 스크립트 초기화 완료');
+    // console.log('메인 스크립트 초기화 완료');
 });
 
 // 배너 슬라이더 초기화 함수
@@ -58,7 +58,7 @@ function initBannerSlider() {
         if (img) {
             // 이미지 로드 이벤트 리스너 추가
             img.addEventListener('load', function() {
-                console.log(`배너 이미지 ${index + 1} 로드 완료`);
+                //console.log(`배너 이미지 ${index + 1} 로드 완료`);
             });
             
             img.addEventListener('error', function() {

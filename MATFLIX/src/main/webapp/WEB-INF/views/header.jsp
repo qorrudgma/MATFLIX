@@ -28,6 +28,13 @@
 			<!-- 사용자 액션 (오른쪽) -->
 			<div class="header_actions">
 				<% if(user != null){ %>
+					<script>						
+						$(document).ready(function(){
+							console.log("로그인하고 이제 see연결해볼거야");
+							connectSSE();
+							//loadInitialNotifications();
+						});
+					</script>
 					<!-- 알림 버튼 -->
 					<div class="notification_container">
 						<button type="button" id="notification_btn" data-count="<%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>">
@@ -141,79 +148,26 @@
     let eventSource;
     let notificationCount = 0;
 
-    $(document).ready(function() {
-        // SSE 연결 설정
-        connectSSE();
-        
-        // 초기 알림 로드
-        loadInitialNotifications();
-    });
-
-	// 여기부터 SSE
-	/*
-    function connectSSE() {
-        // 기존 연결이 있으면 닫기
-        if (eventSource) {
-            eventSource.close();
-        }
-        
-        // SSE 연결 생성 (사용자 ID를 URL에 포함)
-        eventSource = new EventSource('/notifications/stream?userId=' + sessionUserNo);
-        
-        // 연결 성공 시
-        eventSource.onopen = function() {
-            console.log('SSE 연결 성공');
-        };
-        
-        // 일반 메시지 수신 시
-        eventSource.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            console.log('새 알림 수신:', data);
-            
-            // 알림 카운트 업데이트
-            updateNotificationBadge(++notificationCount);
-            
-            // 브라우저 알림 표시
-            showBrowserNotification(data.message || '새 알림이 있습니다');
-            
-            // 알림 패널이 열려있는 경우 내용 업데이트
-            if ($("#notification_div").hasClass("active")) {
-                loadNotifications();
-            }
-        };
-        
-        // 특정 이벤트 수신 시 (서버에서 event: notification 형식으로 보낼 경우)
-        eventSource.addEventListener('notification', function(event) {
-            const data = JSON.parse(event.data);
-            console.log('알림 이벤트 수신:', data);
-            
-            // 알림 카운트 업데이트
-            updateNotificationBadge(++notificationCount);
-            
-            // 브라우저 알림 표시
-            showBrowserNotification(data.message || '새 알림이 있습니다');
-            
-            // 알림 패널이 열려있는 경우 내용 업데이트
-            if ($("#notification_div").hasClass("active")) {
-                loadNotifications();
-            }
-        });
-        
-        // 오류 발생 시
-        eventSource.onerror = function(error) {
-            console.error('SSE 오류:', error);
-            
-            // 연결 종료 시 재연결 시도 (EventSource는 자동 재연결을 시도하지만, 
-            // 명시적으로 처리할 수도 있음)
-            if (eventSource.readyState === EventSource.CLOSED) {
-                console.log('SSE 연결 종료. 재연결 시도...');
-                setTimeout(connectSSE, 3000);
-            }
-        };
-    }
-	*/
-	// 여기까지
-
+	// SSE
+	function connectSSE() {
+		console.log("connectSSE 잘 도착함");
+		
+		const eventSource = new EventSource("/sse/subscribe/" + sessionUserNo);
+		
+		eventSource.onmessage = function(event){
+			console.log("SSE 메시지: ", event.data);
+		}
+		
+		eventSource.addEventListener("alert", function(event) {
+		    console.log("알림 이벤트:", event.data);
+		    // 알림 표시 새로 바꾸기
+		});
+		
+		eventSource.onerror = function(err){
+			console.log("SSE 오류: ", err);
+		}
+	}
+	
     // 초기 알림 로드
     function loadInitialNotifications() {
         var followerId = parseInt(sessionUserNo, 10);
