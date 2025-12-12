@@ -39,6 +39,7 @@
 					<div class="notification_container">
 						<button type="button" id="notification_btn" data-count="<%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>">
 							<i class="far fa-bell"></i>
+							<span class="notify_badge"></span>
 						</button>
 						<div id="notification_div"></div>
 					</div>
@@ -87,9 +88,9 @@
 			var notification_count = <%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>;
 			
 			// 알림 카운트가 있으면 알림 배지 표시
-			if (notification_count > 0) {
-				document.getElementById("notification_btn").style.setProperty('--notification-visibility', 'visible');
-			}
+			//if (notification_count > 0) {
+			//	document.getElementById("notification_btn").style.setProperty('--notification-visibility', 'visible');
+			//}
 			
 			console.log(sessionUserNo);
 		<% } else { %>
@@ -159,6 +160,7 @@
 		}
 		
 		eventSource.addEventListener("alert", function(event) {
+			$("#notification_btn").addClass("active");
 		    console.log("알림 이벤트:", event.data);
 		    // 알림 표시 새로 바꾸기
 		});
