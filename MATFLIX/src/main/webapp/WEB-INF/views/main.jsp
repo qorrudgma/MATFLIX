@@ -43,10 +43,10 @@
                 </div>
             </div>
             
-            <div class="banner-arrow prev" onclick="moveBanner(-1)">
+            <div class="banner-arrow prev" onclick="moveBanner(1)">
                 <i class="fas fa-chevron-left"></i>
             </div>
-            <div class="banner-arrow next" onclick="moveBanner(1)">
+            <div class="banner-arrow next" onclick="moveBanner(-1)">
                 <i class="fas fa-chevron-right"></i>
             </div>
             

@@ -80,13 +80,13 @@ function initBannerSlider() {
     
     if (prevArrow) {
         prevArrow.addEventListener('click', function() {
-            moveBanner(-1);
+            moveBanner(1);
         });
     }
     
     if (nextArrow) {
         nextArrow.addEventListener('click', function() {
-            moveBanner(1);
+            moveBanner(-1);
         });
     }
     
