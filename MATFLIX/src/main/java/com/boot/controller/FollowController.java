@@ -37,6 +37,7 @@ public class FollowController {
 		followService.add_follow(following_id, follower_id, follower_email);
 		log.info("테이블에 넣음");
 
+		// 팔로우 할때 메시지 다시 작성하기
 		sseService.send(following_id, "팔로우함");
 
 		HttpSession session = request.getSession();

@@ -162,7 +162,6 @@
 		eventSource.addEventListener("alert", function(event) {
 			$("#notification_btn").addClass("active");
 		    console.log("알림 이벤트:", event.data);
-		    // 알림 표시 새로 바꾸기
 		});
 		
 		eventSource.onerror = function(err){

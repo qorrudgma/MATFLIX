@@ -14,6 +14,7 @@ import com.boot.dto.CommentDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentService;
 import com.boot.service.NotificationService;
+import com.boot.service.SseService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +31,9 @@ public class CommentController {
 
 	@Autowired
 	private NotificationService notificationService;
+
+	@Autowired
+	private final SseService sseService = new SseService();
 
 	@RequestMapping("/save")
 	public @ResponseBody ArrayList<CommentDTO> save(@RequestParam HashMap<String, String> param) {
@@ -51,7 +55,11 @@ public class CommentController {
 
 		int userNo = Integer.parseInt(param.get("userNo"));
 
-		notificationService.add_notification(userNo, mf_no, b_no, 2);
+		// 팔로우 할때 메시지 다시 작성하기
+		if (mf_no != userNo) {
+			sseService.send(mf_no, userNo + "가 내 게시글에 댓글 작성함");
+			notificationService.add_notification(userNo, mf_no, b_no, 2);
+		}
 
 		ArrayList<CommentDTO> commentList = service.findAll(param);
 		return commentList;
