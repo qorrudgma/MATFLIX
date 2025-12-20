@@ -36,7 +36,7 @@ function initBannerSlider() {
         return;
     }
     
-    console.log(`${bannerSlides.length}개의 배너 슬라이드를 발견했습니다.`);
+    //console.log(`${bannerSlides.length}개의 배너 슬라이드를 발견했습니다.`);
     
     // 첫 번째 슬라이드 활성화
     bannerSlides[0].classList.add('active');
@@ -94,12 +94,12 @@ function initBannerSlider() {
     const bannerContainer = document.querySelector('.banner-slider-container');
     if (bannerContainer) {
         bannerContainer.addEventListener('mouseenter', function() {
-            console.log('배너에 마우스 오버, 자동 슬라이드 중지');
+            // console.log('배너에 마우스 오버, 자동 슬라이드 중지');
             clearInterval(bannerInterval);
         });
         
         bannerContainer.addEventListener('mouseleave', function() {
-            console.log('배너에서 마우스 아웃, 자동 슬라이드 재개');
+            // console.log('배너에서 마우스 아웃, 자동 슬라이드 재개');
             startAutoSlide();
         });
         

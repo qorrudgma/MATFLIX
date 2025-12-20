@@ -32,7 +32,7 @@
 						$(document).ready(function(){
 							console.log("로그인하고 이제 see연결해볼거야");
 							connectSSE();
-							//loadInitialNotifications();
+							loadInitialNotifications();
 						});
 					</script>
 					<!-- 알림 버튼 -->
@@ -85,6 +85,8 @@
 	<script>
 		<% if (user != null) { %>
 			var sessionUserNo = <%= user.getMf_no() %>;
+			var sessionUserNickname = "<%= user.getMf_nickname() %>";
+			//var sessionUserNickname = <%= user.getMf_nickname() %>;
 			var notification_count = <%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>;
 			
 			// 알림 카운트가 있으면 알림 배지 표시
@@ -92,58 +94,11 @@
 			//	document.getElementById("notification_btn").style.setProperty('--notification-visibility', 'visible');
 			//}
 			
+			console.log(sessionUserNickname);
 			console.log(sessionUserNo);
 		<% } else { %>
 			var sessionUserNo = null;
 		<% } %>
-    
-    // 알림 버튼 클릭
-    // $(document).on("click", "#notification_btn", function (e) {
-    //     e.preventDefault();
-    //     $("#notification_div").toggleClass("active");
-
-    //     var followerId = parseInt(sessionUserNo, 10);
-        
-    //     $.ajax({
-    //          type: "POST"
-    //         ,url: "/notification_list"
-    //         ,data: {follower_id: followerId}
-    //         ,dataType: "json"
-    //         ,success: function (notification_list) {
-    //             console.log("notification_list 받아옴");
-
-    //             let notification_data="";
-
-    //             console.log(notification_count);
-    //             if (notification_count != 0 && notification_count != null) {
-    //                 notification_data += "<div class='notification_header'><h3>알림 " + notification_count + "개</h3></div>";
-    //             } else {
-    //                 notification_data += "<div class='notification_header'><h3>새로운 알림이 없습니다</h3></div>";
-    //             }
-                
-    //             for (let i = 0; i < notification_list.length && i < 10; i++) {
-    //                 if (notification_list[i].is_read == 1) {
-    //                     notification_data += "<div id='notification_card' class='read_true'>";
-    //                 } else {
-    //                     notification_data += "<div id='notification_card'>";
-    //                 }
-    //                 notification_data += "<div>상태: " + (notification_list[i].is_read == 1 ? "읽음" : "안읽음") + "</div>";
-    //                 notification_data += "<div>시간: " + notification_list[i].created_at + "</div>";
-    //                 notification_data += "<div>작성자: " + notification_list[i].following_id + "</div>";
-    //                 notification_data += "<div>게시글 번호: " + notification_list[i].boardNo + "</div>";
-    //                 notification_data += "<div>유형: " + (notification_list[i].post_id ? "댓글" : "게시글") + "</div>";
-    //                 notification_data += '<button type="button" class="move_board" data-board_no="'+notification_list[i].boardNo+'" data-notifications_id="'+notification_list[i].notifications_id+'">보러가기</button>';
-    //                 notification_data += "</div>";
-    //             }
-    //             console.log(notification_data);
-    //             document.getElementById("notification_div").innerHTML = notification_data;
-    //             document.getElementById("notification_div").value = "";
-    //         }
-    //         ,error: function (error) {
-    //             console.log(error);
-    //         }
-    //     });
-    // });
 
     // 전역 변수
     let eventSource;
@@ -175,13 +130,16 @@
         
         $.ajax({
             type: "POST",
-            url: "/notification_list",
+            url: "/notification_list_n",
             data: {follower_id: followerId},
             dataType: "json",
-            success: function(notification_list) {
+            success: function(notification_list_n) {
                 // 읽지 않은 알림 개수 저장 및 표시
-                notificationCount = notification_list.filter(item => item.is_read === 0).length;
-                updateNotificationBadge(notificationCount);
+                notificationCount = notification_list_n.filter(item => item.is_read === 0).length;
+				if(notificationCount>0){
+					$("#notification_btn").addClass("active");
+				}
+                //updateNotificationBadge(notificationCount);
             },
             error: function(error) {
                 console.log(error);
@@ -189,80 +147,47 @@
         });
     }
 
-    // 알림 배지 업데이트
-    function updateNotificationBadge(count) {
-        // 기존 배지 제거
-        $("#notification_btn .notification-badge").remove();
-        
-        // 알림이 있으면 배지 추가
-        if (count > 0) {
-            $("#notification_btn").append('<span class="notification-badge">' + count + '</span>');
-        }
-    }
-
-    // 브라우저 알림 표시
-    function showBrowserNotification(message) {
-        // 브라우저 알림 권한 확인
-        if (Notification.permission === "granted") {
-            new Notification("새 알림", {
-                body: message,
-                icon: "/path/to/notification-icon.png"
-            });
-        } else if (Notification.permission !== "denied") {
-            // 권한 요청
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    new Notification("새 알림", {
-                        body: message,
-                        icon: "/path/to/notification-icon.png"
-                    });
-                }
-            });
-        }
-    }
-
-    // 알림 목록 로드 (기존 코드와 유사)
+    // 알림 목록 로드
     function loadNotifications() {
         var followerId = parseInt(sessionUserNo, 10);
         
         $.ajax({
             type: "POST",
-            url: "/notification_list",
+            url: "/notification_list_n",
             data: {follower_id: followerId},
             dataType: "json",
-            success: function(notification_list) {
-                // 기존 코드와 동일한 UI 업데이트 로직
+            success: function(notification_list_n) {
                 let notification_data = "";
                 
-                if (notification_list.length > 0) {
-                    notification_data += "<div class='notification_header'><h3>알림 " + notification_list.length + "개</h3></div>";
+                if (notification_list_n.length > 0) {
+                    notification_data += "<div class='notification_header'><h3>알림 " + notification_list_n.length + "개</h3></div>";
                 } else {
                     notification_data += "<div class='notification_header'><h3>새로운 알림이 없습니다</h3></div>";
                 }
                 
-                for (let i = 0; i < notification_list.length && i < 10; i++) {
+                for (let i = 0; i < notification_list_n.length && i < 10; i++) {
                     // 기존 코드와 동일
-                    if (notification_list[i].is_read == 1) {
+                    if (notification_list_n[i].is_read == 1) {
                         notification_data += "<div id='notification_card' class='read_true'>";
                     } else {
                         notification_data += "<div id='notification_card'>";
                     }
-                    notification_data += "<div>상태: " + (notification_list[i].is_read == 1 ? "읽음" : "안읽음") + "</div>";
-                    notification_data += "<div>시간: " + notification_list[i].created_at + "</div>";
-                    notification_data += "<div>작성자: " + notification_list[i].following_id + "</div>";
-                    notification_data += "<div>게시글 번호: " + notification_list[i].boardNo + "</div>";
-                    notification_data += "<div>유형: " + (notification_list[i].post_id ? "댓글" : "게시글") + "</div>";
-                    notification_data += '<button type="button" class="move_board" data-board_no="'+notification_list[i].boardNo+'" data-notifications_id="'+notification_list[i].notifications_id+'">보러가기</button>';
+                    //notification_data += "<div>상태: " + (notification_list_n[i].is_read == 1 ? "읽음" : "안읽음") + "</div>";
+                    notification_data += "<div>시간: " + notification_list_n[i].created_at + "</div>";
+                    notification_data += "<div>작성자: " + notification_list_n[i].nickname + " 님이 </div>";
+                    notification_data += "<div>게시글 번호: " + notification_list_n[i].boardNo + "</div>";
+                    notification_data += "<div>유형: " + (notification_list_n[i].post_id ? "댓글" : "게시글") + "</div>";
+                    notification_data += '<button type="button" class="move_board" data-board_no="'+notification_list_n[i].boardNo+'" data-notifications_id="'+notification_list_n[i].notifications_id+'">보러가기</button>';
                     notification_data += "</div>";
                 }
                 
                 document.getElementById("notification_div").innerHTML = notification_data;
-                
+                /*
                 // 알림을 확인했으므로 카운트 리셋
                 if ($("#notification_div").hasClass("active")) {
                     notificationCount = 0;
-                    updateNotificationBadge(notificationCount);
                 }
+				*/
             },
             error: function(error) {
                 console.log(error);
