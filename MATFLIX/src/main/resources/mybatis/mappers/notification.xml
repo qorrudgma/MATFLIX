@@ -23,6 +23,27 @@
     	 where follower_id = #{follower_id}
     	 ORDER BY notifications_id DESC
     </select>
+
+	<!-- 안 읽은 알림 보기 -->
+    <select id="notification_list_n" resultType="com.boot.dto.NotificationDTO">
+    	select notifications_id
+    		 , follower_id
+    		 , following_id
+    		 , n.boardNo
+    		 , post_id
+    		 , is_read
+    		 , created_at
+    		 , m.mf_nickname as nickname
+    		 , t.boardTitle as board_title
+    	  from notifications n
+    	  join matflix m
+    	    on n.following_id = m.mf_no
+    	  join tbl_board t
+    	    on n.boardNo = t.boardNo
+    	 where follower_id = #{follower_id}
+    	   and is_read = 0
+    	 ORDER BY notifications_id DESC
+    </select>
     
     <!-- 알림 읽음 처리 -->
     <update id="is_read_true">

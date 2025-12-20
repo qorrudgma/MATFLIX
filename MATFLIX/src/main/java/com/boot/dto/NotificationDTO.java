@@ -17,4 +17,6 @@ public class NotificationDTO {
 	private int post_id;
 	private int is_read;
 	private Date created_at;
+	private String nickname;
+	private String board_title;
 }

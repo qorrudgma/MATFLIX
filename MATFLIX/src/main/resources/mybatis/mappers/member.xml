@@ -4,6 +4,7 @@
     
 <mapper namespace="com.boot.dao.TeamDAO">
 
+	<!-- 회원가입 -->
 	<insert id="recruit">
 	  INSERT INTO matflix (
 	      mf_id, mf_pw, mf_pw_chk, mf_nickname,
@@ -14,7 +15,7 @@
 	  )
 	</insert>
 
-
+	<!-- 로그인 -->
 	<select id="login" resultType="int">
 		SELECT COUNT(*) FROM matflix
 		<where>
@@ -27,6 +28,7 @@
 		</where>
 	</select>
 
+	<!-- 회원 리스트 -->
 	<select id="list" resultType="com.boot.dto.TeamDTO">
 		select mf_no, mf_id, mf_pw,
 		mf_pw_chk, mf_name, mf_nickname, mf_email,
@@ -34,12 +36,14 @@
 		matflix
 	</select>
 	
+	<!-- id로 회원 찾기 -->
 	<select id="find_list"
 		resultType="com.boot.dto.TeamDTO">
 		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
 		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}
 	</select>
 
+	<!-- 개인 정보 수정 -->
 	<update id="update_ok" parameterType="hashmap">
 	    UPDATE matflix
 	    SET 
@@ -50,10 +54,12 @@
 	    WHERE mf_id = #{mf_id}
 	</update>
 	
+	<!-- 유저 정보 삭제 -->
 	<delete id="delete_ok">
 		delete from matflix where mf_id=#{mf_id}
 	</delete>
-
+	
+	<!-- 닉네임 변경 -->
 	<update id="nickname">
 		update matflix set mf_nickname=#{mf_nickname}
 		<where>
@@ -61,6 +67,7 @@
 		</where>
 	</update>
 
+	<!-- 유저 고유 번호로 정보 찾기 -->
 	<select id="find_user_by_no" resultType="com.boot.dto.TeamDTO">
 		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_name, mf_nickname, mf_email, mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_no = #{mf_no}
 	</select>

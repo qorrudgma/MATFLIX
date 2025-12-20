@@ -24,11 +24,19 @@ public class NotificationServiceImpl implements NotificationService {
 		dao.add_notification(following_id, follower_id, boardNo, post_id);
 	}
 
+//	@Override
+//	public List<NotificationDTO> notification_list(int follower_id) {
+//		NotificationDAO dao = sqlSession.getMapper(NotificationDAO.class);
+//		List<NotificationDTO> notification_list = dao.notification_list(follower_id);
+//		return notification_list;
+//	}
+
 	@Override
-	public List<NotificationDTO> notification_list(int follower_id) {
+	public List<NotificationDTO> notification_list_n(int follower_id) {
 		NotificationDAO dao = sqlSession.getMapper(NotificationDAO.class);
-		List<NotificationDTO> notification_list = dao.notification_list(follower_id);
-		return notification_list;
+		List<NotificationDTO> notification_list_n = dao.notification_list_n(follower_id);
+		log.info("!@#$" + notification_list_n);
+		return notification_list_n;
 	}
 
 	@Override

@@ -86,7 +86,6 @@
 		<% if (user != null) { %>
 			var sessionUserNo = <%= user.getMf_no() %>;
 			var sessionUserNickname = "<%= user.getMf_nickname() %>";
-			//var sessionUserNickname = <%= user.getMf_nickname() %>;
 			var notification_count = <%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>;
 			
 			// 알림 카운트가 있으면 알림 배지 표시
@@ -172,13 +171,33 @@
                     } else {
                         notification_data += "<div id='notification_card'>";
                     }
+					switch(notification_list_n[i].post_id){
+						case 1:
+							notification_data += "<div>" + notification_list_n[i].created_at + "</div>";
+		                    notification_data += "<div>'" + notification_list_n[i].nickname + "'님이</div>";
+		                    notification_data += "<div>'" + notification_list_n[i].board_title + "'게시글을 추가하였습니다.</div>";
+							notification_data += '<button type="button" class="move_board" data-board_no="' + notification_list_n[i].boardNo + '" data-notifications_id="'+notification_list_n[i].notifications_id+'">보러가기</button>';
+		                    notification_data += "</div>";
+						break;
+						case 2:
+							notification_data += "<div>" + notification_list_n[i].created_at + "</div>";
+		                    notification_data += "<div>'" + notification_list_n[i].nickname + "'님이</div>";
+		                    notification_data += "<div>'" + notification_list_n[i].board_title + "'게시글에 댓글을 추가하였습니다.</div>";
+							notification_data += '<button type="button" class="move_board" data-board_no="' + notification_list_n[i].boardNo + '" data-notifications_id="'+notification_list_n[i].notifications_id+'">보러가기</button>';
+		                    notification_data += "</div>";
+						break;
+							
+					}
+					/*
                     //notification_data += "<div>상태: " + (notification_list_n[i].is_read == 1 ? "읽음" : "안읽음") + "</div>";
                     notification_data += "<div>시간: " + notification_list_n[i].created_at + "</div>";
                     notification_data += "<div>작성자: " + notification_list_n[i].nickname + " 님이 </div>";
-                    notification_data += "<div>게시글 번호: " + notification_list_n[i].boardNo + "</div>";
+                    //notification_data += "<div>게시글 번호: " + notification_list_n[i].boardNo + "</div>";
+                    notification_data += "<div>게시글 이름: " + notification_list_n[i].board_title + "</div>";
                     notification_data += "<div>유형: " + (notification_list_n[i].post_id ? "댓글" : "게시글") + "</div>";
                     notification_data += '<button type="button" class="move_board" data-board_no="'+notification_list_n[i].boardNo+'" data-notifications_id="'+notification_list_n[i].notifications_id+'">보러가기</button>';
                     notification_data += "</div>";
+					*/
                 }
                 
                 document.getElementById("notification_div").innerHTML = notification_data;

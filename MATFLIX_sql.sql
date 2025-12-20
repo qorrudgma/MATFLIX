@@ -24,16 +24,36 @@ CREATE TABLE follow (
     UNIQUE KEY uniq_follow (follower_id, following_id) -- 중복 방지
 );
 
+select * from follow;
+
 -- 알림 테이블
 CREATE TABLE notifications (
     notifications_id INT AUTO_INCREMENT PRIMARY KEY,
     follower_id INT NOT NULL,          -- 팔로우를 거는 사람 (알림 받는 대상)
     following_id INT NOT NULL,          -- 팔로우 당하는 사람 (알림 생성하는 행동하는 사람)
     boardNo INT NOT NULL,             -- 해당 게시판 고유넘버 (알림 생성하는 게시판)
-    post_id INT,                         -- 어떤 알림인지 (게시글,댓글,레시피)
+    post_id INT,                         -- 어떤 알림인지 (게시글(1),댓글(2),레시피(3))
     is_read int DEFAULT 0,             -- 알림 읽음 여부
     created_at DATETIME DEFAULT NOW()    -- 생성 시간
 );
+
+select notifications_id
+    		 , follower_id
+    		 , following_id
+    		 , n.boardNo
+    		 , post_id
+    		 , is_read
+    		 , created_at
+             , m.mf_nickname as nickname
+    		 , t.boardTitle as board_title
+    	  from notifications n
+    	  join matflix m
+    	    on n.following_id = m.mf_no
+    	  left join tbl_board t
+    	    on n.boardNo = t.boardNo
+    	 where follower_id = 11
+    	   and is_read = 0
+    	 ORDER BY notifications_id DESC;
 
 -- 즐겨찾기 테이블 생성
 CREATE TABLE recipe_favorites (
