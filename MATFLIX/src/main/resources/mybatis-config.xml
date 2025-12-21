@@ -13,6 +13,7 @@
 
 		<!-- 알림 -->
 		<mapper resource="mybatis/mappers/notification.xml"/>
+		<mapper resource="mybatis/mappers/notif_setting.xml"/>
 		
 		<!-- 즐겨찾기 -->
 		<mapper resource="mybatis/mappers/favoriteMapper.xml"/>

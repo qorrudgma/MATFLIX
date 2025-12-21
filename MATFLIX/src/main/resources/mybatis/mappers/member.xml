@@ -5,7 +5,7 @@
 <mapper namespace="com.boot.dao.TeamDAO">
 
 	<!-- 회원가입 -->
-	<insert id="recruit">
+	<insert id="recruit" useGeneratedKeys="true" keyProperty="mf_no" keyColumn="mf_no">
 	  INSERT INTO matflix (
 	      mf_id, mf_pw, mf_pw_chk, mf_nickname,
 	      mf_name, mf_email, mf_phone, mf_birth, mf_gender

@@ -21,11 +21,24 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private SqlSession sqlSession;
 
+	@Autowired
+	private NotifSettingService notifSettingService;
+
 	@Override
 	public void recruit(HashMap<String, String> param) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		System.out.println(param);
 		dao.recruit(param);
+		System.out.println(param);
+		System.out.println(param.get("mf_id"));
+		// 기존에 HashMap<String, String> param 만들어서 오프젝트로 뽑아서 스트링으로 만들고 다시 인트로 만드는 과정 필요
+		// 안하면 코드 다른것들 싹 고쳐야함
+		Object Omf_no = param.get("mf_no");
+//		System.out.println(Omf_no);
+		int mf_no = Integer.parseInt(Omf_no.toString());
+
+		log.info("알림 on/off 시작");
+		notifSettingService.add_notif_setting(mf_no);
+
 	}
 
 	@Override

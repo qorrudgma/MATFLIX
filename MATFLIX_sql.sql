@@ -13,6 +13,9 @@ CREATE TABLE matflix (
     mf_regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
     mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN'))
 );
+commit;
+select * from matflix;
+delete from matflix where mf_no > 20;
 
 -- 팔로우
 CREATE TABLE follow (
@@ -32,28 +35,32 @@ CREATE TABLE notifications (
     follower_id INT NOT NULL,          -- 팔로우를 거는 사람 (알림 받는 대상)
     following_id INT NOT NULL,          -- 팔로우 당하는 사람 (알림 생성하는 행동하는 사람)
     boardNo INT NOT NULL,             -- 해당 게시판 고유넘버 (알림 생성하는 게시판)
-    post_id INT,                         -- 어떤 알림인지 (게시글(1),댓글(2),레시피(3))
+    post_id INT,                         -- 어떤 알림인지 (게시글(1),댓글(2),팔로우(3),레시피(4))
     is_read int DEFAULT 0,             -- 알림 읽음 여부
     created_at DATETIME DEFAULT NOW()    -- 생성 시간
 );
 
-select notifications_id
-    		 , follower_id
-    		 , following_id
-    		 , n.boardNo
-    		 , post_id
-    		 , is_read
-    		 , created_at
-             , m.mf_nickname as nickname
-    		 , t.boardTitle as board_title
-    	  from notifications n
-    	  join matflix m
-    	    on n.following_id = m.mf_no
-    	  left join tbl_board t
-    	    on n.boardNo = t.boardNo
-    	 where follower_id = 11
-    	   and is_read = 0
-    	 ORDER BY notifications_id DESC;
+-- 알림 on/off 테이블
+CREATE TABLE notif_setting (
+    notif_id INT AUTO_INCREMENT PRIMARY KEY,
+    mf_no INT NOT NULL,
+    notif_type VARCHAR(30) NOT NULL,
+    yn INT NOT NULL DEFAULT 1,
+    UNIQUE KEY uk_user_type (mf_no, notif_type)
+);
+
+INSERT INTO notif_setting (mf_no, notif_type)
+		VALUES (1, 'follow'), (1, 'board'), (1, 'comment');
+        
+SELECT COUNT(*) 
+FROM notif_setting;
+
+select * from notif_setting;
+DELETE FROM notif_setting;
+-- follow: "팔로우"
+-- board: "게시글"
+-- comment: "댓글"
+-- recipe_comment: "레시피 댓글"
 
 -- 즐겨찾기 테이블 생성
 CREATE TABLE recipe_favorites (

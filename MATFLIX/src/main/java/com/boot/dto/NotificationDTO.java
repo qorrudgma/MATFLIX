@@ -1,6 +1,6 @@
 package com.boot.dto;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class NotificationDTO {
 	private int boardNo;
 	private int post_id;
 	private int is_read;
-	private Date created_at;
+	private LocalDateTime created_at;
 	private String nickname;
 	private String board_title;
 }

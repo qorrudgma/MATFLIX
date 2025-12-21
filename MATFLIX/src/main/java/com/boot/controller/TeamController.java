@@ -83,6 +83,7 @@ public class TeamController {
 	@Autowired
 	private RecommendService recommendService;
 
+	// 프로필 보기
 	@RequestMapping("/profile")
 	public String profile(HttpSession session, Model model) throws Exception {
 		TeamDTO user = (TeamDTO) session.getAttribute("user");

@@ -35,6 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public List<NotificationDTO> notification_list_n(int follower_id) {
 		NotificationDAO dao = sqlSession.getMapper(NotificationDAO.class);
 		List<NotificationDTO> notification_list_n = dao.notification_list_n(follower_id);
+
 		log.info("!@#$" + notification_list_n);
 		return notification_list_n;
 	}
