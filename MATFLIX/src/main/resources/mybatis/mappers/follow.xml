@@ -17,6 +17,18 @@
 		   and following_id =#{following_id}
 	</delete>
 	
+	<!-- 탈퇴로 인한 팔로우 정리 -->
+	<delete id="mf_delete_follow">
+		delete f
+		  from follow f
+		  join (
+				select follow_id
+		          from follow
+				 where follower_id =#{mf_no}
+					or following_id =#{mf_no}
+			   ) f2 on f.follow_id = f2.follow_id
+	</delete>
+	
 	<!-- 팔로우 유무 확인 -->
 	<select id="follow_unfollow" resultType="int">
 		select count(*)

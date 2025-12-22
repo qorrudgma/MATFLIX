@@ -59,4 +59,16 @@
     	 where follower_id = #{follower_id}
     	   and is_read = 0
     </select>
+    
+    <!-- 알림 삭제 -->
+	<delete id="delete_notification">
+		DELETE n
+		  FROM notifications n
+		  JOIN (
+		       SELECT notifications_id
+		         FROM notifications
+		        WHERE follower_id = #{mf_no}
+				   OR following_id = #{mf_no}
+			   ) t ON n.notifications_id = t.notifications_id;
+	</delete>
 </mapper>

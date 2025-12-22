@@ -60,6 +60,12 @@ public class FollowServiceImpl implements FollowService {
 	}
 
 	@Override
+	public void mf_delete_follow(int mf_no) {
+		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		dao.mf_delete_follow(mf_no);
+	}
+
+	@Override
 	public List<Integer> follower_id_list(int following_id) {
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
 		List<Integer> follower_id_list = dao.follower_id_list(following_id);

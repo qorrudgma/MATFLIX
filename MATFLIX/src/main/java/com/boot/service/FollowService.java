@@ -28,6 +28,9 @@ public interface FollowService {
 
 	public void delete_follow(@Param("following_id") int following_id, @Param("follower_id") int follower_id);
 
+	// 탈퇴로 인한 팔로우 정리
+	public void mf_delete_follow(int mf_no);
+
 	// 유저 랭킹
 	public List<Map<String, Object>> user_rank();
 }

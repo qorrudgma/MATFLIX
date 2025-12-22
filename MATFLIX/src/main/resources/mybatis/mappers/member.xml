@@ -56,7 +56,7 @@
 	
 	<!-- 유저 정보 삭제 -->
 	<delete id="delete_ok">
-		delete from matflix where mf_id=#{mf_id}
+		delete from matflix where mf_no=#{mf_no}
 	</delete>
 	
 	<!-- 닉네임 변경 -->

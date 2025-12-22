@@ -9,6 +9,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.boot.dao.FollowDAO;
+import com.boot.dao.NotifSettingDAO;
+import com.boot.dao.NotificationDAO;
 import com.boot.dao.TeamDAO;
 import com.boot.dto.TeamDTO;
 
@@ -24,6 +27,7 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private NotifSettingService notifSettingService;
 
+	// 회원가입
 	@Override
 	public void recruit(HashMap<String, String> param) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
@@ -41,6 +45,7 @@ public class TeamServiceImpl implements TeamService {
 
 	}
 
+	// 회원 리스트 all
 	@Override
 	public ArrayList<TeamDTO> list() {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
@@ -48,6 +53,7 @@ public class TeamServiceImpl implements TeamService {
 		return list;
 	}
 
+	// 회원 찾기
 	@Override
 	public TeamDTO find_list(@Param("mf_id") String mf_id) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
@@ -55,6 +61,7 @@ public class TeamServiceImpl implements TeamService {
 		return find_list;
 	}
 
+	// 로그인
 	@Override
 	public int login(@Param("mf_id") String mf_id, @Param("mf_pw") String mf_pw) {
 		int re = -1;
@@ -74,9 +81,19 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void delete_ok(String id) {
+	public void delete_ok(int mf_no) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		dao.delete_ok(id);
+		NotifSettingDAO NSdao = sqlSession.getMapper(NotifSettingDAO.class);
+		NotificationDAO Ndao = sqlSession.getMapper(NotificationDAO.class);
+		FollowDAO Fdao = sqlSession.getMapper(FollowDAO.class);
+		// 알림 설정 삭제
+		NSdao.delete_notif_setting(mf_no);
+		// 알림 삭제
+		Ndao.delete_notification(mf_no);
+		// 팔로우 정리
+		Fdao.mf_delete_follow(mf_no);
+		// 회원삭제
+		dao.delete_ok(mf_no);
 	}
 
 	@Override

@@ -15,7 +15,7 @@ CREATE TABLE matflix (
 );
 commit;
 select * from matflix;
-delete from matflix where mf_no > 20;
+delete from matflix where mf_no > 20 and mf_no<60;
 
 -- 팔로우
 CREATE TABLE follow (
@@ -39,6 +39,17 @@ CREATE TABLE notifications (
     is_read int DEFAULT 0,             -- 알림 읽음 여부
     created_at DATETIME DEFAULT NOW()    -- 생성 시간
 );
+-- 삭제를 위한 인덱스 생성
+select * from notifications;
+
+DELETE n
+  FROM notifications n
+  JOIN (
+       SELECT notifications_id
+         FROM notifications
+        WHERE follower_id = 1
+		   OR following_id = 1
+	   ) t ON n.notifications_id = t.notifications_id;
 
 -- 알림 on/off 테이블
 CREATE TABLE notif_setting (
@@ -49,14 +60,8 @@ CREATE TABLE notif_setting (
     UNIQUE KEY uk_user_type (mf_no, notif_type)
 );
 
-INSERT INTO notif_setting (mf_no, notif_type)
-		VALUES (1, 'follow'), (1, 'board'), (1, 'comment');
-        
-SELECT COUNT(*) 
-FROM notif_setting;
-
 select * from notif_setting;
-DELETE FROM notif_setting;
+SELECT YN from notif_setting where mf_no=60 and notif_type = "comment";
 -- follow: "팔로우"
 -- board: "게시글"
 -- comment: "댓글"

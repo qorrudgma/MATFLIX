@@ -25,7 +25,7 @@ public interface TeamService {
 	public void update_ok(HashMap<String, String> param);
 
 	// delete 로직처리
-	public void delete_ok(@Param("mf_id") String id);
+	public void delete_ok(@Param("mf_no") int mf_no);
 
 	// nickname
 	public void nickname(@Param("mf_nickname") String mf_nickname, @Param("mf_id") String mf_id);

@@ -10,4 +10,21 @@
 		VALUES (#{mf_no}, 'follow'), (#{mf_no}, 'board'), (#{mf_no}, 'comment')
 	</insert>
 
+	<!-- 알림 on/off 수정 -->
+	<update id="update_notif_setting">
+	    UPDATE notif_setting
+	       SET yn = #{yn}
+	     WHERE mf_no = #{mf_no} and notif_type = #{notif_type}
+	</update>
+	
+	<!-- 알림 on/off 삭제 -->
+	<delete id="delete_notif_setting">
+		DELETE from notif_setting where mf_no=#{mf_no}
+	</delete>
+
+	<!-- 알림 on/off 확인 -->
+	<select id="check_notif_setting" resultType="int">
+		SELECT yn from notif_setting where mf_no=#{mf_no} and notif_type = #{notif_type}
+	</select>
+	
 </mapper>
