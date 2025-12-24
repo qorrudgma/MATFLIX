@@ -61,7 +61,13 @@
                         <span class="label">조회수</span>
                         <div class="author-info">
                             <span class="value">${content_view.boardHit}</span>
-                            <!-- 팔로우 버튼 -->
+							
+							<c:if test="${user != null && user.mf_no != content_view.mf_no}">
+								<button type="button" id="follow_btn" class="follow-btn">
+                                    <i class="fas fa-user-plus"></i> 팔로우
+                                </button>
+							</c:if>
+                            <!-- 팔로우 버튼 
                             <c:if test="${user != null && user.mf_no != content_view.mf_no}">
                                 <c:set var="isFollowing" value="false"/>
                                 <c:forEach var="id" items="${sessionScope.user_follow_list}">
@@ -82,6 +88,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </c:if>
+						 프론트에서 확인하지말고 서버에서 확인하기 -->
                         </div>
                     </div>
                 </div>
@@ -238,6 +245,21 @@
     
     // 페이지 로드 시 애니메이션 효과
     $(document).ready(function() {
+		// 팔로우 상태
+		$.ajax({
+			type: "get",
+			url: "/follow_unfollow",
+			data: {follower_id: sessionUserNo, following_id: w_user},
+			success: function(res){
+				if(res){
+					$("#follow_btn").html('<i class="fas fa-user-minus"></i> 팔로우 취소').addClass("delete_follow");
+					console.log("팔로우 취소");
+				} else {
+					$("#follow_btn").html('<i class="fas fa-user-plus"></i> 팔로우').addClass("add_follow");			
+					console.log("팔로우");
+				}
+			}
+		});
         // 게시글 내용에 이미지가 있으면 클릭 시 확대 보기 기능 추가
         $(".post-body img").on("click", function() {
             var imgSrc = $(this).attr("src");
@@ -261,37 +283,33 @@
             $(".comment-dropdown").removeClass("active");
         });
     });
-    
-    // 팔로우 버튼
-    $(document).on("click", "#follow_btn", function (e) {
+	    
+    // 팔로우 추가 버튼
+    $(document).on("click", ".add_follow", function (e) {
         e.preventDefault();
 
         if (sessionUserNo == null) {
             alert("로그인 후 이용 가능합니다.");
             return;
         }
-        
-        var followingId = parseInt(w_user, 10);
-        var followerId = parseInt(sessionUserNo, 10);
 
         $.ajax({
              type: "POST"
-            ,data: {following_id: followingId, follower_id:followerId, follower_email:sessionUserEmail}
+            ,data: {following_id: w_user, follower_id:sessionUserNo, follower_email:sessionUserEmail}
             ,url: "/add_follow"
             ,success: function (result) {
                 console.log("팔로우 성공");
-                $("#follow_btn").attr("id", "delete_follow_btn")
+                $("#follow_btn").removeClass("add_follow")
                     .html('<i class="fas fa-user-minus"></i> 팔로우 취소')
-                    .addClass("following");
+                    .addClass("delete_follow");
             }
             ,error: function () {
-                console.log("팔로우 실패");
+                console.log("팔로우 성공");
             }
         });
     });
-    
     // 팔로우 삭제 버튼
-    $(document).on("click", "#delete_follow_btn", function (e) {
+    $(document).on("click", ".delete_follow", function (e) {
         e.preventDefault();
 
         if (sessionUserNo == null) {
@@ -305,9 +323,9 @@
             ,url: "/delete_follow"
             ,success: function (result) {
                 console.log("팔로우 삭제 성공");
-                $("#delete_follow_btn").attr("id", "follow_btn")
+                $("#follow_btn").removeClass("delete_follow")
                     .html('<i class="fas fa-user-plus"></i> 팔로우')
-                    .removeClass("following");
+                    .addClass("add_follow");
             }
             ,error: function () {
                 console.log("팔로우 실패");

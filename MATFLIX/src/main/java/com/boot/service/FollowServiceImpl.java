@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boot.dao.FollowDAO;
+import com.boot.dao.NotifSettingDAO;
+import com.boot.dao.NotificationDAO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,9 +22,20 @@ public class FollowServiceImpl implements FollowService {
 
 	@Override
 	public void add_follow(int following_id, int follower_id, String follower_email) {
+		// following_id => mf_no
 		log.info("FollowServiceImpl 테이블에 넣으러 옴");
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		NotifSettingDAO NSdao = sqlSession.getMapper(NotifSettingDAO.class);
+		NotificationDAO Ndao = sqlSession.getMapper(NotificationDAO.class);
+		log.info("!@#$" + following_id + "!@#" + follower_id + "!@#" + follower_email);
 		dao.add_follow(following_id, follower_id, follower_email);
+		log.info("여기는 도착?");
+		int result = NSdao.check_notif_setting(following_id, "follow");
+		log.info("!@#$" + result);
+		if (result == 1) {
+			log.info("여기는 도착?2");
+			Ndao.add_notification(follower_id, following_id, 0, 3);
+		}
 		log.info("FollowServiceImpl 테이블에 데이터 넣음");
 	}
 
@@ -48,9 +61,11 @@ public class FollowServiceImpl implements FollowService {
 	}
 
 	@Override
-	public void follow_unfollow(int following_id, int follower_id) {
+	public int follow_unfollow(int following_id, int follower_id) {
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
-		dao.follow_unfollow(following_id, follower_id);
+		int follow_unfollow = dao.follow_unfollow(following_id, follower_id);
+
+		return follow_unfollow;
 	}
 
 	@Override

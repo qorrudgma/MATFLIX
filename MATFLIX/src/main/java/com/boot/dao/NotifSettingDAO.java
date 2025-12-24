@@ -16,5 +16,5 @@ public interface NotifSettingDAO {
 	public void delete_notif_setting(@Param("mf_no") int mf_no);
 
 	// 알림 on/off 확인
-	public int check_notif_setting(int mf_no, String notif_type);
+	public int check_notif_setting(@Param("mf_no") int mf_no, @Param("notif_type") String notif_type);
 }

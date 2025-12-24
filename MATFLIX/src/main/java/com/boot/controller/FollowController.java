@@ -30,7 +30,7 @@ public class FollowController {
 	@ResponseBody
 	public void add_follow(@RequestParam("following_id") int following_id, @RequestParam("follower_id") int follower_id,
 			@RequestParam("follower_email") String follower_email, HttpServletRequest request) {
-//		log.info("add_follow()");
+		log.info("add_follow()");
 //		log.info("following_id => " + following_id);
 //		log.info("follower_id => " + follower_id);
 //		log.info("follower_email => " + follower_email);
@@ -38,7 +38,7 @@ public class FollowController {
 		log.info("테이블에 넣음");
 
 		// 팔로우 할때 메시지 다시 작성하기
-		sseService.send(following_id, "팔로우함");
+//		sseService.send(following_id, "팔로우함");
 
 		HttpSession session = request.getSession();
 
@@ -47,6 +47,25 @@ public class FollowController {
 		if (user_follow_list != null) {
 			session.setAttribute("user_follow_list", user_follow_list);
 			log.info("@# session user_follow_list => " + session.getAttribute("user_follow_list"));
+		}
+	}
+
+	// 팔로우 체크
+	@RequestMapping("/follow_unfollow")
+	@ResponseBody
+	public boolean follow_unfollow(@RequestParam("following_id") int following_id,
+			@RequestParam("follower_id") int follower_id) {
+		log.info("follow_unfollow()");
+		log.info("following_id => " + following_id);
+		log.info("follower_id => " + follower_id);
+
+		int follow_unfollow = followService.follow_unfollow(following_id, follower_id);
+		if (follow_unfollow == 1) {
+			log.info("팔로우 중임");
+			return true;
+		} else {
+			log.info("팔로우 중 아님");
+			return false;
 		}
 	}
 

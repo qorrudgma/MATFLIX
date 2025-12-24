@@ -29,7 +29,7 @@
 			   ) f2 on f.follow_id = f2.follow_id
 	</delete>
 	
-	<!-- 팔로우 유무 확인 -->
+	<!-- 팔로우 확인 -->
 	<select id="follow_unfollow" resultType="int">
 		select count(*)
 		  from follow
@@ -48,14 +48,14 @@
 	<select id="user_follow_count" resultType="int">
 		select count(*)
 		  from follow
-		 where following_id =#{follower_id}
+		 where follower_id =#{follower_id}
 	</select>
 
 	<!-- 본인의 팔로워 리스트 -->
 	<select id="user_follower_count" resultType="int">
 		select count(*)
 		  from follow
-		 where follower_id =#{follower_id}
+		 where following_id =#{follower_id}
 	</select>
 	
 	<!-- 메일 보낼 사람 찾기(메일) -->
