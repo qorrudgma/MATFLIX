@@ -344,7 +344,7 @@
 
         $.ajax({
              type: "POST"
-            ,data: {boardNo: no}
+            ,data: {boardNo: no, board_mf_no: w_user}
             ,url: "/recommend"
             ,success: function (result) {
                 console.log(result);

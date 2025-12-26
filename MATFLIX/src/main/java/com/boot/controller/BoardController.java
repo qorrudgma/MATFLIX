@@ -120,8 +120,8 @@ public class BoardController {
 
 		// 추천
 		RecommendDTO Rdto = new RecommendDTO();
-		log.info("param in boardNo => " + param.get("boardNo"));
-		log.info("param in mf_no => " + param.get("mf_no"));
+//		log.info("param in boardNo => " + param.get("boardNo"));
+//		log.info("param in mf_no => " + param.get("mf_no"));
 
 		int total_recommend = recommendService.total_recommend(Integer.parseInt(param.get("boardNo")));
 		int count = commentService.count(Integer.parseInt(param.get("boardNo")));
@@ -134,7 +134,7 @@ public class BoardController {
 				int recommend = recommendService.check_recommend(Rdto);
 				model.addAttribute("recommend", recommend);
 			} catch (Exception e) {
-				log.info("mf_no => null");
+				log.info("mf_no => null " + e);
 			}
 		}
 		model.addAttribute("count", count);

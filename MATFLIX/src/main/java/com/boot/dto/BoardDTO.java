@@ -18,6 +18,8 @@ public class BoardDTO {
 	private Timestamp boardDate;
 	private int boardHit;
 	private int mf_no;
+	private int recommend_count;
+	private int recommend_notify_step;
 
 	private List<BoardAttachDTO> attachList;
 }

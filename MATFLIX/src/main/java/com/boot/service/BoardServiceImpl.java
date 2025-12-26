@@ -100,4 +100,38 @@ public class BoardServiceImpl implements BoardService {
 
 		return profile_board_list;
 	}
+
+	@Override
+	public int board_recommend(int boardNo) {
+		log.info("board_recommend 도착");
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		int board_recommend = dao.board_recommend(boardNo);
+		return board_recommend;
+	}
+
+	@Override
+	public int recommend_notify_step(int boardNo) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		int recommend_notify_step = dao.recommend_notify_step(boardNo);
+		return recommend_notify_step;
+	}
+
+	@Override
+	public void add_board_recommend(int boardNo) {
+//		log.info("add_board_recommend 도착");
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		dao.add_board_recommend(boardNo);
+	}
+
+	@Override
+	public void minus_board_recommend(int boardNo) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		dao.minus_board_recommend(boardNo);
+	}
+
+	@Override
+	public void update_recommend_notify_step(int boardNo) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		dao.update_recommend_notify_step(boardNo);
+	}
 }

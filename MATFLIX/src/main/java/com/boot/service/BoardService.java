@@ -22,5 +22,20 @@ public interface BoardService {
 
 	public void hitDown(int boardNo);
 
+	// 추천수 가져오기
+	public int board_recommend(int boardNo);
+
+	// 추천수 플러스
+	public void add_board_recommend(int boardNo);
+
+	// 추천수 마이너스
+	public void minus_board_recommend(int boardNo);
+
+	// 추천 알림 가져오기
+	public int recommend_notify_step(int boardNo);
+
+	// 추천 알림 업데이트
+	public void update_recommend_notify_step(int boardNo);
+
 	public List<Map<String, Object>> profile_board_list(int mf_no);
 }

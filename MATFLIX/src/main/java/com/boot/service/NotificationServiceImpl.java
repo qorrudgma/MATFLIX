@@ -21,22 +21,25 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public void add_notification(int following_id, int follower_id, int boardNo, int post_id) {
-		// following_id => 알림 받는사람, post_id => 게시글(1),댓글(2),팔로우(3),레시피(4)
+		// following_id => 알림 받는사람, post_id => 팔로우(1),게시글(2),댓글(3),추천(4),레시피(5)
 		NotifSettingDAO NSdao = sqlSession.getMapper(NotifSettingDAO.class);
 		NotificationDAO Ndao = sqlSession.getMapper(NotificationDAO.class);
 		String notifType = null;
 
 		switch (post_id) {
 		case 1:
-			notifType = "board";
-			break;
-		case 2:
-			notifType = "comment";
-			break;
-		case 3:
 			notifType = "follow";
 			break;
+		case 2:
+			notifType = "board";
+			break;
+		case 3:
+			notifType = "comment";
+			break;
 		case 4:
+			notifType = "recommend";
+			break;
+		case 5:
 			notifType = "recipe";
 			break;
 		default:

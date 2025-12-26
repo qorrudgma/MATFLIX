@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import com.boot.dao.RecommendDAO;
 import com.boot.dto.RecommendDTO;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service("RecommendService")
 public class RecommendServiceImpl implements RecommendService {
 	@Autowired
@@ -15,7 +18,12 @@ public class RecommendServiceImpl implements RecommendService {
 	@Override
 	public void recommend(RecommendDTO recomemdDTO) {
 		RecommendDAO dao = sqlSession.getMapper(RecommendDAO.class);
+		log.info(" => " + recomemdDTO.getBoardNo());
 		dao.recommend(recomemdDTO);
+		int total_recommend = dao.total_recommend(recomemdDTO.getBoardNo());
+		if (total_recommend == 50) {
+
+		}
 	}
 
 	@Override

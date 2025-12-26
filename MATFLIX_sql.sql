@@ -13,9 +13,7 @@ CREATE TABLE matflix (
     mf_regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
     mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN'))
 );
-commit;
 select * from matflix;
-delete from matflix where mf_no = 17;
 
 -- 팔로우
 CREATE TABLE follow (
@@ -28,13 +26,6 @@ CREATE TABLE follow (
 );
 
 select * from follow;
-select following_id
-  from follow
- where follower_id =61;
-select follower_id
-  from follow
- where following_id = 61;
-
 delete f
   from follow f
   join (
@@ -43,15 +34,6 @@ delete f
 		 where follower_id =1
 			or following_id =1
 	   ) f2 on f.follow_id = f2.follow_id;
-    
-DELETE n
-  FROM notifications n
-  JOIN (
-       SELECT notifications_id
-         FROM notifications
-        WHERE follower_id = 1
-		   OR following_id = 1
-	   ) t ON n.notifications_id = t.notifications_id;
 
 -- 알림 테이블
 CREATE TABLE notifications (
@@ -65,7 +47,6 @@ CREATE TABLE notifications (
 );
 
 select * from notifications;
-
 DELETE n
   FROM notifications n
   JOIN (
@@ -136,13 +117,14 @@ CREATE TABLE board_attach (
     boardNo INT NOT NULL                        -- 게시글 번호 (외래키)
 );
 
--- 게시판 조회수 테이블
+-- 게시판 추천 테이블
 CREATE TABLE tbl_recommend (
     recommend_id INT AUTO_INCREMENT PRIMARY KEY, -- 고유 식별자 (자동 증가)
     boardNo INT NOT NULL,                        -- 게시글 번호 (추천된 게시글)
     mf_no INT NOT NULL,                          -- 사용자 번호 (추천한 사용자)
     UNIQUE KEY unique_recommend (boardNo, mf_no) -- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
 );
+select * from tbl_recommend;
 
 -- 레시피 테이블
 CREATE TABLE recipe (

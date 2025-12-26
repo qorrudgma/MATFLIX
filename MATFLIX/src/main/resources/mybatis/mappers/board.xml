@@ -55,6 +55,36 @@
 		     , mf_no
 		     , boardHit
 		  from tbl_board
-		 where mf_no = #{mf_no};
+		 where mf_no = #{mf_no}
 	 </select>
+	 
+    <!-- 추천 수 가져오기 -->
+    <select id="board_recommend" resultType="int">
+	    select recommend_count
+		  from tbl_board
+		 where boardNo = #{boardNo}
+	</select>
+	
+	<!-- 추천 수 플러스 -->
+    <update id="add_board_recommend">
+	    update tbl_board set recommend_count = recommend_count +1 where boardNo=#{boardNo}
+    </update>
+
+	<!-- 추천 수 마이너스 -->
+    <update id="minus_board_recommend">
+	    update tbl_board set recommend_count = recommend_count -1 where boardNo=#{boardNo}
+    </update>
+	
+    <!-- 추천 알림 가져오기 -->
+    <select id="recommend_notify_step" resultType="int">
+	    select recommend_notify_step
+		  from tbl_board
+		 where boardNo = #{boardNo}
+	</select>
+	
+	<!-- 추천 알림 업데이트 -->
+    <update id="update_recommend_notify_step">
+	    update tbl_board set recommend_notify_step = recommend_notify_step +50 where boardNo=#{boardNo}
+    </update>
+	
 </mapper>
