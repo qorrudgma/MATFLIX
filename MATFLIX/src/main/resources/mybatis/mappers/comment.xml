@@ -6,7 +6,7 @@
     
     <!-- 댓글 작성 -->
     <insert id="save">
-		insert into board_comment( 		
+		insert into board_comment(
 			  commentWriter 	
 			 ,commentContent 	
 			 ,boardNo
@@ -24,6 +24,7 @@
 			  ,userNo
 		  from board_comment
 		 where boardNo=#{boardNo}
+		   and deleted != 1
 		 order by commentNo desc
     </select>
     
@@ -34,10 +35,11 @@
     </delete>
     
     <!-- 유저 본인이 댓글 삭제 -->
-    <delete id="userCommentDelete">
-    	delete from board_comment
+    <update id="userCommentDelete">
+    	update board_comment
+    	   set deleted = 1
  		 where commentNo=#{commentNo}
-    </delete>
+    </update>
     
     <!-- 댓글 갯수 -->
     <select id="count" resultType="int">

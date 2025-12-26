@@ -25,7 +25,7 @@ CREATE TABLE follow (
     UNIQUE KEY uniq_follow (follower_id, following_id) -- 중복 방지
 );
 
-select * from follow;
+select * from follow where follower_id = 61;
 delete f
   from follow f
   join (
@@ -65,6 +65,7 @@ CREATE TABLE notif_setting (
 );
 
 select * from notif_setting;
+SELECT * from notif_setting where mf_no=61;
 SELECT YN from notif_setting where mf_no=62 and notif_type = "follow";
 -- follow: "팔로우"
 -- board: "게시글"
@@ -83,9 +84,18 @@ CREATE TABLE tbl_board (
     mf_no INT not null
 );
 select * from tbl_board order by 1 desc;
-update tbl_board set recommend_count = recommend_count +1 where boardNo=330;
-update tbl_board set recommend_count = recommend_count -1 where boardNo=330;
-update tbl_board set recommend_notify_step = 0 where boardNo=330;
+select b.boardNo
+     , b.boardName
+     , b.boardTitle
+     , b.boardContent
+     , b.boardDate
+     , b.boardHit
+     , b.mf_no
+from tbl_board b
+join follow f
+  on b.mf_no = f.following_id
+where f.follower_id = 61;
+
 
 -- 게시판 댓글 테이블
 CREATE TABLE board_comment (
@@ -96,6 +106,10 @@ CREATE TABLE board_comment (
     userNo int,
     commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+select * FROM board_comment order by 1 desc;
+update board_comment
+   set deleted = 0
+ where commentNo=275;
 
 -- 게시판 추천 테이블
 CREATE TABLE tbl_recommend (

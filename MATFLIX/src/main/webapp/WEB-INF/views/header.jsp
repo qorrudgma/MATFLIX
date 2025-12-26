@@ -76,8 +76,11 @@
 		<nav id="header_nav">
 			<div><a href="recipe_board?rc_type=&rc_keyword=&rc_pageNum=1&rc_amount=12"><div>레시피</div></a></div>
 			<div><a href="${pageContext.request.contextPath}/user_rank"><div> 랭킹 </div></a></div>
-			<div><a href="list"><div>게시판</div></a></div>
+			<div><a href="${pageContext.request.contextPath}/list"><div>게시판</div></a></div>
 			<div><a href="${pageContext.request.contextPath}/notice_list"><div> 공지사항 </div></a></div>
+			<% if(user != null){ %>
+				<div><a href="${pageContext.request.contextPath}/follow_board_list"><div> 친구들 소식 </div></a></div>
+			<% } %>
 			<div> 더보기 </div>
 		</nav>
 	</header>	

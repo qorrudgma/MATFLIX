@@ -123,7 +123,7 @@ public class BoardController {
 //		log.info("param in boardNo => " + param.get("boardNo"));
 //		log.info("param in mf_no => " + param.get("mf_no"));
 
-		int total_recommend = recommendService.total_recommend(Integer.parseInt(param.get("boardNo")));
+//		int total_recommend = recommendService.total_recommend(Integer.parseInt(param.get("boardNo")));
 		int count = commentService.count(Integer.parseInt(param.get("boardNo")));
 
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);
@@ -139,7 +139,7 @@ public class BoardController {
 		}
 		model.addAttribute("count", count);
 		model.addAttribute("commentList", commentList);
-		model.addAttribute("total_recommend", total_recommend);
+//		model.addAttribute("total_recommend", total_recommend);
 
 		log.info("model => " + model);
 		return "content_view";
@@ -177,4 +177,13 @@ public class BoardController {
 
 		return "redirect:list";
 	}
+
+//	@RequestMapping("/follow_board_list")
+//	public String follow_board_list(HttpSession session, Model model) {
+//		log.info("@# follow_board_list()");
+//		TeamDTO user = (TeamDTO) session.getAttribute("user");
+//		int mf_no = user.getMf_no();
+//
+//		return "redirect:follow_board_list";
+//	}
 }

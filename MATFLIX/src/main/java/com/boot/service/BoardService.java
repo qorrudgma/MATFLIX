@@ -14,6 +14,9 @@ public interface BoardService {
 
 	public BoardDTO contentView(HashMap<String, String> param);
 
+	// 팔로우 게시글들
+	public BoardDTO follow_board_list(int mf_no);
+
 	public void modify(HashMap<String, String> param);
 
 	public void delete(HashMap<String, String> param);

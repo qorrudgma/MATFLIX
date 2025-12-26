@@ -121,6 +121,7 @@
                     <div class="post-likes">
                         <span class="label">추천 수</span>
                         <span class="value">${total_recommend}</span>
+                        <span class="value">${content_view.recommend_count}</span>
                     </div>
                 </div>
                 

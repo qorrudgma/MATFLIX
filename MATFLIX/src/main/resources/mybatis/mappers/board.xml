@@ -8,6 +8,21 @@
     <select id="list" resultType="com.boot.dto.BoardDTO">
         select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no from tbl_board
     </select>
+
+	<!-- 팔로우 게시글 리스트 -->
+    <select id="follow_board_list" resultType="com.boot.dto.BoardDTO">
+        select b.boardNo
+		     , b.boardName
+		     , b.boardTitle
+		     , b.boardContent
+		     , b.boardDate
+		     , b.boardHit
+		     , b.mf_no
+		  from tbl_board b
+		  join follow f
+		    on b.mf_no = f.following_id
+	     where f.follower_id = #{mf_no}
+    </select>
     
 	<!-- 게시글 작성 -->
     <insert id="write">
@@ -22,7 +37,7 @@
     
 	<!-- 게시글 보기 -->
     <select id="contentView" resultType="com.boot.dto.BoardDTO">
-        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step
           from tbl_board
          where boardNo=#{boardNo}
     </select>

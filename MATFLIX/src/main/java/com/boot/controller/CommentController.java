@@ -36,7 +36,8 @@ public class CommentController {
 	private final SseService sseService = new SseService();
 
 	@RequestMapping("/save")
-	public @ResponseBody ArrayList<CommentDTO> save(@RequestParam HashMap<String, String> param) {
+	@ResponseBody
+	public ArrayList<CommentDTO> save(@RequestParam HashMap<String, String> param) {
 		log.info("@# save()");
 		log.info("@# param=>" + param);
 
@@ -58,7 +59,7 @@ public class CommentController {
 		// 팔로우 할때 메시지 다시 작성하기
 		if (mf_no != userNo) {
 			sseService.send(mf_no, userNo + "가 내 게시글에 댓글 작성함");
-			notificationService.add_notification(userNo, mf_no, b_no, 2);
+			notificationService.add_notification(userNo, mf_no, b_no, 3);
 		}
 
 		ArrayList<CommentDTO> commentList = service.findAll(param);
@@ -66,7 +67,8 @@ public class CommentController {
 	}
 
 	@RequestMapping("/delete")
-	public @ResponseBody void userCommentDelete(@RequestParam HashMap<String, String> param) {
+	@ResponseBody
+	public void userCommentDelete(@RequestParam HashMap<String, String> param) {
 		log.info("@# userCommentDelete()");
 		log.info("@# param=>" + param);
 
@@ -74,7 +76,8 @@ public class CommentController {
 	}
 
 	@RequestMapping("/list")
-	public @ResponseBody ArrayList<CommentDTO> findAll(@RequestParam HashMap<String, String> param) {
+	@ResponseBody
+	public ArrayList<CommentDTO> findAll(@RequestParam HashMap<String, String> param) {
 		log.info("@# findAll()");
 		log.info("@# param=>" + param);
 

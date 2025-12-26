@@ -25,8 +25,8 @@
        <div class="decoration-element two"></div>
        <div class="decoration-element three"></div>
        
-       <h2>게시판</h2>
-       <p>맛플릭스 회원들과 함께 다양한 이야기들을 공유해보세요!</p>
+       <h2>친구들의 이야기</h2>
+       <p>친구들의 이야기들을 모아 보아요!</p>
        
        <form method="get" id="searchForm">
           <select name="type">
