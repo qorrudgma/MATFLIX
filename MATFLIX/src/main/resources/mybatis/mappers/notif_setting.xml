@@ -26,5 +26,10 @@
 	<select id="check_notif_setting" resultType="int">
 		SELECT yn from notif_setting where mf_no=#{mf_no} and notif_type = #{notif_type}
 	</select>
+
+	<!-- 사용자의 모든 알림 on/off 확인 -->
+	<select id="mf_no_notif_setting" resultType="com.boot.dto.NotifSettingDTO">
+		SELECT yn, notif_type from notif_setting where mf_no=#{mf_no}
+	</select>
 	
 </mapper>

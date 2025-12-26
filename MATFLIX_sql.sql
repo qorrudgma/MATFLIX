@@ -45,15 +45,14 @@ CREATE TABLE notifications (
     is_read int DEFAULT 0,             -- 알림 읽음 여부
     created_at DATETIME DEFAULT NOW()    -- 생성 시간
 );
-
 select * from notifications;
 DELETE n
   FROM notifications n
   JOIN (
        SELECT notifications_id
          FROM notifications
-        WHERE follower_id = 1
-		   OR following_id = 1
+        WHERE follower_id = 61
+		   OR following_id = 62
 	   ) t ON n.notifications_id = t.notifications_id;
 
 -- 알림 on/off 테이블
@@ -70,7 +69,51 @@ SELECT YN from notif_setting where mf_no=62 and notif_type = "follow";
 -- follow: "팔로우"
 -- board: "게시글"
 -- comment: "댓글"
+-- recommend: "추천"
 -- recipe_comment: "레시피 댓글"
+
+-- 게시판 테이블
+CREATE TABLE tbl_board (
+    boardNo int AUTO_INCREMENT PRIMARY KEY,
+    boardName VARCHAR(20),
+    boardTitle VARCHAR(100),
+    boardContent VARCHAR(300),
+    boardDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    boardHit int DEFAULT 0,
+    mf_no INT not null
+);
+select * from tbl_board order by 1 desc;
+update tbl_board set recommend_count = recommend_count +1 where boardNo=330;
+update tbl_board set recommend_count = recommend_count -1 where boardNo=330;
+update tbl_board set recommend_notify_step = 0 where boardNo=330;
+
+-- 게시판 댓글 테이블
+CREATE TABLE board_comment (
+    commentNo INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    commentWriter VARCHAR(20),
+    commentContent VARCHAR(300),
+    boardNo INT,
+    userNo int,
+    commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 게시판 추천 테이블
+CREATE TABLE tbl_recommend (
+    recommend_id INT AUTO_INCREMENT PRIMARY KEY, -- 고유 식별자 (자동 증가)
+    boardNo INT NOT NULL,                        -- 게시글 번호 (추천된 게시글)
+    mf_no INT NOT NULL,                          -- 사용자 번호 (추천한 사용자)
+    UNIQUE KEY unique_recommend (boardNo, mf_no) -- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
+);
+select * from tbl_recommend;
+
+-- 게시판 파일 테이블
+CREATE TABLE board_attach (
+    uuid VARCHAR(255) PRIMARY KEY,              -- 파일의 고유 식별자(UUID)
+    uploadPath VARCHAR(255) NOT NULL,           -- 파일이 저장된 경로
+    fileName VARCHAR(255) NOT NULL,             -- 파일 이름
+    image CHAR(1) CHECK (image IN ('Y', 'N')),  -- 이미지 여부 (Y/N)
+    boardNo INT NOT NULL                        -- 게시글 번호 (외래키)
+);
 
 -- 즐겨찾기 테이블 생성
 CREATE TABLE recipe_favorites (
@@ -86,45 +129,6 @@ CREATE TABLE recipe_favorites (
     -- 한 사용자가 같은 레시피를 중복해서 즐겨찾기 할 수 없도록 설정
     UNIQUE KEY uk_user_recipe (mf_no, rc_recipe_id)
 );
-
--- 게시판 테이블
-CREATE TABLE tbl_board (
-    boardNo int AUTO_INCREMENT PRIMARY KEY,
-    boardName VARCHAR(20),
-    boardTitle VARCHAR(100),
-    boardContent VARCHAR(300),
-    boardDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    boardHit int DEFAULT 0,
-    mf_no INT not null
-);
-
--- 게시판 댓글 테이블
-CREATE TABLE board_comment (
-    commentNo INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    commentWriter VARCHAR(20),
-    commentContent VARCHAR(300),
-    boardNo INT,
-    userNo int,
-    commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- 게시판 파일 테이블
-CREATE TABLE board_attach (
-    uuid VARCHAR(255) PRIMARY KEY,              -- 파일의 고유 식별자(UUID)
-    uploadPath VARCHAR(255) NOT NULL,           -- 파일이 저장된 경로
-    fileName VARCHAR(255) NOT NULL,             -- 파일 이름
-    image CHAR(1) CHECK (image IN ('Y', 'N')),  -- 이미지 여부 (Y/N)
-    boardNo INT NOT NULL                        -- 게시글 번호 (외래키)
-);
-
--- 게시판 추천 테이블
-CREATE TABLE tbl_recommend (
-    recommend_id INT AUTO_INCREMENT PRIMARY KEY, -- 고유 식별자 (자동 증가)
-    boardNo INT NOT NULL,                        -- 게시글 번호 (추천된 게시글)
-    mf_no INT NOT NULL,                          -- 사용자 번호 (추천한 사용자)
-    UNIQUE KEY unique_recommend (boardNo, mf_no) -- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
-);
-select * from tbl_recommend;
 
 -- 레시피 테이블
 CREATE TABLE recipe (

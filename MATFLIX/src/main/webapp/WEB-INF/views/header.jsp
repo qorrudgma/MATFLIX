@@ -192,13 +192,18 @@
 					console.log("시간: ", timeAgo(notification_list_n[i].created_at));
 
 					notification_data += "<div>" + timeAgo(notification_list_n[i].created_at) + "</div>";
-                    notification_data += "<div>'" + notification_list_n[i].nickname + "'님이</div>";
 					switch(notification_list_n[i].post_id){
 						case 1:
-		                    notification_data += "<div>'" + notification_list_n[i].board_title + "'게시글을 추가하였습니다.</div>";
+		                    notification_data += "<div>'" + notification_list_n[i].nickname + "'님이 팔로우를 하였습니다.</div>";
 						break;
 						case 2:
-		                    notification_data += "<div>'" + notification_list_n[i].board_title + "'게시글에 댓글을 추가하였습니다.</div>";
+		                    notification_data += "<div>'" +notification_list_n[i].nickname+"'님이 '"+ notification_list_n[i].board_title + "'게시글을 추가하였습니다.</div>";
+						break;
+						case 3:
+		                    notification_data += "<div>'"+notification_list_n[i].nickname+"'님이 '" + notification_list_n[i].board_title + "'게시글에 댓글을 추가하였습니다.</div>";
+						break;
+						case 4:
+		                    notification_data += "<div>'" + notification_list_n[i].board_title + "'게시글이 추천수'"+"(추천수)"+"'에 도달했습니다.</div>";
 						break;
 					}
 					notification_data += '<button type="button" class="move_board" data-board_no="' + notification_list_n[i].boardNo + '" data-notifications_id="'+notification_list_n[i].notifications_id+'">보러가기</button></div>';

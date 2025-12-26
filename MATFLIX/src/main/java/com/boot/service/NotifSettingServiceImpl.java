@@ -1,11 +1,14 @@
 package com.boot.service;
 
+import java.util.ArrayList;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boot.dao.NotifSettingDAO;
+import com.boot.dto.NotifSettingDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,5 +49,14 @@ public class NotifSettingServiceImpl implements NotifSettingService {
 		NotifSettingDAO dao = sqlSession.getMapper(NotifSettingDAO.class);
 		int yn = dao.check_notif_setting(mf_no, notif_type);
 		return yn;
+	}
+
+	@Override
+	public ArrayList<NotifSettingDTO> mf_no_notif_setting(int mf_no) {
+		log.info("mf_no_notif_setting 도착");
+		NotifSettingDAO dao = sqlSession.getMapper(NotifSettingDAO.class);
+		ArrayList<NotifSettingDTO> mf_no_notif_setting = dao.mf_no_notif_setting(mf_no);
+		log.info("mf_no_notif_setting => " + mf_no_notif_setting);
+		return mf_no_notif_setting;
 	}
 }

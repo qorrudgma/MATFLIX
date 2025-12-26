@@ -46,6 +46,8 @@ public class RecommendController {
 		if (check == 1) {
 			recommendService.delete_recommend(dto);
 //			boardService.hitDown(boardNo);
+			boardService.minus_board_recommend(boardNo);
+			log.info("tbl_board에 추천 -1");
 			log.info("추천을 취소함");
 			return "delete";
 		} else {
@@ -53,7 +55,6 @@ public class RecommendController {
 			// 추천누름
 			recommendService.recommend(dto);
 //			log.info("추천을 누름");
-			// 여기서부터 문제
 			// 추천 증가
 			boardService.add_board_recommend(boardNo);
 			log.info("tbl_board에 추천 +1");
@@ -69,7 +70,8 @@ public class RecommendController {
 					// 추천 알림 주기
 					int yn = notifSettingService.check_notif_setting(board_mf_no, "recommend");
 					if (yn == 1) {
-						notificationService.add_notification(board_mf_no, user.getMf_no(), boardNo, yn);
+						log.info("알림이 가야하는데");
+						notificationService.add_notification(user.getMf_no(), board_mf_no, boardNo, 4);
 					}
 				}
 			}

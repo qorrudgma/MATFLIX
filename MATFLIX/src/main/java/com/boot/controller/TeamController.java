@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.FavoriteDTO;
+import com.boot.dto.NotifSettingDTO;
 import com.boot.dto.RecipeAttachDTO;
 import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
@@ -43,6 +44,7 @@ import com.boot.service.BoardService;
 import com.boot.service.EmailService;
 import com.boot.service.FavoriteService;
 import com.boot.service.FollowService;
+import com.boot.service.NotifSettingService;
 import com.boot.service.NotificationService;
 import com.boot.service.RecipeService;
 import com.boot.service.RecipeUploadService;
@@ -82,6 +84,9 @@ public class TeamController {
 
 	@Autowired
 	private RecommendService recommendService;
+
+	@Autowired
+	private NotifSettingService notifSettingService;
 
 	// 프로필 보기
 	@RequestMapping("/profile")
@@ -374,5 +379,26 @@ public class TeamController {
 	public String account() {
 
 		return "mem_update";
+	}
+
+	// 환경 설정 클릭시
+	@RequestMapping("/environment")
+	@ResponseBody
+	public ArrayList<NotifSettingDTO> environment(@RequestParam("mf_no") int mf_no) {
+		log.info("environment 컨트롤러 옴");
+		ArrayList<NotifSettingDTO> mf_no_notif_setting = notifSettingService.mf_no_notif_setting(mf_no);
+		log.info("!@#mf_no_notif_setting => " + mf_no_notif_setting);
+		return mf_no_notif_setting;
+	}
+
+	// 알림 설정 업데이트
+	@RequestMapping("/update_notif_setting")
+	@ResponseBody
+	public void update_notif_setting(@RequestParam("notif_type") String notif_type, @RequestParam("yn") int yn,
+			HttpSession session) {
+		log.info("update_notif_setting 컨트롤러 옴");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		notifSettingService.update_notif_setting(mf_no, notif_type, yn);
 	}
 }

@@ -1,6 +1,10 @@
 package com.boot.service;
 
+import java.util.ArrayList;
+
 import org.apache.ibatis.annotations.Param;
+
+import com.boot.dto.NotifSettingDTO;
 
 public interface NotifSettingService {
 	// 알림 on/off 설정
@@ -15,4 +19,7 @@ public interface NotifSettingService {
 
 	// 알림 on/off 확인
 	public int check_notif_setting(@Param("mf_no") int mf_no, @Param("notif_type") String notif_type);
+
+	// 사용자의 모든 알림 on/off 확인
+	public ArrayList<NotifSettingDTO> mf_no_notif_setting(@Param("mf_no") int mf_no);
 }

@@ -69,6 +69,7 @@
             <div class="tab_btn" data-tab="favorites">나의 즐겨찾기</div>
             <div class="tab_btn" data-tab="my_posts">내 게시글</div>
             <div class="tab_btn" data-tab="account_settings">계정 설정</div>
+			<div class="tab_btn" data-tab="environment">환경 설정</div>
         </div>
 
         <!-- 탭 콘텐츠 -->
@@ -194,7 +195,8 @@
                 </c:if>
             </div>
         </div>
-        
+		
+		<!-- 계정 설정 -->
         <div class="tab_content" id="account_settings_content">
             <!-- 계정 설정 폼 -->
             <div class="form_container">
@@ -276,6 +278,55 @@
             </div>
         </div>
 		
+		<!-- 환경 설정 -->
+		<div class="tab_content" id="environment_content">
+		    <h3>알림 설정</h3>
+
+		    <div class="notif_setting_list">
+
+		        <div class="notif_item">
+		            <span>팔로우</span>
+		            <label class="toggle_switch">
+		                <input type="checkbox" data-type="follow">
+		                <span class="slider"></span>
+		            </label>
+		        </div>
+
+		        <div class="notif_item">
+		            <span>게시글</span>
+		            <label class="toggle_switch">
+		                <input type="checkbox" data-type="board">
+		                <span class="slider"></span>
+		            </label>
+		        </div>
+
+		        <div class="notif_item">
+		            <span>댓글</span>
+		            <label class="toggle_switch">
+		                <input type="checkbox" data-type="comment">
+		                <span class="slider"></span>
+		            </label>
+		        </div>
+
+		        <div class="notif_item">
+		            <span>추천</span>
+		            <label class="toggle_switch">
+		                <input type="checkbox" data-type="recommend">
+		                <span class="slider"></span>
+		            </label>
+		        </div>
+
+		        <div class="notif_item">
+		            <span>레시피 댓글</span>
+		            <label class="toggle_switch">
+		                <input type="checkbox" data-type="recipe_comment">
+		                <span class="slider"></span>
+		            </label>
+		        </div>
+
+		    </div>
+		</div>		
+		
 		<!-- 닉네임 수정 -->
 		
     </div>
@@ -295,7 +346,48 @@
                 // 콘텐츠 전환
                 $('.tab_content').removeClass('active');
                 $('#' + tabId + '_content').addClass('active');
+				
+				if (tabId === 'environment') {
+					console.log("!@#"+sessionUserNo);
+					$.ajax({
+		               type: "post",
+		               data: {mf_no: sessionUserNo},
+		               url: "/environment",
+		               success: function(mf_no_notif_setting) {
+							for (let i = 0; i < mf_no_notif_setting.length; i++) {
+							    const type = mf_no_notif_setting[i].notif_type;
+							    const yn = mf_no_notif_setting[i].yn;
+
+							    $('input[data-type="' + type + '"]').prop('checked', yn === 1);
+							}
+		               },
+		               error: function(e) {
+		                   alert("오류 발생"+e);
+		               }
+		           });
+		        }
             });
+			
+			$('input[type="checkbox"]').change(function() {
+			    const type = $(this).data('type');
+			    const yn = $(this).is(':checked') ? 1 : 0;
+
+			    // 서버로 보내기
+				$.ajax({
+				    url: "/update_notif_setting",
+				    type: "post",
+				    data: {
+				        notif_type: type,
+				        yn: yn
+				    },
+				    success: function() {
+				        console.log("알림 설정 변경 완료");
+				    },
+				    error: function(e) {
+				        alert("설정 변경 실패"+e.responseText);
+				    }
+				});
+			});
         });
         
         // 비밀번호 일치 확인

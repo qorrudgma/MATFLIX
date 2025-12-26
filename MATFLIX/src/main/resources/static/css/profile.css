@@ -600,6 +600,72 @@
   text-align: center;
 }
 
+/* 알림 설정 */
+.notif_setting_list {
+    max-width: 500px;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.notif_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* 토글 스위치 */
+.toggle_switch {
+    position: relative;
+    width: 46px;
+    height: 24px;
+}
+
+.toggle_switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    border-radius: 24px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.3s;
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.toggle_switch input:checked + .slider {
+    background-color: #e50914;
+}
+
+.toggle_switch input:checked + .slider::before {
+    transform: translateX(22px);
+}
+
 /* 반응형 스타일 */
 @media (max-width: 768px) {
   .profile_header {
