@@ -22,6 +22,7 @@
 		  join follow f
 		    on b.mf_no = f.following_id
 	     where f.follower_id = #{mf_no}
+	     order by 1 desc
     </select>
     
 	<!-- 게시글 작성 -->

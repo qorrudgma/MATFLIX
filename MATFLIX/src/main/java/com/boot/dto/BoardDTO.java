@@ -1,6 +1,6 @@
 package com.boot.dto;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +15,9 @@ public class BoardDTO {
 	private String boardName;
 	private String boardTitle;
 	private String boardContent;
-	private Timestamp boardDate;
+	private LocalDateTime boardDate;
+	// 화면 표시용 날짜
+	private String displayDate;
 	private int boardHit;
 	private int mf_no;
 	private int recommend_count;

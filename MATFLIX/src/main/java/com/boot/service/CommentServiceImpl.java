@@ -41,9 +41,9 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public int count(int boardNo) {
+	public int comment_count(int boardNo) {
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
-		int count = dao.count(boardNo);
+		int count = dao.comment_count(boardNo);
 		return count;
 	}
 }

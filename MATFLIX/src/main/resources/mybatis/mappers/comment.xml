@@ -42,7 +42,7 @@
     </update>
     
     <!-- 댓글 갯수 -->
-    <select id="count" resultType="int">
+    <select id="comment_count" resultType="int">
     	select count(*)
     	  from board_comment
 		 where boardNo = #{boardNo}

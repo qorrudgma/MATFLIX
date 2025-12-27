@@ -53,7 +53,7 @@
              <th>날짜</th>
              <th>조회수</th>
           </tr>
-          <c:forEach var="dto" items="${list}" varStatus="status">
+          <c:forEach var="dto" items="${follow_board_list}" varStatus="status">
              <tr style="--row-index: ${status.index}">
                 <td>${dto.boardNo}</td>
                 <td>${dto.boardName}</td>
@@ -62,11 +62,11 @@
                       <i class="fas fa-utensils"></i> ${dto.boardTitle}
                    </a>
                 </td>
-                <td>${dto.boardDate}</td>
+                <td>${dto.displayDate}</td>
                 <td>${dto.boardHit}</td>
              </tr>
           </c:forEach>
-          <c:if test="${empty list}">
+          <c:if test="${empty follow_board_list}">
              <tr>
                 <td colspan="5" style="text-align: center; padding: 30px;">
                    등록된 게시글이 없습니다.
@@ -75,15 +75,6 @@
           </c:if>
           <tr>
              <td colspan="5" class="write-btn-cell">
-                <% if(user != null){ %>
-                    <a href="write_view" class="write-btn">
-                       <i class="fas fa-pencil-alt"></i> 글작성
-                    </a>
-                <% }else{ %>
-                    <a href="#" id="write_a" class="write-btn">
-                       <i class="fas fa-pencil-alt"></i> 글작성
-                    </a>
-                <% } %>
              </td>
           </tr>
        </table>
@@ -114,7 +105,7 @@
           </ul>
        </div>
 
-       <form id="actionForm" action="list" method="get">
+       <form id="actionForm" action="follow_board_list" method="get">
           <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
           <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
           <input type="hidden" name="type" value="${pageMaker.cri.type}">
@@ -146,7 +137,7 @@
       actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 
       //버그 처리(게시글 클릭후 뒤로가기 누른후 다른 페이지 클릭할때 content_view가 작동되는것을 해결)
-      actionForm.attr("action", "list").submit();
+      actionForm.attr("action", "follow_board_list").submit();
    }); // end of paginate_button click
 
    // 게시글 처리
@@ -176,7 +167,7 @@
          return false;
       }
 
-      searchForm.attr("action", "list").submit();
+      searchForm.attr("action", "follow_board_list").submit();
    }); // end of searchForm click
    // type 콤보박스 변경
    $("#searchForm select").on("change", function () {

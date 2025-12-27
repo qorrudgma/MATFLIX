@@ -1,8 +1,13 @@
 package com.boot.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +20,7 @@ import com.boot.dto.BoardAttachDTO;
 import com.boot.dto.BoardDTO;
 import com.boot.dto.CommentDTO;
 import com.boot.dto.RecommendDTO;
+import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentService;
 import com.boot.service.EmailService;
@@ -124,7 +130,7 @@ public class BoardController {
 //		log.info("param in mf_no => " + param.get("mf_no"));
 
 //		int total_recommend = recommendService.total_recommend(Integer.parseInt(param.get("boardNo")));
-		int count = commentService.count(Integer.parseInt(param.get("boardNo")));
+		int count = commentService.comment_count(Integer.parseInt(param.get("boardNo")));
 
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);
 		if (param.get("mf_no") != null) {
@@ -178,12 +184,30 @@ public class BoardController {
 		return "redirect:list";
 	}
 
-//	@RequestMapping("/follow_board_list")
-//	public String follow_board_list(HttpSession session, Model model) {
-//		log.info("@# follow_board_list()");
-//		TeamDTO user = (TeamDTO) session.getAttribute("user");
-//		int mf_no = user.getMf_no();
-//
-//		return "redirect:follow_board_list";
-//	}
+	@RequestMapping("/follow_board_list")
+	public String follow_board_list(HttpSession session, Model model) {
+		log.info("@# follow_board_list()");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		List<BoardDTO> follow_board_list = service.follow_board_list(mf_no);
+
+		// 게시글 시간 조정
+		LocalDate today = LocalDate.now();
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd");
+
+		for (BoardDTO dto : follow_board_list) {
+			LocalDateTime boardDate = dto.getBoardDate();
+
+			if (boardDate.toLocalDate().isEqual(today)) {
+				dto.setDisplayDate(boardDate.format(timeFormatter));
+			} else {
+				dto.setDisplayDate(boardDate.format(dateFormatter));
+			}
+		}
+
+		model.addAttribute("follow_board_list", follow_board_list);
+
+		return "follow_board_list";
+	}
 }

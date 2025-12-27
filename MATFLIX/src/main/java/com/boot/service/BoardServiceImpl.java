@@ -61,9 +61,9 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public BoardDTO follow_board_list(int mf_no) {
+	public List<BoardDTO> follow_board_list(int mf_no) {
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
-		BoardDTO follow_board_list = dao.follow_board_list(mf_no);
+		List<BoardDTO> follow_board_list = dao.follow_board_list(mf_no);
 		return follow_board_list;
 	}
 

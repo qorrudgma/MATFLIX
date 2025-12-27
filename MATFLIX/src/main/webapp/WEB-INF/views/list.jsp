@@ -62,7 +62,7 @@
                       <i class="fas fa-utensils"></i> ${dto.boardTitle}
                    </a>
                 </td>
-                <td>${dto.boardDate}</td>
+                <td>${dto.displayDate}</td>
                 <td>${dto.boardHit}</td>
              </tr>
           </c:forEach>

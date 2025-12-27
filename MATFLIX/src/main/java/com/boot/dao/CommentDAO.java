@@ -14,5 +14,5 @@ public interface CommentDAO {
 
 	public void userCommentDelete(HashMap<String, String> param);
 
-	public int count(int boardNo);
+	public int comment_count(int boardNo);
 }
