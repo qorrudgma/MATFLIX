@@ -25,6 +25,7 @@ public class BoardServiceImpl implements BoardService {
 	public ArrayList<BoardDTO> list() {
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
 		ArrayList<BoardDTO> list = dao.list();
+		log.info("#######" + list);
 		return list;
 	}
 
@@ -140,5 +141,11 @@ public class BoardServiceImpl implements BoardService {
 	public void update_recommend_notify_step(int boardNo) {
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
 		dao.update_recommend_notify_step(boardNo);
+	}
+
+	@Override
+	public void add_comment_count(int boardNo) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		dao.add_comment_count(boardNo);
 	}
 }

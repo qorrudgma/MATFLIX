@@ -22,6 +22,7 @@ public class BoardDTO {
 	private int mf_no;
 	private int recommend_count;
 	private int recommend_notify_step;
+	private int comment_count;
 
 	private List<BoardAttachDTO> attachList;
 }

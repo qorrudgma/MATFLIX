@@ -59,8 +59,8 @@
                 <td>${dto.boardName}</td>
                 <td>
                    <a class="move_link" href="${dto.boardNo}">
-                      <i class="fas fa-utensils"></i> ${dto.boardTitle}
-                   </a>
+                      <i class="fas fa-utensils"></i> ${dto.boardTitle} <span id="comment_count">[${dto.comment_count}]</span>
+				  </a>
                 </td>
                 <td>${dto.displayDate}</td>
                 <td>${dto.boardHit}</td>

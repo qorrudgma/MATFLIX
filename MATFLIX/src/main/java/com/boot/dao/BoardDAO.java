@@ -42,4 +42,7 @@ public interface BoardDAO {
 
 	// 유저가 작성한 게시글
 	public List<Map<String, Object>> profile_board_list(int mf_no);
+
+	// 댓글 수 +
+	public void add_comment_count(int boardNo);
 }

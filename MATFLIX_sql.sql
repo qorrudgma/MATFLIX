@@ -81,7 +81,9 @@ CREATE TABLE tbl_board (
     boardContent VARCHAR(300),
     boardDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     boardHit int DEFAULT 0,
-    mf_no INT not null
+    mf_no INT not null,
+    recommend_count INT DEFAULT 0,
+    recommend_notify_step INT DEFAULT 0
 );
 select * from tbl_board order by 1 desc;
 select b.boardNo
@@ -104,7 +106,9 @@ CREATE TABLE board_comment (
     commentContent VARCHAR(300),
     boardNo INT,
     userNo int,
-    commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP
+    commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    deleted int default 0,
+    parentCommentNo INT DEFAULT NULL
 );
 select * FROM board_comment order by 1 desc;
 update board_comment

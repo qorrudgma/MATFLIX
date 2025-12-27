@@ -28,10 +28,10 @@
 	<!-- tbl_board start -->
     <select id="listWithPaging" resultType="com.boot.dto.BoardDTO">
     	<![CDATA[
-		  select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit
-			from ( select rownum , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
+		  select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
+			from ( select rownum , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
 					 from ( select row_number() over(order by boardNo desc) as rownum
-								 , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit 
+								 , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
 							  from tbl_board
 							 ]]>
 							 <include refid="criteria"></include>

@@ -6,7 +6,17 @@
 
 	<!-- 게시글 리스트 -->
     <select id="list" resultType="com.boot.dto.BoardDTO">
-        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no from tbl_board
+        select boardNo
+             , boardName
+             , boardTitle
+             , boardContent
+             , boardDate
+             , boardHit
+             , mf_no
+             , recommend_count
+             , recommend_notify_step
+             , comment_count
+          from tbl_board
     </select>
 
 	<!-- 팔로우 게시글 리스트 -->
@@ -18,6 +28,9 @@
 		     , b.boardDate
 		     , b.boardHit
 		     , b.mf_no
+		     , b.recommend_count
+		     , b.recommend_notify_step
+		     , b.comment_count
 		  from tbl_board b
 		  join follow f
 		    on b.mf_no = f.following_id
@@ -38,7 +51,7 @@
     
 	<!-- 게시글 보기 -->
     <select id="contentView" resultType="com.boot.dto.BoardDTO">
-        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step
+        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
           from tbl_board
          where boardNo=#{boardNo}
     </select>
@@ -70,6 +83,10 @@
 		     , boardDate
 		     , mf_no
 		     , boardHit
+		     , mf_no
+		     , recommend_count
+		     , recommend_notify_step
+		     , comment_count
 		  from tbl_board
 		 where mf_no = #{mf_no}
 	 </select>
@@ -101,6 +118,11 @@
 	<!-- 추천 알림 업데이트 -->
     <update id="update_recommend_notify_step">
 	    update tbl_board set recommend_notify_step = recommend_notify_step +50 where boardNo=#{boardNo}
+    </update>
+	
+	<!-- 댓글 수+ -->
+    <update id="add_comment_count">
+	    update tbl_board set comment_count = comment_count +1 where boardNo=#{boardNo}
     </update>
 	
 </mapper>

@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.boot.dao.BoardDAO;
 import com.boot.dao.CommentDAO;
 import com.boot.dto.CommentDTO;
 
@@ -19,6 +20,8 @@ public class CommentServiceImpl implements CommentService {
 	public void save(HashMap<String, String> param) {
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		dao.save(param);
+		BoardDAO Bdao = sqlSession.getMapper(BoardDAO.class);
+		Bdao.add_comment_count(Integer.parseInt(param.get("boardNo")));
 	}
 
 	@Override
