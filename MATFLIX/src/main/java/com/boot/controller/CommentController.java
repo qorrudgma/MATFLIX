@@ -4,7 +4,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.BoardDTO;
 import com.boot.dto.CommentDTO;
+import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
+import com.boot.service.CommentRecommendService;
 import com.boot.service.CommentService;
 import com.boot.service.NotificationService;
 import com.boot.service.SseService;
@@ -27,6 +33,9 @@ public class CommentController {
 
 	@Autowired
 	private CommentService service;
+
+	@Autowired
+	private CommentRecommendService commentRecommendService;
 
 	@Autowired
 	private BoardService boardService;
@@ -79,20 +88,60 @@ public class CommentController {
 
 	@RequestMapping("/list")
 	@ResponseBody
-	public ArrayList<CommentDTO> findAll(@RequestParam HashMap<String, String> param) {
+	public List<CommentDTO> recommend(@Param("boardNo") int boardNo, HttpSession session) {
 		log.info("@# findAll()");
-		log.info("@# param=>" + param);
+		int mf_no = 0;
 
-		ArrayList<CommentDTO> commentList = service.findAll(param);
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
 
-		// 게시글 시간 조정
+		if (user != null) {
+			mf_no = user.getMf_no();
+		}
+
+		List<CommentDTO> commentList = service.recommended(boardNo, mf_no);
+
+		// 댓글 시간 조정
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
 
 		for (CommentDTO dto : commentList) {
 			LocalDateTime CommentDTO = dto.getCommentCreatedTime();
 			dto.setCommentTime(CommentDTO.format(timeFormatter));
 		}
+		log.info("@#!@#$" + commentList);
 
 		return commentList;
+	}
+//	@RequestMapping("/list")
+//	@ResponseBody
+//	public ArrayList<CommentDTO> findAll(@RequestParam HashMap<String, String> param) {
+//		log.info("@# findAll()");
+//		log.info("@# param=>" + param);
+//
+//		ArrayList<CommentDTO> commentList = service.findAll(param);
+//
+//		// 댓글 시간 조정
+//		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+//
+//		for (CommentDTO dto : commentList) {
+//			LocalDateTime CommentDTO = dto.getCommentCreatedTime();
+//			dto.setCommentTime(CommentDTO.format(timeFormatter));
+//		}
+//
+//		return commentList;
+//	}
+
+	@RequestMapping("/comment_recommend")
+	@ResponseBody
+	public boolean comment_recommend(int commentNo, HttpSession session) {
+		log.info("@# comment_recommend()");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		log.info("commentNo => {} mf_no => {}", commentNo, mf_no);
+
+		commentRecommendService.add_comment_recommend(commentNo, mf_no);
+
+		log.info("@# 댓글 추천 성공");
+
+		return true;
 	}
 }

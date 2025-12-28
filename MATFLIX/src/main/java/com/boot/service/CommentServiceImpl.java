@@ -2,6 +2,7 @@ package com.boot.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import com.boot.dao.BoardDAO;
 import com.boot.dao.CommentDAO;
 import com.boot.dto.CommentDTO;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service("CommentService")
 public class CommentServiceImpl implements CommentService {
 	@Autowired
@@ -18,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public void save(HashMap<String, String> param) {
+		log.info("save => " + param);
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		dao.save(param);
 		BoardDAO Bdao = sqlSession.getMapper(BoardDAO.class);
@@ -25,9 +30,19 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
+	public void save_comment(CommentDTO commentDTO) {
+		log.info("save_comment => " + commentDTO);
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		dao.save_comment(commentDTO);
+		BoardDAO Bdao = sqlSession.getMapper(BoardDAO.class);
+		Bdao.add_comment_count(commentDTO.getBoardNo());
+	}
+
+	@Override
 	public ArrayList<CommentDTO> findAll(HashMap<String, String> param) {
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		ArrayList<CommentDTO> list = dao.findAll(param);
+		log.info("댓글 리스트들 => " + list);
 		return list;
 	}
 
@@ -48,5 +63,24 @@ public class CommentServiceImpl implements CommentService {
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		int count = dao.comment_count(boardNo);
 		return count;
+	}
+
+	@Override
+	public void add_comment_count(int commentNo) {
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		dao.add_comment_count(commentNo);
+	}
+
+	@Override
+	public void minus_comment_count(int commentNo) {
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		dao.minus_comment_count(commentNo);
+	}
+
+	@Override
+	public List<CommentDTO> recommended(int boardNo, int mf_no) {
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		List<CommentDTO> list = dao.recommended(boardNo, mf_no);
+		return list;
 	}
 }

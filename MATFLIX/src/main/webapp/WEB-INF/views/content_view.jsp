@@ -250,6 +250,7 @@
     var w_user = "${content_view.mf_no}";
     var endNo = 5; // 초기에 표시할 댓글 수
     var comment_count = ${count}; // 전체 댓글 수
+    var parentCommentNo = null;
     
     // 페이지 로드 시 애니메이션 효과
     $(document).ready(function() {
@@ -376,12 +377,18 @@
         });
     });
 
-    // 댓글 관련 함수들
+    // 댓글 작성
     function commentWrite() {
         console.log("유저 넘 => " + sessionUserNo);
         const writer = document.getElementById("commentWriter").value;
         const content = document.getElementById("commentContent").value;
 
+		// 로그인 체크
+	    if (sessionUserNo == null) {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
+		// 빈칸 작성 확인
         if (!content.trim()) {
             alert("댓글 내용을 입력해주세요.");
             return;
@@ -393,7 +400,8 @@
                 commentWriter: writer,
                 commentContent: content,
                 boardNo: no,
-                userNo: sessionUserNo
+                userNo: sessionUserNo,
+				parentCommentNo: parentCommentNo
             },
             url: "/comment/save",
             success: function(commentList) {
@@ -401,6 +409,8 @@
                 document.getElementById("commentContent").value = "";
                 // 댓글 작성 후 댓글 수 업데이트
                 comment_count++;
+				// 답글 모드에서 일반 댓글 모드로 돌아감
+				parentCommentNo = null;
                 // 댓글 목록 새로고침
                 loadComments();
             },
@@ -442,6 +452,76 @@
             }
         });
     }
+	
+	// 댓글 추천
+	function commentRecommend(commentNo, el){
+		console.log("commentRecommend 누름");
+		// 로그인 체크
+	    if (sessionUserNo == null) {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
+		
+		$.ajax({
+			type: "post",
+			url: "/comment/comment_recommend",
+			data: {commentNo: commentNo},
+			success: function(data){
+				console.log("성공"+data);
+				$(el).addClass("active");
+                $(el).find("i").removeClass("far").addClass("fas");
+			},
+			error:function(data){
+				console.log("실패"+data);
+			}
+		});
+	}
+	
+	// 답글
+	function setReply(el) {
+		// 로그인 체크
+	    if (sessionUserNo == null) {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
+		// 답글창 이미 열려있으면 닫기
+		document.querySelectorAll(".reply-box").forEach(box => box.remove());
+		// 답글이 속한 div 찾기
+		const commentItem = el.closest(".comment-item");
+		// 부모 댓글 번호 가져오기
+	    parentCommentNo = commentItem.querySelector(".commentNo").textContent;
+
+	    console.log("답글 대상 commentNo =", parentCommentNo);
+
+		// 답글 입력창 생성
+		const replyBox = document.createElement("div");
+		replyBox.className = "reply-box";
+
+		replyBox.innerHTML = `
+			<div class="reply-form">
+			    <div class="reply-top">
+			        <div class="reply-target">↳ 작성자에게 답글</div>
+			        <input type="text" id="replyContent" placeholder="답글을 입력하세요">
+			    </div>
+	
+			    <div class="reply-actions">
+			        <button class="btn-comment reply_btn" onclick="submitReply()">등록</button>
+			        <button class="btn-comment reply_btn" onclick="cancelReply()">취소</button>
+			    </div>
+			</div>
+		`;
+
+		// 댓글 바로 아래에 삽입
+		commentItem.appendChild(replyBox);
+		replyBox.querySelector("#replyContent").focus();
+	}
+	
+	// 답글 취소
+	function cancelReply() {
+	    parentCommentNo = null;
+	    document.querySelectorAll(".reply-box").forEach(box => box.remove());
+	}
+
 
     // 댓글 목록 렌더링
     function renderCommentList(commentList) {
@@ -454,23 +534,30 @@
             const comment = commentList[i];
             
             output += `<div class="comment-item">
-                         <div class="comment-profile">
-                             <div class="comment-avatar">
-                                 <i class="fas fa-user"></i>
-                             </div>
-                         </div>
-                         <div class="comment-content">
-                             <div class="comment-header">
-                                 <span class="comment-author">`
-                                    +commentList[i].commentWriter;
+						 <div class="comment-main">
+	                         <div class="comment-profile">
+	                             <div class="comment-avatar">
+	                                 <i class="fas fa-user"></i>
+	                             </div>
+	                         </div>
+	                         <div class="comment-content">
+	                             <div class="comment-header">
+	                                 <span class="comment-author">`
+	                                    +commentList[i].commentWriter+ `<span class="commentNo">`+commentList[i].commentNo+`</span>`;
                if(commentList[i].userNo == w_user){
                      output += `<span class='author-tag'>작성자</span>`;
                }
                          output += `<span class="comment-date">(`+commentList[i].commentTime+`)</span></span>
-                             </div>
-                             <div class="comment-text">`+commentList[i].commentContent+`</div>
-                             <div class="comment-footer">
-                                 <span class="comment-like"><i class="far fa-heart"></i></span>
+	                             </div>
+	                             <div class="comment-text">`+commentList[i].commentContent+`</div>
+	                             <div class="comment-footer">`;
+							if(commentList[i].recommended == 1){
+	                        	output += `<span class="comment-like active" onclick="commentRecommend(`+commentList[i].commentNo+`, this)"><i class="fa-heart fas"></i></span>`;						
+							} else{
+	                      		output += `<span class="comment-like" onclick="commentRecommend(`+commentList[i].commentNo+`, this)"><i class="far fa-heart"></i></span>`;
+							}
+						 output += `<span class="reply-btn" onclick="setReply(this)">답글</span>
+	                             </div>
                              </div>
                          </div>`;
                 

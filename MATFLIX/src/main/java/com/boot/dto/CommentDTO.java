@@ -16,6 +16,13 @@ public class CommentDTO {
 	private int boardNo;
 	private int userNo;
 	private LocalDateTime commentCreatedTime;
+	private int deleted;
+	private int parentCommentNo;
+	private LocalDateTime updatedTime;
+	private int recommend_count;
 	// 화면 표시용
 	private String commentTime;
+	private String comment_updatedTime;
+	// 조회용
+	private int recommended;
 }

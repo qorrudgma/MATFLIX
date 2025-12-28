@@ -13,15 +13,29 @@
 			 ,userNo)
 		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo})
     </insert>
+
+    <!-- 답글 작성 -->
+    <insert id="save_comment">
+		insert into board_comment(commentWriter 	
+			 , commentContent 	
+			 , boardNo
+			 , userNo
+			 , parentCommentNo)
+		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo},#{parentCommentNo})
+    </insert>
     
     <!-- 댓글 리스트 -->
+    <!-- 이거대신 recommended 로 대신 사용 -->
     <select id="findAll" resultType="com.boot.dto.CommentDTO">
 		select commentNo
-			  ,commentWriter
-			  ,commentContent
-			  ,boardNo
-			  ,commentCreatedTime
-			  ,userNo
+			 , commentWriter
+			 , commentContent
+			 , boardNo
+			 , userNo
+			 , commentCreatedTime
+			 , parentCommentNo
+			 , updatedTime
+			 , recommend_count
 		  from board_comment
 		 where boardNo=#{boardNo}
 		   and deleted != 1
@@ -41,11 +55,42 @@
  		 where commentNo=#{commentNo}
     </update>
     
+    <!-- 댓글 추천 + -->
+    <update id="add_comment_count">
+    	update board_comment
+    	   set recommend_count = recommend_count + 1
+ 		 where commentNo=#{commentNo}
+    </update>
+    
+    <!-- 댓글 추천 - -->
+    <update id="minus_comment_count">
+    	update board_comment
+    	   set recommend_count = recommend_count - 1
+ 		 where commentNo=#{commentNo}
+    </update>
+    
     <!-- 댓글 갯수 -->
     <select id="comment_count" resultType="int">
     	select count(*)
     	  from board_comment
 		 where boardNo = #{boardNo}
+    </select>
+    
+    <!-- 댓글 갯수 -->
+    <select id="recommended" resultType="com.boot.dto.CommentDTO">
+		SELECT c.commentNo
+			 , c.commentWriter
+			 , c.commentContent
+		     , c.userNo
+		     , c.commentCreatedTime
+			 , c.parentCommentNo
+			 , c.recommend_count
+		     , CASE WHEN cr.mf_no IS NULL THEN 0 ELSE 1 END AS recommended
+		  FROM board_comment c
+		  LEFT JOIN comment_recommend cr
+		    ON c.commentNo = cr.commentNo AND cr.mf_no = #{mf_no}
+		 WHERE c.boardNo = #{boardNo} AND c.deleted = 0
+		 ORDER BY c.commentCreatedTime DESC
     </select>
     
 </mapper>

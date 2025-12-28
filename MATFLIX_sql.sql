@@ -109,12 +109,10 @@ CREATE TABLE board_comment (
     commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP,
     deleted int default 0,
     parentCommentNo INT DEFAULT NULL,
-	updatedTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	updatedTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    recommend_count INT DEFAULT 0
 );
 select * FROM board_comment order by 1 desc;
-update board_comment
-   set deleted = 0
- where commentNo=275;
 
 -- 게시판 추천 테이블
 CREATE TABLE tbl_recommend (
@@ -124,6 +122,50 @@ CREATE TABLE tbl_recommend (
     UNIQUE KEY unique_recommend (boardNo, mf_no) -- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
 );
 select * from tbl_recommend;
+
+-- 게시판 댓글 추천 테이블
+CREATE TABLE comment_recommend (
+    c_recommend_id INT AUTO_INCREMENT PRIMARY KEY, 	-- 고유 식별자 (자동 증가)
+    commentNo INT NOT NULL,                        	-- 댓글 번호 (추천된 댓글)
+    mf_no INT NOT NULL,                          	-- 사용자 번호 (추천한 사용자)
+    createdTime DATETIME DEFAULT CURRENT_TIMESTAMP,	-- 생성 시간
+    updateTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	-- 업데이트 시간
+    UNIQUE KEY unique_recommend (commentNo, mf_no) 	-- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
+);
+select * from comment_recommend;
+delete from comment_recommend where commentNo = 282;
+
+select cr.commentNo
+  from comment_recommend cr
+ where cr.mf_no = 61;
+ 
+select commentNo
+  from board_comment
+ where userNo = 61 and boardNo = 331;
+ 
+select bc.commentNo
+  from board_comment bc
+  join comment_recommend cr
+    on bc.commentNo = cr.commentNo
+ where bc.userNo = 61
+   AND bc.boardNo = 331
+   AND cr.mf_no = 61;
+   
+SELECT c.commentNo
+	 , c.commentWriter
+	 , c.commentContent
+     , c.userNo
+     , c.commentCreatedTime
+	 , c.parentCommentNo
+	 , c.recommend_count
+     , CASE WHEN cr.mf_no IS NULL THEN 0 ELSE 1 END AS recommended
+  FROM board_comment c
+  LEFT JOIN comment_recommend cr
+    ON c.commentNo = cr.commentNo AND cr.mf_no = 0
+ WHERE c.boardNo = 331 AND c.deleted = 0
+ ORDER BY c.commentCreatedTime DESC;
+
+
 
 -- 게시판 파일 테이블
 CREATE TABLE board_attach (

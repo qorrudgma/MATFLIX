@@ -21,6 +21,7 @@
 		<!-- 게시판 & 댓글 & 페이징 -->
 		<mapper resource="mybatis/mappers/board.xml"/>
 		<mapper resource="mybatis/mappers/comment.xml"/>
+		<mapper resource="mybatis/mappers/comment_recommend.xml"/>
 		<mapper resource="mybatis/mappers/upload.xml"/>
 		<mapper resource="mybatis/mappers/page.xml"/>
 		
