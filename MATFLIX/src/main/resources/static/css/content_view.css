@@ -456,6 +456,12 @@
   line-height: 1.5;
 }
 
+.comment-date {
+	font-weight: 1;
+	font-size: 0.9em;
+	color: #999;
+}
+
 .comment-footer {
   display: flex;
   justify-content: space-between;
@@ -751,4 +757,3 @@
   resize: none;
   cursor: default;
 }
-

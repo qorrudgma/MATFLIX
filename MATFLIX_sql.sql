@@ -108,7 +108,8 @@ CREATE TABLE board_comment (
     userNo int,
     commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP,
     deleted int default 0,
-    parentCommentNo INT DEFAULT NULL
+    parentCommentNo INT DEFAULT NULL,
+	updatedTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 select * FROM board_comment order by 1 desc;
 update board_comment

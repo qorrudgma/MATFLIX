@@ -177,11 +177,11 @@
                                     <c:if test="${comment.userNo == content_view.mf_no}">
                                         <span class="author-tag">작성자</span>
                                     </c:if>
+									<span class="comment-date">(${comment.commentTime})</span>
                                 </span>
                             </div>
                             <div class="comment-text">${comment.commentContent}</div>
                             <div class="comment-footer">
-                                <span class="comment-date">${fn:substring(comment.commentCreatedTime, 0, 16)}</span>
                                 <span class="comment-like"><i class="far fa-heart"></i></span>
                             </div>
                         </div>
@@ -213,7 +213,14 @@
             <div class="comment-form">
                 <div class="form-group">
                     <label for="commentWriter">작성자</label>
-                    <input type="text" id="commentWriter" value="${user.mf_nickname}" readonly>
+					<c:choose>
+						<c:when test="${user != null}">
+                    		<input type="text" id="commentWriter" value="${user.mf_nickname}" readonly>
+						</c:when>
+						<c:otherwise>
+                    		<input type="text" id="commentWriter" value="로그인 후 이용 가능합니다." readonly>
+						</c:otherwise>
+					</c:choose>
                 </div>
                 <div class="form-group">
                     <label for="commentContent">내용</label>
@@ -459,11 +466,10 @@
                if(commentList[i].userNo == w_user){
                      output += `<span class='author-tag'>작성자</span>`;
                }
-                         output += `</span>
+                         output += `<span class="comment-date">(`+commentList[i].commentTime+`)</span></span>
                              </div>
                              <div class="comment-text">`+commentList[i].commentContent+`</div>
                              <div class="comment-footer">
-                                 <span class="comment-date">`+commentList[i].commentCreatedTime.substring(0, 16)+`</span>
                                  <span class="comment-like"><i class="far fa-heart"></i></span>
                              </div>
                          </div>`;

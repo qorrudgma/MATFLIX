@@ -1,6 +1,6 @@
 package com.boot.dto;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +15,7 @@ public class CommentDTO {
 	private String commentContent;
 	private int boardNo;
 	private int userNo;
-	private Timestamp commentCreatedTime;
+	private LocalDateTime commentCreatedTime;
+	// 화면 표시용
+	private String commentTime;
 }

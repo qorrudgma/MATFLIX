@@ -1,5 +1,7 @@
 package com.boot.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -82,6 +84,15 @@ public class CommentController {
 		log.info("@# param=>" + param);
 
 		ArrayList<CommentDTO> commentList = service.findAll(param);
+
+		// 게시글 시간 조정
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+
+		for (CommentDTO dto : commentList) {
+			LocalDateTime CommentDTO = dto.getCommentCreatedTime();
+			dto.setCommentTime(CommentDTO.format(timeFormatter));
+		}
+
 		return commentList;
 	}
 }
