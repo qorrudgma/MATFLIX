@@ -149,10 +149,4 @@ public class BoardServiceImpl implements BoardService {
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
 		dao.update_recommend_notify_step(boardNo);
 	}
-
-	@Override
-	public void add_comment_count(int boardNo) {
-		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
-		dao.add_comment_count(boardNo);
-	}
 }

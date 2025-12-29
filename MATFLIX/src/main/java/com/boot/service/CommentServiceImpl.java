@@ -25,8 +25,7 @@ public class CommentServiceImpl implements CommentService {
 		log.info("save => " + param);
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		dao.save(param);
-		BoardDAO Bdao = sqlSession.getMapper(BoardDAO.class);
-		Bdao.add_comment_count(Integer.parseInt(param.get("boardNo")));
+		log.info("111111");
 	}
 
 	@Override
@@ -34,8 +33,6 @@ public class CommentServiceImpl implements CommentService {
 		log.info("save_comment => " + commentDTO);
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		dao.save_comment(commentDTO);
-		BoardDAO Bdao = sqlSession.getMapper(BoardDAO.class);
-		Bdao.add_comment_count(commentDTO.getBoardNo());
 	}
 
 	@Override

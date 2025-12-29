@@ -67,6 +67,7 @@
     	update board_comment
     	   set recommend_count = recommend_count - 1
  		 where commentNo=#{commentNo}
+ 		   and recommend_count > 0
     </update>
     
     <!-- 댓글 갯수 -->

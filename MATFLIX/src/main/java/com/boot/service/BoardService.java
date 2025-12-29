@@ -41,7 +41,4 @@ public interface BoardService {
 	public void update_recommend_notify_step(int boardNo);
 
 	public List<Map<String, Object>> profile_board_list(int mf_no);
-
-	// 댓글 수 +
-	public void add_comment_count(int boardNo);
 }

@@ -414,14 +414,26 @@
 
 .comment-item {
   display: flex;
-  padding: 15px 0;
+  padding: 10px 5px;
   border-bottom: 1px solid #eee;
   position: relative;
   flex-direction: column;
 }
 
-.parent_comment{
-	margin-left: 70px;
+.comment-item.child {
+    margin-left: 50px;
+    padding-left: 15px;
+    border-left: 2px solid #e0e0e0;
+    background-color: #fafafa;
+}
+
+.comment-item.child::before {
+    content: "↳";
+    position: absolute;
+    left: -25px;
+    top: 10px;
+    color: #999;
+    font-size: 30px;
 }
 
 .comment-main {
@@ -463,6 +475,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin: 0;
 }
 
 .author-tag {
@@ -476,7 +489,7 @@
 }
 
 .comment-text {
-  margin-bottom: 8px;
+  margin-left: 8px;
   line-height: 1.5;
 }
 
@@ -783,7 +796,7 @@
   }
 
   .comment-item {
-    padding: 12px 10px;
+    padding: 6px 5px;
   }
 
   .comment-avatar {
