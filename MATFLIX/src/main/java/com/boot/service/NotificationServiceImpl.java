@@ -21,7 +21,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public void add_notification(int following_id, int follower_id, int boardNo, int post_id) {
-		// following_id => 알림 받는사람, post_id => 팔로우(1),게시글(2),댓글(3),추천(4),레시피(5)
+		// following_id => 알림 받는사람, post_id => 팔로우(1),게시글(2),댓글(3),게시글추천(4),댓글 추천(5)
 		NotifSettingDAO NSdao = sqlSession.getMapper(NotifSettingDAO.class);
 		NotificationDAO Ndao = sqlSession.getMapper(NotificationDAO.class);
 		String notifType = null;
@@ -37,10 +37,10 @@ public class NotificationServiceImpl implements NotificationService {
 			notifType = "comment";
 			break;
 		case 4:
-			notifType = "recommend";
+			notifType = "board_recommend";
 			break;
 		case 5:
-			notifType = "recipe";
+			notifType = "comment_recommend";
 			break;
 		default:
 			log.info("알수 없는 종류의 알림입니다.");

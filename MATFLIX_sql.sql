@@ -41,7 +41,7 @@ CREATE TABLE notifications (
     follower_id INT NOT NULL,          -- 팔로우를 거는 사람 (알림 생성하는 행동하는 사람)
     following_id INT NOT NULL,          -- 팔로우 당하는 사람 (알림 받는 대상)
     boardNo INT NOT NULL,             -- 해당 게시판 고유넘버 (알림 생성하는 게시판)
-    post_id INT,                         -- 어떤 알림인지 (게시글(1),댓글(2),팔로우(3),레시피(4))
+    post_id INT,                         -- 어떤 알림인지 (게시글(1),댓글(2),팔로우(3),레시피(4),댓글추천(5))
     is_read int DEFAULT 0,             -- 알림 읽음 여부
     created_at DATETIME DEFAULT NOW()    -- 생성 시간
 );
@@ -108,11 +108,14 @@ CREATE TABLE board_comment (
     userNo int,
     commentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP,
     deleted int default 0,
-    parentCommentNo INT DEFAULT NULL,
+    parentCommentNo INT DEFAULT 0,
 	updatedTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    recommend_count INT DEFAULT 0
+    recommend_count INT DEFAULT 0,
+    recommend_notify_step INT DEFAULT 0
 );
 select * FROM board_comment order by 1 desc;
+
+
 
 -- 게시판 추천 테이블
 CREATE TABLE tbl_recommend (
@@ -121,7 +124,7 @@ CREATE TABLE tbl_recommend (
     mf_no INT NOT NULL,                          -- 사용자 번호 (추천한 사용자)
     UNIQUE KEY unique_recommend (boardNo, mf_no) -- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
 );
-select * from tbl_recommend;
+select * from tbl_recommend order by 1 desc;
 
 -- 게시판 댓글 추천 테이블
 CREATE TABLE comment_recommend (
@@ -133,23 +136,6 @@ CREATE TABLE comment_recommend (
     UNIQUE KEY unique_recommend (commentNo, mf_no) 	-- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
 );
 select * from comment_recommend;
-delete from comment_recommend where commentNo = 282;
-
-select cr.commentNo
-  from comment_recommend cr
- where cr.mf_no = 61;
- 
-select commentNo
-  from board_comment
- where userNo = 61 and boardNo = 331;
- 
-select bc.commentNo
-  from board_comment bc
-  join comment_recommend cr
-    on bc.commentNo = cr.commentNo
- where bc.userNo = 61
-   AND bc.boardNo = 331
-   AND cr.mf_no = 61;
    
 SELECT c.commentNo
 	 , c.commentWriter
@@ -165,6 +151,24 @@ SELECT c.commentNo
  WHERE c.boardNo = 331 AND c.deleted = 0
  ORDER BY c.commentCreatedTime DESC;
 
+
+select notifications_id
+    		 , follower_id
+    		 , following_id
+    		 , n.boardNo as boardNo
+    		 , post_id
+    		 , is_read
+    		 , created_at
+    		 , m.mf_nickname as nickname
+    		 , t.boardTitle as board_title
+    	  from notifications n
+    	  join matflix m
+    	    on n.following_id = m.mf_no
+    	  join tbl_board t
+    	    on n.boardNo = t.boardNo
+    	 where follower_id = 62
+    	   and is_read = 0
+    	 ORDER BY notifications_id DESC;
 
 
 -- 게시판 파일 테이블

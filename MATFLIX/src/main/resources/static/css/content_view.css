@@ -358,13 +358,19 @@
 }
 
 .btn-like {
-  background-color: #f8f9fa;
-  color: #dc3545;
-  border: 1px solid #dc3545;
+	background-color: #dc3545;
+	color: white;
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
-.btn-like:hover,
 .btn-like.active {
+	background-color: #f8f9fa;
+	color: #dc3545;
+	border: 1px solid #dc3545;
+	animation: none;
+}
+
+.btn-like:hover{
   background-color: #dc3545;
   color: white;
   transform: translateY(-2px);
@@ -373,6 +379,10 @@
 
 .btn-like i {
   font-size: 16px;
+}
+
+.like-count{
+	margin: 5px;
 }
 
 /* 댓글 섹션 스타일 - 새로운 스타일 */
@@ -408,6 +418,10 @@
   border-bottom: 1px solid #eee;
   position: relative;
   flex-direction: column;
+}
+
+.parent_comment{
+	margin-left: 70px;
 }
 
 .comment-main {
@@ -799,7 +813,7 @@
   }
 }
 
-.btn-like.active {
+.btn-like {
   animation: pulse 1.5s infinite;
 }
 

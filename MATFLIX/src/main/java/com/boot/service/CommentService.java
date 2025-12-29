@@ -26,4 +26,16 @@ public interface CommentService {
 	public void minus_comment_count(int commentNo);
 
 	public List<CommentDTO> recommended(@Param("boardNo") int boardNo, @Param("mf_no") int mf_no);
+
+	// 추천 수
+	public int recommend_count(int commentNo);
+
+	// 추천 알림 가져오기
+	public int recommend_notify_step(int commentNo);
+
+	// 추천 알림 업데이트
+	public void update_recommend_notify_step(int commentNo);
+
+	// 댓글로 게시글 위치 가져오기
+	public int commentNo_boardNo(int commentNo);
 }

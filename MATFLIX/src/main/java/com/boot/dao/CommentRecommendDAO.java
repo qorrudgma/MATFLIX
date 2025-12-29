@@ -10,4 +10,6 @@ public interface CommentRecommendDAO {
 	public void delete_comment(@Param("commentNo") int commentNo);
 
 	public int comment_yn(@Param("commentNo") int commentNo, @Param("mf_no") int mf_no);
+
+	public void delete_board_comment(@Param("boardNo") int boardNo);
 }

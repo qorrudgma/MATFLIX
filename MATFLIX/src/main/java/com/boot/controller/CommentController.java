@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentController {
 
 	@Autowired
-	private CommentService service;
+	private CommentService commentService;
 
 	@Autowired
 	private CommentRecommendService commentRecommendService;
@@ -52,7 +52,7 @@ public class CommentController {
 		log.info("@# save()");
 		log.info("@# param=>" + param);
 
-		service.save(param);
+		commentService.save(param);
 
 		HashMap<String, String> boardNo = new HashMap<>();
 		boardNo.put("boardNo", param.get("boardNo"));
@@ -73,7 +73,7 @@ public class CommentController {
 			notificationService.add_notification(userNo, mf_no, b_no, 3);
 		}
 
-		ArrayList<CommentDTO> commentList = service.findAll(param);
+		ArrayList<CommentDTO> commentList = commentService.findAll(param);
 		return commentList;
 	}
 
@@ -83,7 +83,7 @@ public class CommentController {
 		log.info("@# userCommentDelete()");
 		log.info("@# param=>" + param);
 
-		service.userCommentDelete(param);
+		commentService.userCommentDelete(param);
 	}
 
 	@RequestMapping("/list")
@@ -98,7 +98,7 @@ public class CommentController {
 			mf_no = user.getMf_no();
 		}
 
-		List<CommentDTO> commentList = service.recommended(boardNo, mf_no);
+		List<CommentDTO> commentList = commentService.recommended(boardNo, mf_no);
 
 		// 댓글 시간 조정
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
@@ -132,16 +132,23 @@ public class CommentController {
 
 	@RequestMapping("/comment_recommend")
 	@ResponseBody
-	public boolean comment_recommend(int commentNo, HttpSession session) {
+	public String comment_recommend(@Param("commentNo") int commentNo, HttpSession session) {
 		log.info("@# comment_recommend()");
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		int mf_no = user.getMf_no();
-		log.info("commentNo => {} mf_no => {}", commentNo, mf_no);
+		log.info("commentNo => {} mf_no => {} recommend => {}", commentNo, mf_no);
 
-		commentRecommendService.add_comment_recommend(commentNo, mf_no);
+		int check = commentRecommendService.comment_yn(commentNo, mf_no);
 
-		log.info("@# 댓글 추천 성공");
+		if (check == 1) {
+			commentRecommendService.minus_comment_recommend(commentNo, mf_no);
+			log.info("@# 댓글 추천 취소 성공");
+			return "cancel";
+		} else {
+			commentRecommendService.add_comment_recommend(commentNo, mf_no);
+			log.info("@# 댓글 추천 성공");
+			return "recommend";
+		}
 
-		return true;
 	}
 }

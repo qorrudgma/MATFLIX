@@ -29,7 +29,7 @@
     	select notifications_id
     		 , follower_id
     		 , following_id
-    		 , n.boardNo
+    		 , n.boardNo as boardNo
     		 , post_id
     		 , is_read
     		 , created_at

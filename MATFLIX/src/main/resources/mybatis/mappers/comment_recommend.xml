@@ -24,9 +24,18 @@
 
     <!-- 댓글 추천 유무 -->
     <select id="comment_yn" resultType="int">
-    	select commentNo
+    	select count(*)
     	  from comment_recommend
  		 where commentNo=#{commentNo} and mf_no=#{mf_no}
     </select>
 
+    <!-- 게시글 삭제로 인한 추천 취소 -->
+    <delete id="delete_board_comment">
+	    delete cr
+		  from comment_recommend cr
+		  join board_comment bc
+		    on cr.commentNo = bc.commentNo
+		 where bc.boardNo = #{boardNo}
+    </delete>
+    
 </mapper>

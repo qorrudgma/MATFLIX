@@ -83,4 +83,31 @@ public class CommentServiceImpl implements CommentService {
 		List<CommentDTO> list = dao.recommended(boardNo, mf_no);
 		return list;
 	}
+
+	@Override
+	public int recommend_count(int commentNo) {
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		int recommend_count = dao.recommend_count(commentNo);
+		return recommend_count;
+	}
+
+	@Override
+	public int recommend_notify_step(int commentNo) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		int recommend_notify_step = dao.recommend_notify_step(commentNo);
+		return recommend_notify_step;
+	}
+
+	@Override
+	public void update_recommend_notify_step(int commentNo) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		dao.update_recommend_notify_step(commentNo);
+	}
+
+	@Override
+	public int commentNo_boardNo(int commentNo) {
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		int commentNo_boardNo = dao.commentNo_boardNo(commentNo);
+		return commentNo_boardNo;
+	}
 }

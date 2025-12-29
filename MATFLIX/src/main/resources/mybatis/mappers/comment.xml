@@ -6,12 +6,12 @@
     
     <!-- 댓글 작성 -->
     <insert id="save">
-		insert into board_comment(
-			  commentWriter 	
-			 ,commentContent 	
-			 ,boardNo
-			 ,userNo)
-		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo})
+		insert into board_comment(commentWriter 	
+			 , commentContent 	
+			 , boardNo
+			 , userNo
+			 , parentCommentNo)
+		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo},#{parentCommentNo})
     </insert>
 
     <!-- 답글 작성 -->
@@ -74,6 +74,7 @@
     	select count(*)
     	  from board_comment
 		 where boardNo = #{boardNo}
+		   and deleted = 0
     </select>
     
     <!-- 댓글 갯수 -->
@@ -92,5 +93,31 @@
 		 WHERE c.boardNo = #{boardNo} AND c.deleted = 0
 		 ORDER BY c.commentCreatedTime DESC
     </select>
+    	
+    <!-- 댓글 추천 수 -->
+    <select id="recommend_count" resultType="int">
+	    select recommend_count
+		  from board_comment
+		 where commentNo = #{commentNo}
+	</select>
+	
+    <!-- 추천 알림 가져오기 -->
+    <select id="recommend_notify_step" resultType="int">
+	    select recommend_notify_step
+		  from board_comment
+		 where commentNo = #{commentNo}
+	</select>
+	
+	<!-- 추천 알림 업데이트 -->
+    <update id="update_recommend_notify_step">
+	    update board_comment set recommend_notify_step = recommend_notify_step +50 where commentNo=#{commentNo}
+    </update>
+    
+    <!-- 댓글로 게시글 위치 가져오기 -->
+    <select id="commentNo_boardNo" resultType="int">
+	    select boardNo
+		  from board_comment
+		 where commentNo = #{commentNo}
+	</select>
     
 </mapper>

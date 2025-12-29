@@ -1,11 +1,12 @@
 package com.boot.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.boot.dto.RecommendDTO;
 import com.boot.dto.TeamDTO;
@@ -34,9 +35,9 @@ public class RecommendController {
 
 	@PostMapping("/recommend")
 	@ResponseBody
-	public String recommend(@SessionAttribute("user") TeamDTO user, @RequestParam int boardNo,
-			@RequestParam int board_mf_no) {
+	public String recommend(@RequestParam int boardNo, @RequestParam int board_mf_no, HttpSession session) {
 		log.info("recommend() => " + board_mf_no);
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		RecommendDTO dto = new RecommendDTO();
 		dto.setBoardNo(boardNo);
 		dto.setMf_no(user.getMf_no());

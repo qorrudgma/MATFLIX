@@ -120,9 +120,4 @@
 	    update tbl_board set recommend_notify_step = recommend_notify_step +50 where boardNo=#{boardNo}
     </update>
 	
-	<!-- 댓글 수+ -->
-    <update id="add_comment_count">
-	    update tbl_board set comment_count = comment_count +1 where boardNo=#{boardNo}
-    </update>
-	
 </mapper>

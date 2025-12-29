@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.boot.dao.BoardAttachDAO;
 import com.boot.dao.BoardDAO;
+import com.boot.dao.CommentDAO;
+import com.boot.dao.CommentRecommendDAO;
 import com.boot.dto.BoardDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -80,9 +82,14 @@ public class BoardServiceImpl implements BoardService {
 
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
 		BoardAttachDAO attachDAO = sqlSession.getMapper(BoardAttachDAO.class);
+		CommentDAO cDAO = sqlSession.getMapper(CommentDAO.class);
+		CommentRecommendDAO crDAO = sqlSession.getMapper(CommentRecommendDAO.class);
 
 		dao.delete(param);
 		attachDAO.deleteFile(param.get("boardNo"));
+		cDAO.boardCommentDelete(param);
+		int boardNo = Integer.parseInt(param.get("boardNo"));
+		crDAO.delete_board_comment(boardNo);
 	}
 
 	@Override

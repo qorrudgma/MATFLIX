@@ -120,7 +120,6 @@
                     
                     <div class="post-likes">
                         <span class="label">추천 수</span>
-                        <span class="value">${total_recommend}</span>
                         <span class="value">${content_view.recommend_count}</span>
                     </div>
                 </div>
@@ -163,50 +162,7 @@
             
             <!-- 댓글 목록 -->
             <div id="comment-list" class="comments-list">
-                <c:forEach items="${commentList}" var="comment" begin="0" end="4">
-                    <div class="comment-item">
-                        <div class="comment-profile">
-                            <div class="comment-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                        </div>
-                        <div class="comment-content">
-                            <div class="comment-header">
-                                <span class="comment-author">
-                                    ${comment.commentWriter}
-                                    <c:if test="${comment.userNo == content_view.mf_no}">
-                                        <span class="author-tag">작성자</span>
-                                    </c:if>
-									<span class="comment-date">(${comment.commentTime})</span>
-                                </span>
-                            </div>
-                            <div class="comment-text">${comment.commentContent}</div>
-                            <div class="comment-footer">
-                                <span class="comment-like"><i class="far fa-heart"></i></span>
-                            </div>
-                        </div>
-                        <c:if test="${comment.userNo == user.mf_no}">
-                            <div class="comment-actions">
-                                <button class="comment-menu">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </button>
-                                <div class="comment-dropdown">
-                                    <div class="dropdown-item delete" onclick="deleteComment('${comment.commentNo}')">
-                                        <i class="fas fa-trash-alt"></i> 삭제
-                                    </div>
-                                </div>
-                            </div>
-                        </c:if>
-                    </div>
-                </c:forEach>
-            </div>
-            
-            <!-- 더보기/접기 버튼 -->
-            <div class="comments-actions">
-                <c:if test="${count > 5}">
-                    <button onclick="loadMoreComments()" class="btn-load-more">더보기</button>
-                </c:if>
-                <button onclick="hideComments()" class="btn-hide-more" style="display: none;">접기</button>
+				<!-- 여기에 댓글 나타남 -->
             </div>
             
             <!-- 댓글 작성 폼 -->
@@ -226,7 +182,7 @@
                     <label for="commentContent">내용</label>
                     <input type="text" id="commentContent" placeholder="댓글을 입력하세요">
                 </div>
-                <button type="button" onclick="commentWrite()" class="btn-comment">댓글작성</button>
+                <button type="button" onclick="commentWrite(0)" class="btn-comment">댓글작성</button>
             </div>
         </div>
         
@@ -248,9 +204,9 @@
     <% } %>
     var no = "${content_view.boardNo}";
     var w_user = "${content_view.mf_no}";
-    var endNo = 5; // 초기에 표시할 댓글 수
+    // var endNo = 5; // 초기에 표시할 댓글 수
     var comment_count = ${count}; // 전체 댓글 수
-    var parentCommentNo = null;
+    var parentCommentNo = 0;
     
     // 페이지 로드 시 애니메이션 효과
     $(document).ready(function() {
@@ -378,10 +334,15 @@
     });
 
     // 댓글 작성
-    function commentWrite() {
+    function commentWrite(parentCommentNo) {
         console.log("유저 넘 => " + sessionUserNo);
         const writer = document.getElementById("commentWriter").value;
-        const content = document.getElementById("commentContent").value;
+		let content = "";
+		if(parentCommentNo == 0){
+        	content = document.getElementById("commentContent").value;
+		}else{
+        	content = document.getElementById("replyContent").value;
+		}
 
 		// 로그인 체크
 	    if (sessionUserNo == null) {
@@ -407,10 +368,8 @@
             success: function(commentList) {
                 console.log("작성 성공");
                 document.getElementById("commentContent").value = "";
-                // 댓글 작성 후 댓글 수 업데이트
-                comment_count++;
 				// 답글 모드에서 일반 댓글 모드로 돌아감
-				parentCommentNo = null;
+				parentCommentNo = 0;
                 // 댓글 목록 새로고침
                 loadComments();
             },
@@ -428,8 +387,6 @@
             data: { commentNo: commentNo },
             success: function(response) {
                 console.log("댓글 삭제 성공");
-                // 댓글 삭제 후 댓글 수 업데이트
-                comment_count--;
                 loadComments();
             },
             error: function() {
@@ -437,6 +394,19 @@
             }
         });
     }
+	
+	// 추천 수 확인
+	function updateLike(el, recommend) {
+	    const $countEl = $(el).find(".like-count");
+	    let count = parseInt($countEl.text(), 10) || 0;
+		console.log("찾은 엘리먼트:", $countEl);
+
+	    if (recommend) {
+	        $countEl.text(count + 1);
+	    } else {
+	        $countEl.text(Math.max(0, count - 1));
+	    }
+	}
 
     // 댓글 목록 로드
     function loadComments() {
@@ -466,13 +436,21 @@
 			type: "post",
 			url: "/comment/comment_recommend",
 			data: {commentNo: commentNo},
-			success: function(data){
-				console.log("성공"+data);
-				$(el).addClass("active");
-                $(el).find("i").removeClass("far").addClass("fas");
+			success: function(result){
+				if(result == "recommend"){
+					console.log("추천됨 {}"+result);
+					$(el).addClass("active");
+	                $(el).find("i").removeClass("far").addClass("fas");
+					updateLike(el, true);
+				}else if(result == "cancel"){
+					console.log("추천 취소됨 {}"+result);
+					$(el).removeClass("active");
+	                $(el).find("i").removeClass("fas").addClass("far");
+					updateLike(el, false);
+				}
 			},
-			error:function(data){
-				console.log("실패"+data);
+			error:function(result){
+				console.log("실패"+result);
 			}
 		});
 	}
@@ -505,7 +483,7 @@
 			    </div>
 	
 			    <div class="reply-actions">
-			        <button class="btn-comment reply_btn" onclick="submitReply()">등록</button>
+			        <button class="btn-comment reply_btn" onclick="commentWrite(`+parentCommentNo+`)">등록</button>
 			        <button class="btn-comment reply_btn" onclick="cancelReply()">취소</button>
 			    </div>
 			</div>
@@ -518,7 +496,7 @@
 	
 	// 답글 취소
 	function cancelReply() {
-	    parentCommentNo = null;
+	    parentCommentNo = 0;
 	    document.querySelectorAll(".reply-box").forEach(box => box.remove());
 	}
 
@@ -526,80 +504,56 @@
     // 댓글 목록 렌더링
     function renderCommentList(commentList) {
         let output = "";
-        
-        // 표시할 댓글 수 계산 (endNo가 전체 댓글 수보다 크면 전체 댓글 수로 제한)
-        const displayCount = Math.min(endNo, commentList.length);
-        
-        for (let i = 0; i < displayCount; i++) {
+		
+        for (let i = 0; i < commentList.length; i++) {
             const comment = commentList[i];
-            
-            output += `<div class="comment-item">
-						 <div class="comment-main">
-	                         <div class="comment-profile">
-	                             <div class="comment-avatar">
-	                                 <i class="fas fa-user"></i>
+			console.log("부모 댓글"+commentList[i].parentCommentNo);
+            if(commentList[i].parentCommentNo == 0){
+	            output += `<div class="comment-item">
+							 <div class="comment-main">
+		                         <div class="comment-profile">
+		                             <div class="comment-avatar">
+		                                 <i class="fas fa-user"></i>
+		                             </div>
+		                         </div>
+		                         <div class="comment-content">
+		                             <div class="comment-header">
+		                                 <span class="comment-author">`
+		                                    +commentList[i].commentWriter+ `<span class="commentNo">`+commentList[i].commentNo+`</span>`;
+	               if(commentList[i].userNo == w_user){
+	                     output += `<span class='author-tag'>작성자</span>`;
+	               }
+	                         output += `<span class="comment-date">(`+commentList[i].commentTime+`)</span></span>
+		                             </div>
+		                             <div class="comment-text">`+commentList[i].commentContent+`</div>
+		                             <div class="comment-footer">`;
+								if(commentList[i].recommended == 1){
+		                        	output += `<span class="comment-like active" onclick="commentRecommend(`+commentList[i].commentNo+`, this)">
+									<span class="like-count">`+commentList[i].recommend_count+`</span><i class="fa-heart fas"></i></span>`;						
+								} else{
+		                      		output += `<span class="comment-like" onclick="commentRecommend(`+commentList[i].commentNo+`, this)">
+									<span class="like-count">`+commentList[i].recommend_count+`</span><i class="far fa-heart"></i></span>`;
+								}
+							 output += `<span class="reply-btn" onclick="setReply(this)">답글</span>
+		                             </div>
 	                             </div>
-	                         </div>
-	                         <div class="comment-content">
-	                             <div class="comment-header">
-	                                 <span class="comment-author">`
-	                                    +commentList[i].commentWriter+ `<span class="commentNo">`+commentList[i].commentNo+`</span>`;
-               if(commentList[i].userNo == w_user){
-                     output += `<span class='author-tag'>작성자</span>`;
-               }
-                         output += `<span class="comment-date">(`+commentList[i].commentTime+`)</span></span>
-	                             </div>
-	                             <div class="comment-text">`+commentList[i].commentContent+`</div>
-	                             <div class="comment-footer">`;
-							if(commentList[i].recommended == 1){
-	                        	output += `<span class="comment-like active" onclick="commentRecommend(`+commentList[i].commentNo+`, this)"><i class="fa-heart fas"></i></span>`;						
-							} else{
-	                      		output += `<span class="comment-like" onclick="commentRecommend(`+commentList[i].commentNo+`, this)"><i class="far fa-heart"></i></span>`;
-							}
-						 output += `<span class="reply-btn" onclick="setReply(this)">답글</span>
-	                             </div>
-                             </div>
-                         </div>`;
-                
-            if (commentList[i].userNo == sessionUserNo) {
-                 output += `<div class="comment-actions">
-                              <div class="dropdown-item delete" onclick="deleteComment(`+commentList[i].commentNo+`)">
-                                  <i class="fas fa-trash-alt"></i> 삭제
-                              </div>
-                     </div>`;
-            }
-            
-            output += `</div>`;
+	                         </div>`;
+	                
+	            if (commentList[i].userNo == sessionUserNo) {
+	                 output += `<div class="comment-actions">
+	                              <div class="dropdown-item delete" onclick="deleteComment(`+commentList[i].commentNo+`)">
+	                                  <i class="fas fa-trash-alt"></i> 삭제
+	                              </div>
+	                     </div>`;
+	            }
+	            output += `</div>`;
+			} else{
+				console.log("부모 댓글"+commentList[i].parentCommentNo);
+			}
         }
-        
         document.getElementById("comment-list").innerHTML = output;
-        
-        // 더보기/접기 버튼 표시 여부 설정
-        if (displayCount < commentList.length) {
-            $(".btn-load-more").show();
-        } else {
-            $(".btn-load-more").hide();
-        }
-        
-        if (endNo > 5) {
-            $(".btn-hide-more").show();
-        } else {
-            $(".btn-hide-more").hide();
-        }
     }
 
-    // 댓글 더보기 버튼
-    function loadMoreComments() {
-        endNo += 5; // 5개씩 더 표시
-        loadComments();
-    }
-
-    // 댓글 접기 버튼
-    function hideComments() {
-        endNo = 5; // 기본 표시 개수로 되돌림
-        loadComments();
-    }
-    
     // 페이지 로드 시 댓글 목록 초기화
     $(document).ready(function() {
         // 초기 댓글 목록 로드

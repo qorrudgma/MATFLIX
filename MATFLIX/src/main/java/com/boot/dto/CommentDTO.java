@@ -20,6 +20,7 @@ public class CommentDTO {
 	private int parentCommentNo;
 	private LocalDateTime updatedTime;
 	private int recommend_count;
+	private int recommend_notify_step;
 	// 화면 표시용
 	private String commentTime;
 	private String comment_updatedTime;

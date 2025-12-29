@@ -7,7 +7,7 @@
 	<!-- 알림 on/off 설정 -->
 	<insert id="add_notif_setting">
 		INSERT INTO notif_setting (mf_no, notif_type)
-		VALUES (#{mf_no}, 'follow'), (#{mf_no}, 'board'), (#{mf_no}, 'comment')
+		VALUES (#{mf_no}, 'follow'), (#{mf_no}, 'board'), (#{mf_no}, 'comment'), (#{mf_no}, 'board_recommend'), (#{mf_no}, 'comment_recommend')
 	</insert>
 
 	<!-- 알림 on/off 수정 -->
