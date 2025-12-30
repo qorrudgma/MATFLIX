@@ -7,25 +7,39 @@
 	--header-height: 120px; /* 헤더 높이 고정 */
 }
 
+body {
+    padding-top: 120px;
+}
+
 /* 헤더 스타일 */
 .header {
 	background-color: white;
 	box-shadow: var(--shadow);
-	position: sticky;
+	position: fixed;
 	top: 0;
 	z-index: 1000;
 	width: 100%;
+}
+
+.scroll {
+    height: 50px !important;
 }
 
 .header_container {
 	display: grid;
 	grid-template-columns: 1fr auto 1fr;
 	align-items: center;
-	padding: 15px 5%;
+	padding: 0 5% 15px 5%;
 	max-width: 1400px;
 	margin: 0 auto;
-	min-height: var(--header-height); /* 최소 높이 설정 */
+	height: 120px;
+/*	min-height: var(--header-height);  최소 높이 설정 */
 	box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
+	transition: height 0.3s ease;
+}
+
+.header_container.scroll {
+    height: 80px;
 }
 
 /* 로고 스타일 */
@@ -69,7 +83,7 @@
 	position: relative;
 }
 
-#notification_btn {
+#notification_btn, #nav_notification_btn {
 	background: none;
 	border: none;
 	font-size: 26px;
@@ -91,10 +105,9 @@
     display: none;
 }
 
-#notification_btn.active .notify_badge {
+.active .notify_badge {
     display: block;
 }
-
 
 #notification_btn:hover {
 	color: var(--primary-color);
@@ -121,8 +134,10 @@
 /* 알림 목록 스타일 */
 #notification_div {
 	position: absolute;
-	top: 50px;
-	right: 0;
+	top: 0px;
+	right: 0px;
+/*	top: 80px;*/
+/*	right: 370px;*/
 	width: 320px;
 	max-height: 450px;
 	overflow-y: auto;
@@ -134,14 +149,33 @@
 	z-index: 1002;
 }
 
+.close-btn {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+}
+
+.close-btn i {
+    font-size: 20px;
+    color: #666;
+}
+
+.close-btn:hover i {
+    color: #000;
+}
+
 #notification_div.active {
 	display: block;
 }
 
 .notification_header {
+	display: flex;
 	padding: 12px 15px;
 	border-bottom: 1px solid var(--border-color);
 	background-color: var(--light-bg);
+	justify-content: space-between; 
 }
 
 .notification_header h3 {
@@ -294,19 +328,36 @@
 .btn_login, .btn_register {
 	padding: 10px 20px;
 	font-size: 16px;
-	min-width: 100px; /* 최소 너비 설정 */
+	min-width: 100px;
 }
 
 /* 네비게이션 스타일 */
+.nav_action {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition: height 0.25s ease, opacity 0.2s ease;
+}
+
 #header_nav {
 	background-color: white;
 	border-bottom: 1px solid var(--border-color);
 	display: flex;
 	justify-content: center;
 	padding: 0;
+	padding-bottom: 10px;
 	margin: 0;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-	height: 50px; /* 고정 높이 설정 */
+	height: 50px;
+}
+
+#header_nav h3{
+	color: var(--primary-color);
+}
+
+#header_nav .nav_header_actions:hover::after{
+	width: 0;
 }
 
 #header_nav > div {

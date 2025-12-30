@@ -41,7 +41,6 @@
 							<i class="far fa-bell"></i>
 							<span class="notify_badge"></span>
 						</button>
-						<div id="notification_div"></div>
 					</div>
 					
 					<!-- 프로필 정보 -->
@@ -71,9 +70,11 @@
 				<% } %>
 			</div>
 		</div>
+		<div id="notification_div"></div>
 
 		<!-- 네비게이션 메뉴 (같은 헤더 안에 포함) -->
 		<nav id="header_nav">
+			<div class="nav_header_logo nav_action" onclick="location.href='${pageContext.request.contextPath}/main'"><h3>MATFLIX</h3></div>
 			<div><a href="recipe_board?rc_type=&rc_keyword=&rc_pageNum=1&rc_amount=12"><div>레시피</div></a></div>
 			<div><a href="${pageContext.request.contextPath}/user_rank"><div> 랭킹 </div></a></div>
 			<div><a href="${pageContext.request.contextPath}/list"><div>게시판</div></a></div>
@@ -82,6 +83,31 @@
 				<div><a href="${pageContext.request.contextPath}/follow_board_list"><div> 친구들 소식 </div></a></div>
 			<% } %>
 			<div> 더보기 </div>
+			<div class="nav_header_actions nav_action">
+				<% if(user != null){ %>
+					<div class="user_container">
+							<div class="nav_notification_container">
+								<button type="button" id="nav_notification_btn" data-count="<%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>">
+									<i class="far fa-bell"></i>
+									<span class="notify_badge"></span>
+								</button>
+							</div>
+						<div class="user_info">
+							<div class="user_buttons">
+								<button type="button" id="log_out" onclick="location.href='${pageContext.request.contextPath}/log_out'">로그아웃</button>
+								<form id="user_profile" class="profile" action="profile" method="post">
+									<button type="submit" class="mypage_btn">마이페이지</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				<% }else{ %>
+					<div class="user_actions">
+						<button class="btn_login" onclick="location.href='${pageContext.request.contextPath}/login'">로그인</button>
+						<button class="btn_register" onclick="location.href='${pageContext.request.contextPath}/recruit'">회원가입</button>
+					</div>
+				<% } %>
+			</div>
 		</nav>
 	</header>	
 
@@ -118,6 +144,7 @@
 		
 		eventSource.addEventListener("alert", function(event) {
 			$("#notification_btn").addClass("active");
+			$("#nav_notification_btn").addClass("active");
 		    console.log("알림 이벤트:", event.data);
 		});
 		
@@ -140,6 +167,7 @@
                 notificationCount = notification_list_n.filter(item => item.is_read === 0).length;
 				if(notificationCount>0){
 					$("#notification_btn").addClass("active");
+					$("#nav_notification_btn").addClass("active");
 				}
                 //updateNotificationBadge(notificationCount);
             },
@@ -179,11 +207,15 @@
                 let notification_data = "";
                 
                 if (notification_list_n.length > 0) {
-                    notification_data += "<div class='notification_header'><h3>알림 " + notification_list_n.length + "개</h3></div>";
+                    notification_data += `<div class='notification_header'><h3>알림 ` + notification_list_n.length + `개</h3>
+												<button type='button' class='close-btn' aria-label='닫기'><i class='fa-solid fa-xmark'></i></button>
+											</div>`;
                 } else {
-                    notification_data += "<div class='notification_header'><h3>새로운 알림이 없습니다</h3></div>";
+                    notification_data += `<div class='notification_header n_notif'><h3>새로운 알림이 없습니다</h3>
+												<button type='button' class='close-btn' aria-label='닫기'><i class='fa-solid fa-xmark'></i></button>
+											</div>`;
                 }
-                
+				
                 for (let i = 0; i < notification_list_n.length && i < 10; i++) {
                     // 기존 코드와 동일
                     if (notification_list_n[i].is_read == 1) {
@@ -226,7 +258,7 @@
     }
 
     // 기존 클릭 이벤트는 유지하되 약간 수정
-    $(document).on("click", "#notification_btn", function(e) {
+    $(document).on("click", "#notification_btn, #nav_notification_btn", function(e) {
         e.preventDefault();
         $("#notification_div").toggleClass("active");
         
@@ -241,6 +273,29 @@
             eventSource.close();
         }
     });
+	
+	// 스크롤 위치에 따른 변화
+	let scroll = false;
+	$(window).on("scroll", function () {
+	    const scrollTop = $(this).scrollTop();
+
+	    if (!scroll && scrollTop > 100) {
+	        $(".header_container").addClass("nav_action");
+	        $(".nav_header_logo").removeClass("nav_action");
+	        $(".nav_header_actions").removeClass("nav_action");
+			scroll = true;
+	    } else if(scroll && scrollTop < 80) {
+	        $(".header_container").removeClass("nav_action");
+	        $(".nav_header_logo").addClass("nav_action");
+	        $(".nav_header_actions").addClass("nav_action");
+			scroll = false;
+	    }
+	});
+	
+	$(document).on("click", ".close-btn", function (e) {
+		$("#notification_div").removeClass("active");
+	});
+
 
     //-----------------------------------------
 
