@@ -401,4 +401,10 @@ public class TeamController {
 		int mf_no = user.getMf_no();
 		notifSettingService.update_notif_setting(mf_no, notif_type, yn);
 	}
+
+	// 로그인
+	@RequestMapping("/recipe_write_new")
+	public String recipe_write_new() {
+		return "recipe_write_new";
+	}
 }

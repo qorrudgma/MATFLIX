@@ -159,7 +159,8 @@ public class RecipeController {
 
 	@RequestMapping("/insert_recipe")
 	public String insert_recipe() {
-		return "insert_recipe";
+//		return "insert_recipe";
+		return "recipe_write_new";
 	}
 
 	@RequestMapping("/recipe_write")
