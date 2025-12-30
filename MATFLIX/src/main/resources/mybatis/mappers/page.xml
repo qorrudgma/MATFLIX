@@ -5,23 +5,23 @@
 <mapper namespace="com.boot.dao.PageDAO">
 
 	<sql id="criteria">
-		<if test='type == "T"'>
-			where boardTitle like concat('%', #{keyword}, '%')
+		<if test='cri.type == "T"'>
+			where (boardTitle like concat('%', #{cri.keyword}, '%'))
 		</if>
-		<if test='type == "C"'>
-			where boardContent like concat('%', #{keyword}, '%')
+		<if test='cri.type == "C"'>
+			where (boardContent like concat('%', #{cri.keyword}, '%'))
 		</if>
-		<if test='type == "W"'>
-			where boardName like concat('%', #{keyword}, '%')
+		<if test='cri.type == "W"'>
+			where (boardName like concat('%', #{cri.keyword}, '%'))
 		</if>
-		<if test='type == "TC"'>
-			where boardTitle like concat('%', #{keyword}, '%') or boardContent like concat('%', #{keyword}, '%')
+		<if test='cri.type == "TC"'>
+			where (boardTitle like concat('%', #{cri.keyword}, '%') or boardContent like concat('%', #{cri.keyword}, '%'))
 		</if>
-		<if test='type == "TW"'>
-			where boardTitle like concat('%', #{keyword}, '%') or boardName like concat('%', #{keyword}, '%')
+		<if test='cri.type == "TW"'>
+			where (boardTitle like concat('%', #{cri.keyword}, '%') or boardName like concat('%', #{cri.keyword}, '%'))
 		</if>
-		<if test='type == "CW"'>
-			where boardContent like concat('%', #{keyword}, '%') or boardName like concat('%', #{keyword}, '%')
+		<if test='cri.type == "CW"'>
+			where (boardContent like concat('%', #{cri.keyword}, '%') or boardName like concat('%', #{cri.keyword}, '%'))
 		</if>
 	</sql>
 	
@@ -51,32 +51,60 @@
 							  group by b.boardNo, b.boardName, b.boardTitle, b.boardContent, b.boardDate, b.boardHit, b.mf_no, b.recommend_count, b.recommend_notify_step
 							 order by boardNo desc
 							) a
-					where rownum <= (#{pageNum} * #{amount})
+					where rownum <= (#{cri.pageNum} * #{cri.amount})
 				) aa
-			where rownum > (#{pageNum}-1) * #{amount}
+			where rownum > (#{cri.pageNum}-1) * #{cri.amount}
 		]]>
     </select>
-<!--    <select id="listWithPaging" resultType="com.boot.dto.BoardDTO">-->
-<!--    	<![CDATA[-->
-<!--		  select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count-->
-<!--			from ( select rownum , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count-->
-<!--					 from ( select row_number() over(order by boardNo desc) as rownum-->
-<!--								 , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count-->
-<!--							  from tbl_board-->
-<!--							 ]]>-->
-<!--							 <include refid="criteria"></include>-->
-<!--							 <![CDATA[-->
-<!--							 order by boardNo desc-->
-<!--							) a-->
-<!--					where rownum <= (#{pageNum} * #{amount})-->
-<!--				) aa-->
-<!--			where rownum > (#{pageNum}-1) * #{amount}-->
-<!--		]]>-->
-<!--    </select>-->
+    
+    <select id="f_listWithPaging" resultType="com.boot.dto.BoardDTO">
+    	<![CDATA[
+		  select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
+			from ( select rownum , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
+					 from ( select row_number() over(order by boardNo desc) as rownum
+					 			 , b.boardNo
+					 			 , b.boardName
+					 			 , b.boardTitle
+					 			 , b.boardContent
+					 			 , b.boardDate
+					 			 , b.boardHit
+					 			 , b.mf_no
+					 			 , b.recommend_count
+					 			 , b.recommend_notify_step
+					 			 , count(c.commentNo) as comment_count
+							  from tbl_board b
+							  join follow f
+							    on b.mf_no = f.following_id
+							   and f.follower_id = #{mf_no}
+							  left join board_comment c
+							    on b.boardNo = c.boardNo
+							   and c.deleted = 0
+							 ]]>
+							 <include refid="criteria"></include>
+							 <![CDATA[
+							  group by b.boardNo, b.boardName, b.boardTitle, b.boardContent, b.boardDate, b.boardHit, b.mf_no, b.recommend_count, b.recommend_notify_step
+							 order by boardNo desc
+							) a
+					where rownum <= (#{cri.pageNum} * #{cri.amount})
+				) aa
+			where rownum > (#{cri.pageNum}-1) * #{cri.amount}
+		]]>
+    </select>
     
     <select id="getTotalCount" resultType="int">
 		  select count(*) from tbl_board <include refid="criteria"></include>
     </select>
+
+    <select id="f_getTotalCount" resultType="int">
+		<![CDATA[
+		    select count(distinct b.boardNo)
+		    from tbl_board b
+		    join follow f
+		      on b.mf_no = f.following_id
+		     and f.follower_id = #{mf_no}
+		]]>
+		    <include refid="criteria"/>
+	</select>
 	<!-- tbl_board end -->
 
 	<!-- board_comment start -->

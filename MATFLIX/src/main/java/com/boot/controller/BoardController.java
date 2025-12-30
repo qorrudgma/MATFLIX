@@ -184,7 +184,7 @@ public class BoardController {
 		return "redirect:list";
 	}
 
-	@RequestMapping("/follow_board_list")
+//	@RequestMapping("/follow_board_list")
 	public String follow_board_list(HttpSession session, Model model) {
 		log.info("@# follow_board_list()");
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
