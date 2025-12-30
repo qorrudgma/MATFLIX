@@ -216,15 +216,16 @@
 }
 
 .post-title {
-  margin-bottom: 25px;
+  margin-right: 200px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+/*  gap: 10px;*/
 }
 
 .post-title .label {
   font-size: 16px;
   color: #666;
+  margin-bottom: 0 !important;
 }
 
 .post-title input {

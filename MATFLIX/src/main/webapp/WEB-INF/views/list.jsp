@@ -36,7 +36,7 @@
              <option value="W" <c:out value="${pageMaker.cri.type eq 'W' ? 'selected':''}"/>>작성자</option>
              <option value="TC" <c:out value="${pageMaker.cri.type eq 'TC' ? 'selected':''}"/>>제목 + 내용</option>
              <option value="TW" <c:out value="${pageMaker.cri.type eq 'TW' ? 'selected':''}"/>>제목 + 작성자</option>
-             <option value="CW" <c:out value="${pageMaker.cri.type eq 'TCW' ? 'selected':''}"/>>내용 + 작성자</option>
+             <option value="CW" <c:out value="${pageMaker.cri.type eq 'CW' ? 'selected':''}"/>>내용 + 작성자</option>
           </select>
 
           <input type="text" name="keyword" value="${pageMaker.cri.keyword}" placeholder= "모든 게시물을 보는 옵션입니다. 검색을 눌러주세요!">
@@ -45,25 +45,35 @@
           <button><i class="fas fa-search"></i> 검색</button>
        </form>
        
-       <table>
+       <table class="board_table">
+			<colgroup>
+		       <col class="col_no">
+		       <col class="col_title">
+		       <col class="col_name">
+		       <col class="col_date">
+		       <col class="col_views">
+		       <col class="col_recommend">
+		    </colgroup>
           <tr>
-             <th>번호</th>
-             <th>이름</th>
-             <th>제목</th>
-             <th>날짜</th>
-             <th>조회수</th>
+             <th class="list_no">번호</th>
+             <th class="list_title">제목</th>
+             <th class="list_name">이름</th>
+             <th class="list_date">날짜</th>
+             <th class="list_views">조회수</th>
+             <th class="list_recommend">추천수</th>
           </tr>
           <c:forEach var="dto" items="${list}" varStatus="status">
              <tr style="--row-index: ${status.index}">
                 <td>${dto.boardNo}</td>
-                <td>${dto.boardName}</td>
-                <td>
+                <td class="title">
                    <a class="move_link" href="${dto.boardNo}">
                       <i class="fas fa-utensils"></i> ${dto.boardTitle} <span id="comment_count">[${dto.comment_count}]</span>
 				  </a>
                 </td>
+                <td>${dto.boardName}</td>
                 <td>${dto.displayDate}</td>
                 <td>${dto.boardHit}</td>
+                <td>${dto.recommend_count}</td>
              </tr>
           </c:forEach>
           <c:if test="${empty list}">

@@ -1,10 +1,49 @@
 /* 게시판 컨테이너 스타일 */
 .content {
-  max-width: 1200px;
-  margin: 30px auto;
+  max-width: 1000px !important;
+  margin: 430px auto;
   padding: 20px;
   position: relative;
   overflow: hidden;
+}
+
+.board_table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* ⭐ 핵심 */
+}
+
+.board_table th,
+.board_table td {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+    font-size: 15px;
+}
+/* 컬럼 비율 */
+.col_no { width: 10%; }
+.col_title { width: 47%; }
+.col_name { width: 17%; }
+.col_date { width: 10%; }
+.col_views { width: 8%; }
+.col_views { width: 8%; }
+
+/* 제목만 왼쪽 정렬 + 말줄임 */
+.board_table td.title {
+    text-align: left !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.title{
+	padding-left: 30px !important;
+}
+
+/* hover */
+.board_table tbody tr:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
 }
 
 /* 장식 요소 추가 */

@@ -35,7 +35,10 @@
                                     <input type="hidden" name="mf_id" value="${user.getMf_id()}">
                                     <div class="form-row">
                                         <label for="mf_nickname">새 닉네임:</label>
-                                        <input type="text" id="mf_nickname" name="mf_nickname" required>
+                                        <input type="text" id="mf_nickname" name="mf_nickname" maxlength="8" placeholder="한글 최대 8글자" required
+											   pattern="^[a-zA-Z가-힣0-9]{1,8}$"
+											   oninvalid="this.setCustomValidity('닉네임은 영어, 한글, 숫자만 가능하며 최대 8글자까지 입력할 수 있습니다.')"
+										       oninput="this.setCustomValidity('')">
                                         <input type="submit" value="변경" class="nickname-submit">
                                         <button type="button" id="cancel_nickname" class="nickname-cancel">취소</button>
                                     </div>
@@ -497,6 +500,15 @@
 		        // 닉네임 변경 폼 제출
 		        $(".nickname-form").submit(function(e) {
 		            e.preventDefault();
+					
+					const nickname = $("#mf_nickname").val().trim();
+				    const nicknameRegex = /^[a-zA-Z가-힣0-9]{1,8}$/;
+					
+					if (!nicknameRegex.test(nickname)) {
+				        alert("특수문자는 사용 불가하며 최대 8글자까지 입력할 수 있습니다.");
+				        $("#nickname").focus();
+				        return;
+				    }
 		            
 		            $.ajax({
 		                type: "POST",

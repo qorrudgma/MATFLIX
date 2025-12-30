@@ -56,6 +56,18 @@
                             <span class="value">${content_view.boardName}</span>
                         </div>
                     </div>
+
+					<div class="post-title">
+					    <span class="label">제목</span>
+					    <c:choose>
+					        <c:when test="${user.mf_no == content_view.mf_no}">
+					            <input type="text" name="boardTitle" value="${content_view.boardTitle}" class="editable">
+					        </c:when>
+					        <c:otherwise>
+					            <input type="text" name="boardTitle" value="${content_view.boardTitle}" readonly class="readonly">
+					        </c:otherwise>
+					    </c:choose>
+					</div>
                     
                     <div class="post-author">
                         <span class="label">조회수</span>
@@ -67,44 +79,11 @@
                                     <i class="fas fa-user-plus"></i> 팔로우
                                 </button>
 							</c:if>
-                            <!-- 팔로우 버튼 
-                            <c:if test="${user != null && user.mf_no != content_view.mf_no}">
-                                <c:set var="isFollowing" value="false"/>
-                                <c:forEach var="id" items="${sessionScope.user_follow_list}">
-                                    <c:if test="${id == content_view.mf_no}">
-                                        <c:set var="isFollowing" value="true"/>
-                                    </c:if>
-                                </c:forEach>
-                                <c:choose>
-                                    <c:when test="${isFollowing}">
-                                        <button type="button" id="delete_follow_btn" class="follow-btn following">
-                                            <i class="fas fa-user-minus"></i> 팔로우 취소
-                                        </button>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button type="button" id="follow_btn" class="follow-btn">
-                                            <i class="fas fa-user-plus"></i> 팔로우
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:if>
-						 프론트에서 확인하지말고 서버에서 확인하기 -->
                         </div>
                     </div>
                 </div>
                 
                 <div class="post-content">
-                    <div class="post-title">
-                        <span class="label">제목</span>
-                        <c:choose>
-                            <c:when test="${user.mf_no == content_view.mf_no}">
-                                <input type="text" name="boardTitle" value="${content_view.boardTitle}" class="editable">
-                            </c:when>
-                            <c:otherwise>
-                                <input type="text" name="boardTitle" value="${content_view.boardTitle}" readonly class="readonly">
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
                     
                     <div class="post-body">
                         <span class="label">내용</span>
