@@ -113,8 +113,10 @@ CREATE TABLE board_comment (
     recommend_count INT DEFAULT 0,
     recommend_notify_step INT DEFAULT 0
 );
-select * FROM board_comment order by 1 desc;
-
+select commentNo, recommend_count FROM board_comment where boardNo = 331 order by 1 desc;
+update board_comment
+    	   set recommend_count = recommend_count - 1
+ 		 where commentNo=281;
 
 
 -- 게시판 추천 테이블
@@ -195,8 +197,115 @@ CREATE TABLE recipe_favorites (
     UNIQUE KEY uk_user_recipe (mf_no, rc_recipe_id)
 );
 
--- 레시피 테이블
+-- ------------------------------------------------------------------------------------------------
+-- 레시피
+-- 메인
 CREATE TABLE recipe (
+    recipe_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    mf_no		  INT NOT NULL,
+    title         VARCHAR(200) NOT NULL,
+    intro         VARCHAR(500) NOT NULL,
+    servings      INT NOT NULL, 	 		  -- 몇인분
+    cook_time     INT NOT NULL,      		  -- 분 단위
+    difficulty    VARCHAR(20) NOT NULL,       -- EASY / NORMAL / HARD
+    category      VARCHAR(50) NOT NULL,       -- KOREAN / CHINESE / JAPANESE / WESTERN / DESSERT
+    tip           TEXT,
+    rating		  INT default 0,
+    created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+select * from recipe;
+
+INSERT INTO recipe (
+    title,
+    intro,
+    servings,
+    cook_time,
+    difficulty,
+    category,
+    tip
+) VALUES (
+    ("제목1"), ("간단한 소개1"), (2), (30), ("easy"), ("카테고리1"), ("팁")
+);
+
+
+
+-- 재료
+CREATE TABLE recipe_ingredient (
+    ingredient_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id     BIGINT NOT NULL,
+    ingredient_name VARCHAR(100) NOT NULL,
+    ingredient_amount VARCHAR(50) NOT NULL,
+
+    CONSTRAINT fk_ingredient_recipe
+        FOREIGN KEY (recipe_id)
+        REFERENCES recipe(recipe_id)
+        ON DELETE CASCADE
+);
+
+-- 순서
+CREATE TABLE recipe_step (
+    step_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id   BIGINT NOT NULL,
+    step_no     INT NOT NULL,
+    step_content TEXT NOT NULL,
+
+    CONSTRAINT fk_step_recipe
+        FOREIGN KEY (recipe_id)
+        REFERENCES recipe(recipe_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uq_recipe_step
+        UNIQUE (recipe_id, step_no)
+);
+
+-- 이미지
+CREATE TABLE recipe_image (
+    image_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id  BIGINT NOT NULL,
+    image_type VARCHAR(20) NOT NULL,
+    step_no    INT NULL,
+    image_path VARCHAR(255) NOT NULL,
+
+    CONSTRAINT fk_image_recipe
+        FOREIGN KEY (recipe_id)
+        REFERENCES recipe(recipe_id)
+        ON DELETE CASCADE
+);
+
+-- 리뷰
+CREATE TABLE recipe_review (
+    review_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id  BIGINT NOT NULL,
+    mf_no  		BIGINT NOT NULL,
+    rating     INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    content    TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE (recipe_id, mf_id),
+    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE
+);
+
+
+
+-- 공지사항
+create table notice_board(
+	notice_boardNo int primary key auto_increment, 
+	notice_boardName varchar(20),
+	notice_boardTitle varchar(100),
+	notice_boardContent varchar(300),
+	notice_boardDate timestamp default current_timestamp,
+	notice_boardHit int default 0,
+	mf_no int default 0
+);
+-- ------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------------
+-- 레시피 테이블
+CREATE TABLE recipe_r (
     rc_recipe_id     INT PRIMARY KEY AUTO_INCREMENT,
     rc_name          VARCHAR(100) NOT NULL,
     rc_description   TEXT,
@@ -227,7 +336,7 @@ CREATE TABLE rc_ingredient (
     rc_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,    -- 자동 증가 재료 ID
     rc_ingredient_name VARCHAR(1000),                -- 주재료명
     rc_ingredient_amount VARCHAR(1000),               -- 주재료양
-    FOREIGN KEY (rc_recipe_id) REFERENCES recipe(rc_recipe_id) ON DELETE CASCADE
+    FOREIGN KEY (rc_recipe_id) REFERENCES recipe_r(rc_recipe_id) ON DELETE CASCADE
 );
 
 -- 조리 과정 테이블
@@ -236,7 +345,7 @@ CREATE TABLE rc_course (
     rc_course_id INT AUTO_INCREMENT PRIMARY KEY,       -- 자동 증가 과정 ID
     rc_course_description VARCHAR(1000) DEFAULT '',    -- 조리과정 설명
     rc_course_img VARCHAR(1000),                     -- 조리과정 사진
-    FOREIGN KEY (rc_recipe_id) REFERENCES recipe(rc_recipe_id) ON DELETE CASCADE
+    FOREIGN KEY (rc_recipe_id) REFERENCES recipe_r(rc_recipe_id) ON DELETE CASCADE
 );
 
 -- 레시피 게시판 테이블
@@ -259,15 +368,4 @@ CREATE TABLE rc_board_comment(
    rc_commentCreatedTime datetime default current_timestamp,
    user_star_score int default 0,
    mf_no INT NOT NULL
-);
-
--- 공지사항
-create table notice_board(
-notice_boardNo int primary key auto_increment, 
-notice_boardName varchar(20),
-notice_boardTitle varchar(100),
-notice_boardContent varchar(300),
-notice_boardDate timestamp default current_timestamp,
-notice_boardHit int default 0,
-mf_no int default 0
 );

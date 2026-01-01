@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeDTO {
+public class RecipeReviewDTO {
+	private int review_id;
 	private int recipe_id;
 	private int mf_no;
+	private int rating;
 	private String title;
 	private String intro;
 	private int servings;
@@ -25,19 +27,4 @@ public class RecipeDTO {
 
 	// 화면용
 	private String display_updated_at;
-
-	// 재료
-	private int ingredient_id;
-	private String ingredient_name;
-	private String ingredient_amount;
-
-	// 순서
-	private int step_id;
-	private String step_no;
-	private String step_content;
-
-	// 이미지
-	private int image_id;
-	private String image_type;
-	private String image_path;
 }

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.boot.dto.RecipeAttachDTO;
-import com.boot.dto.RecipeDTO;
+import com.boot.dto.RecipeRDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.FollowService;
 import com.boot.service.NotificationService;
-import com.boot.service.RecipeService;
+import com.boot.service.RecipeRService;
 import com.boot.service.RecipeUploadService;
 import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
@@ -40,7 +40,7 @@ public class OtherController {
 	private NotificationService notificationService;
 
 	@Autowired
-	private RecipeService recipeService;
+	private RecipeRService recipeRService;
 
 	@Autowired
 	private RecipeUploadService recipeUploadService;
@@ -65,7 +65,7 @@ public class OtherController {
 			profile_board_list.add(board);
 		}
 
-		List<RecipeDTO> recipe_list = recipeService.get_recipe_by_user_id(Integer.toString(mf_no));
+		List<RecipeRDTO> recipe_list = recipeRService.get_recipe_by_user_id(Integer.toString(mf_no));
 		List<RecipeAttachDTO> upload_list = new ArrayList<>();
 		for (int i = 0; i < recipe_list.size(); i++) {
 			upload_list.add(recipeUploadService.get_upload_by_id(recipe_list.get(i).getRc_recipe_id()));

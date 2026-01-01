@@ -2,7 +2,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.boot.dao.RecipeDAO">
+<mapper namespace="com.boot.dao.RecipeRDAO">
 
 	<!-- 레시피 등록 -->
 	<insert id="insert_recipe" parameterType="hashmap" useGeneratedKeys="true" keyProperty="rc_recipe_id">
@@ -52,7 +52,7 @@
 		select rc_recipe_id from recipe_r where rc_category1_id = #{rc_category1_id}
 	</select>
 	
-	<select id="find_list_all" resultType="com.boot.dto.RecipeDTO">
+	<select id="find_list_all" resultType="com.boot.dto.RecipeRDTO">
 		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe_r
 	</select>
 	
@@ -67,12 +67,12 @@
 	</select>
 
 <!--	페이징처리-->
-	<select id="paging_recipe_list" resultType="com.boot.dto.RecipeDTO">
+	<select id="paging_recipe_list" resultType="com.boot.dto.RecipeRDTO">
 		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe_r where rc_recipe_id=#{rc_recipe_id}
 	</select>
 	
 <!--	마이페이지 내 레시피-->
-	<select id="get_recipe_by_user_id" resultType="com.boot.dto.RecipeDTO">
+	<select id="get_recipe_by_user_id" resultType="com.boot.dto.RecipeRWDTO">
 		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe_r where mf_no = #{mf_no}
 	</select>
 	

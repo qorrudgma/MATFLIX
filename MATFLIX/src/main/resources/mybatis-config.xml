@@ -30,10 +30,18 @@
 		
 		<!-- 레시피 -->
 		<mapper resource="mybatis/mappers/recipe.xml"/>
+		<mapper resource="mybatis/mappers/recipe_ingredient.xml"/>
+		<mapper resource="mybatis/mappers/recipe_step.xml"/>
+		<mapper resource="mybatis/mappers/recipe_image.xml"/>
+		
+		
+		<!-- ========================================== -->
+		<mapper resource="mybatis/mappers/recipe_r.xml"/>
 		<mapper resource="mybatis/mappers/rc_upload.xml"/>
 		<mapper resource="mybatis/mappers/rc_board.xml"/>
 		<mapper resource="mybatis/mappers/rc_comment.xml"/>
 		<mapper resource="mybatis/mappers/rc_page.xml"/>
+		<!-- ========================================== -->
 		
 		<!-- 공지사항 -->
 		<mapper resource="mybatis/mappers/notice_board.xml"/>

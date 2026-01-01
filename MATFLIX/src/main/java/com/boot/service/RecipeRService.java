@@ -7,9 +7,9 @@ import org.apache.ibatis.annotations.Param;
 
 import com.boot.dto.RcCourseDTO;
 import com.boot.dto.RcIngredientDTO;
-import com.boot.dto.RecipeDTO;
+import com.boot.dto.RecipeRDTO;
 
-public interface RecipeService {
+public interface RecipeRService {
 // 레시피 등록
 	public void insert_recipe(HashMap<String, String> recipeData);
 
@@ -24,11 +24,11 @@ public interface RecipeService {
 	public int[] get_food(int rc_category1_id);
 
 //	모든 요리 정보 가져옴
-	public ArrayList<RecipeDTO> find_list_all();
+	public ArrayList<RecipeRDTO> find_list_all();
 
 // ===========================================================================
 //	해당 요리정보 가져오기
-	public RecipeDTO get_recipe_by_id(int rc_recipe_id);
+	public RecipeRDTO get_recipe_by_id(int rc_recipe_id);
 
 	public ArrayList<RcIngredientDTO> get_recipe_ingredient_by_id(int rc_recipe_id);
 
@@ -36,11 +36,11 @@ public interface RecipeService {
 
 //===========================================================================
 //	페이징 리스트
-	public RecipeDTO paging_recipe_list(int rc_recipe_id);
+	public RecipeRDTO paging_recipe_list(int rc_recipe_id);
 
 //===========================================================================
 //	마이페이지 내 내레시피
-	public ArrayList<RecipeDTO> get_recipe_by_user_id(String mf_no);
+	public ArrayList<RecipeRDTO> get_recipe_by_user_id(String mf_no);
 
 //===========================================================================
 //	레시피 아이디로 멤버 넘버 추출

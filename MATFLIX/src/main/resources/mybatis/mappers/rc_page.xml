@@ -46,7 +46,7 @@
     <![CDATA[
       SELECT rc_recipe_id FROM (
         SELECT row_number() OVER (ORDER BY rc_recipe_id DESC) AS rownum, rc_recipe_id
-        FROM recipe
+        FROM recipe_r
     ]]>
     <include refid="criteria" />
     <![CDATA[
@@ -58,7 +58,7 @@
 
   <select id="totalList" resultType="int">
     SELECT COUNT(*)
-    FROM recipe
+    FROM recipe_r
     <include refid="criteria" />
   </select>
 </mapper>

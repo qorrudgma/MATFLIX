@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.boot.dto.FavoriteDTO;
 import com.boot.dto.NotifSettingDTO;
 import com.boot.dto.RecipeAttachDTO;
-import com.boot.dto.RecipeDTO;
+import com.boot.dto.RecipeRDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.EmailService;
@@ -46,7 +46,7 @@ import com.boot.service.FavoriteService;
 import com.boot.service.FollowService;
 import com.boot.service.NotifSettingService;
 import com.boot.service.NotificationService;
-import com.boot.service.RecipeService;
+import com.boot.service.RecipeRService;
 import com.boot.service.RecipeUploadService;
 import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
@@ -74,7 +74,7 @@ public class TeamController {
 	private BoardService boardService;
 
 	@Autowired
-	private RecipeService recipeService;
+	private RecipeRService recipeService;
 
 	@Autowired
 	private RecipeUploadService recipeUploadService;
@@ -109,7 +109,7 @@ public class TeamController {
 
 		String mf_no = Integer.toString(user.getMf_no());
 		List<RecipeAttachDTO> my_recipe_attach = new ArrayList<>();
-		List<RecipeDTO> my_recipe = recipeService.get_recipe_by_user_id(mf_no);
+		List<RecipeRDTO> my_recipe = recipeService.get_recipe_by_user_id(mf_no);
 
 		for (int i = 0; i < my_recipe.size(); i++) {
 			my_recipe_attach.add(recipeUploadService.get_upload_by_id(my_recipe.get(i).getRc_recipe_id()));

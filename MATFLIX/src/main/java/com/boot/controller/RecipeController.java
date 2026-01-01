@@ -55,13 +55,13 @@ import com.boot.dto.RecipeAttachDTO;
 import com.boot.dto.RecipeBoardDTO;
 import com.boot.dto.RecipeCommentDTO;
 import com.boot.dto.RecipeCriteria;
-import com.boot.dto.RecipeDTO;
 import com.boot.dto.RecipePageDTO;
+import com.boot.dto.RecipeRDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.RecipeBoardService;
 import com.boot.service.RecipeCommentService;
 import com.boot.service.RecipePageService;
-import com.boot.service.RecipeService;
+import com.boot.service.RecipeRService;
 import com.boot.service.RecipeUploadService;
 import com.boot.service.TeamService;
 
@@ -72,7 +72,7 @@ import net.coobird.thumbnailator.Thumbnailator;
 @Slf4j
 public class RecipeController {
 	@Autowired
-	private RecipeService service;
+	private RecipeRService service;
 
 	@Autowired
 	private RecipeUploadService service_attach;
@@ -105,11 +105,11 @@ public class RecipeController {
 		List<RecipeAttachDTO> chinese_food_list = new ArrayList<>();
 		List<RecipeAttachDTO> dessert_list = new ArrayList<>();
 
-		List<RecipeDTO> korean_food_recipe_list = new ArrayList<>();
-		List<RecipeDTO> american_food_recipe_list = new ArrayList<>();
-		List<RecipeDTO> japanese_food_recipe_list = new ArrayList<>();
-		List<RecipeDTO> chinese_food_recipe_list = new ArrayList<>();
-		List<RecipeDTO> dessert_recipe_list = new ArrayList<>();
+		List<RecipeRDTO> korean_food_recipe_list = new ArrayList<>();
+		List<RecipeRDTO> american_food_recipe_list = new ArrayList<>();
+		List<RecipeRDTO> japanese_food_recipe_list = new ArrayList<>();
+		List<RecipeRDTO> chinese_food_recipe_list = new ArrayList<>();
+		List<RecipeRDTO> dessert_recipe_list = new ArrayList<>();
 
 		for (int i = 0; i < korean_food.length; i++) { // 한식 파일 리스트
 			korean_food_list.add(service_attach.get_upload_by_id(korean_food[i]));
@@ -406,7 +406,7 @@ public class RecipeController {
 	@RequestMapping("/recipe_board")
 	public String recipe_board(RecipeCriteria cri, Model model, HashMap<String, String> param) {
 		List<RecipeAttachDTO> paging_file_list = new ArrayList<>();
-		List<RecipeDTO> paging_recipe_list = new ArrayList<>();
+		List<RecipeRDTO> paging_recipe_list = new ArrayList<>();
 		int[] rc_recipe_id_list = service_page.listWithPaging(cri);
 
 		log.info("@# recipe_board RecipeCriteria ==>" + cri);
@@ -437,7 +437,7 @@ public class RecipeController {
 		log.info("rc_recipe_id" + rc_recipe_id);
 
 //		해당 아이디로 정보 가져오기
-		RecipeDTO dto = service.get_recipe_by_id(rc_recipe_id);
+		RecipeRDTO dto = service.get_recipe_by_id(rc_recipe_id);
 		List<RcIngredientDTO> ing_list = service.get_recipe_ingredient_by_id(rc_recipe_id);
 		List<RcCourseDTO> course_list = service.get_recipe_course_by_id(rc_recipe_id);
 		RecipeAttachDTO img_list = service_attach.get_upload_by_id(rc_recipe_id);
@@ -485,7 +485,7 @@ public class RecipeController {
 		String mf_no = Integer.toString(user.getMf_no());
 
 		List<RecipeAttachDTO> my_recipe_attach = new ArrayList<>();
-		List<RecipeDTO> my_recipe = service.get_recipe_by_user_id(mf_no);
+		List<RecipeRDTO> my_recipe = service.get_recipe_by_user_id(mf_no);
 
 		for (int i = 0; i < my_recipe.size(); i++) {
 			my_recipe_attach.add(service_attach.get_upload_by_id(my_recipe.get(i).getRc_recipe_id()));
