@@ -5,36 +5,37 @@
 <mapper namespace="com.boot.dao.RecipeDAO">
 
 	<!-- 레시피 등록 -->
-	<insert id="insert_recipe" parameterType="hashmap" useGeneratedKeys="true" keyProperty="rc_recipe_id">
-		insert into Recipe_r (
-		rc_name, rc_description, rc_category1_id,
-		rc_cooking_time, rc_difficulty,
-		rc_tip, rc_tag, mf_no
-		)
-		VALUES (
-		#{rc_name},
-		#{rc_description},
-		#{rc_category1_id},
-		#{rc_cooking_time},
-		#{rc_difficulty},
-		#{rc_tip},
-		#{rc_tag},
-		#{mf_no}
-		)
+	<insert id="insert_recipe" parameterType="com.boot.dto.RecipeDTO" useGeneratedKeys="true" keyProperty="recipe_id">
+		INSERT INTO recipe (title, intro, servings, cook_time, difficulty, category, tip, tegs
+				) VALUES (#{title}, #{intro}, #{servings}, #{cook_time}, #{difficulty}, #{category}, #{tip}, #{tegs})
+	</insert>
+	
+	<!-- 재료 insert -->
+	<insert id="insert_recipe_ingredient" parameterType="com.boot.dto.RecipeIngredientDTO" useGeneratedKeys="true" keyProperty="ingredient_id">
+	        INSERT INTO recipe_ingredient (recipe_id, ingredient_name, ingredient_amount )
+	        						VALUES (#{recipe_id}, #{ingredient_name}, #{ingredient_amount})
+	</insert>
+	
+	<!-- 순서 insert -->
+	<insert id="insert_recipe_step" parameterType="com.boot.dto.RecipeStepDTO" useGeneratedKeys="true" keyProperty="step_id">
+	        INSERT INTO recipe_step (recipe_id, step_no, step_content )
+	        						VALUES (#{recipe_id}, #{step_no}, #{step_content})
+	</insert>
+	
+	<!-- 이미지 insert -->
+	<insert id="insert_recipe_image" parameterType="com.boot.dto.RecipeImageDTO" useGeneratedKeys="true" keyProperty="image_id">
+	        INSERT INTO recipe_image (recipe_id, image_type, step_no, image_path)
+	        						VALUES (#{recipe_id}, #{image_type}, #{step_no}, #{image_path})
+	</insert>
+	
+	<!-- 리뷰 insert -->
+	<insert id="insert_recipe_review" parameterType="com.boot.dto.RecipeReviewDTO" useGeneratedKeys="true" keyProperty="review_id">
+	        INSERT INTO recipe_review (recipe_id, mf_no, rating, content, rating)
+	        						VALUES (#{recipe_id}, #{mf_no}, #{rating}, #{content}, #{rating})
 	</insert>
 
-	<insert id="insert_rc_ingredient" parameterType="java.util.List">
-	        INSERT INTO rc_ingredient (
-	        	rc_recipe_id,
-	            rc_ingredient_name,
-	            rc_ingredient_amount
-	        )
-	        VALUES (
-	            (SELECT MAX(rc_recipe_id) FROM Recipe),
-	            #{rc_ingredient_name},
-	            #{rc_ingredient_amount}
-	        )
-	</insert>
+	<!-- ========================================== -->
+
 	<!-- 과정 insert -->
 	<insert id="insert_rc_course" parameterType="java.util.List">
 	        INSERT INTO rc_course (

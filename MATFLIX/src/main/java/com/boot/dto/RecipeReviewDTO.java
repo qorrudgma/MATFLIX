@@ -14,14 +14,7 @@ public class RecipeReviewDTO {
 	private int recipe_id;
 	private int mf_no;
 	private int rating;
-	private String title;
-	private String intro;
-	private int servings;
-	private int cook_time;
-	private String difficulty;
-	private String category;
-	private String tip;
-	private int star;
+	private String content;
 	private LocalDateTime created_at;
 	private LocalDateTime updated_at;
 

@@ -57,6 +57,7 @@ import com.boot.dto.RecipeCommentDTO;
 import com.boot.dto.RecipeCriteria;
 import com.boot.dto.RecipePageDTO;
 import com.boot.dto.RecipeRDTO;
+import com.boot.dto.RecipeWriteDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.RecipeBoardService;
 import com.boot.service.RecipeCommentService;
@@ -88,6 +89,13 @@ public class RecipeController {
 
 	@Autowired
 	private TeamService service_member;
+
+	@RequestMapping("/recipe_write")
+	public String recipe_write(RecipeWriteDTO dto, HttpSession session) {
+		log.info("recipe_write 컨트롤러에 왔음");
+		log.info("dto => " + dto);
+		return "redirect:/recipe_write_new";
+	}
 
 	@RequestMapping("/main")
 	public String main(Model model, HttpServletRequest request) {
@@ -163,7 +171,7 @@ public class RecipeController {
 		return "recipe_write_new";
 	}
 
-	@RequestMapping("/recipe_write")
+//	@RequestMapping("/recipe_write")
 	public String insertRecipe(@RequestParam HashMap<String, String> params,
 			@RequestParam("rc_ingredient_name[]") List<String> rc_ingredient_name,
 			@RequestParam("rc_ingredient_amount[]") List<String> rc_ingredient_amount,

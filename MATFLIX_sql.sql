@@ -210,7 +210,7 @@ CREATE TABLE recipe (
     difficulty    VARCHAR(20) NOT NULL,       -- EASY / NORMAL / HARD
     category      VARCHAR(50) NOT NULL,       -- KOREAN / CHINESE / JAPANESE / WESTERN / DESSERT
     tip           TEXT,
-    rating		  INT default 0,
+    tags          VARCHAR(50) NOT NULL,
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -249,7 +249,7 @@ CREATE TABLE recipe_step (
     step_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
     recipe_id   BIGINT NOT NULL,
     step_no     INT NOT NULL,
-    step_content TEXT NOT NULL,
+    step_content TEXT NOT NULL,	
 
     CONSTRAINT fk_step_recipe
         FOREIGN KEY (recipe_id)
@@ -264,7 +264,7 @@ CREATE TABLE recipe_step (
 CREATE TABLE recipe_image (
     image_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
     recipe_id  BIGINT NOT NULL,
-    image_type VARCHAR(20) NOT NULL,
+    image_type VARCHAR(20) NOT NULL,		-- THUMBNAIL, STEP
     step_no    INT NULL,
     image_path VARCHAR(255) NOT NULL,
 

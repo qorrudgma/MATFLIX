@@ -19,9 +19,9 @@
                     <h1 class="mf_title">레시피 작성</h1>
                     <p class="mf_subtitle">나만의 레시피를 MATFLIX에 공유해보세요.</p>
                 </div>
-                <div class="mf_header_right">
-                    <div class="mf_badge"><i class="fa-solid fa-fire"></i> WRITE</div>
-                </div>
+<!--                <div class="mf_header_right">-->
+<!--                    <div class="mf_badge"><i class="fa-solid fa-fire"></i> WRITE</div>-->
+<!--                </div>-->
             </div>
 
             <form id="recipe_write_form" class="mf_form" action="recipe_write" method="post" enctype="multipart/form-data" autocomplete="off">
@@ -46,7 +46,8 @@
                             <label class="mf_btn mf_btn_outline" for="thumbnail_file">
                                 <i class="fa-solid fa-upload"></i> 이미지 선택
                             </label>
-                            <input type="file" id="thumbnail_file" name="rc_thumbnail" accept="image/*" class="mf_file_input">
+                            <input type="hidden" name="image_type[]" value="THUMBNAIL">
+                            <input type="file" id="thumbnail_file" name="image_path[]" accept="image/*" class="mf_file_input">
 
                             <button type="button" class="mf_btn mf_btn_ghost" id="thumbnail_clear_btn">
                                 <i class="fa-solid fa-rotate-left"></i> 선택 해제
@@ -57,7 +58,7 @@
                     </div>
                 </section>
 
-                <!-- 기본 정보: 제목/소제목/간단 소개 -->
+                <!-- 기본 정보: 제목/간단 소개 -->
                 <section class="mf_section" id="section_basic">
                     <div class="mf_section_title">
                         <h2><i class="fa-solid fa-circle-info"></i> 기본 정보</h2>
@@ -67,19 +68,13 @@
                     <div class="mf_grid">
                         <div class="mf_field">
                             <label class="mf_label" for="recipe_title">제목</label>
-                            <input type="text" id="recipe_title" name="rc_title" class="mf_input" placeholder="예) 자취생 10분 김치볶음밥" maxlength="60" required>
+                            <input type="text" id="recipe_title" name="title" class="mf_input" placeholder="예) 자취생 10분 김치볶음밥" maxlength="60" required>
                             <div class="mf_count"><span id="title_count">0</span>/60</div>
-                        </div>
-
-                        <div class="mf_field">
-                            <label class="mf_label" for="recipe_subtitle">소제목</label>
-                            <input type="text" id="recipe_subtitle" name="rc_subtitle" class="mf_input" placeholder="예) 냉장고 파먹기 최강" maxlength="60" required>
-                            <div class="mf_count"><span id="subtitle_count">0</span>/60</div>
                         </div>
 
                         <div class="mf_field mf_field_full">
                             <label class="mf_label" for="recipe_intro">간단 소개</label>
-                            <textarea id="recipe_intro" name="rc_intro" class="mf_textarea mf_textarea_small" placeholder="레시피 한 줄 소개를 짧게 작성해주세요" maxlength="140" required></textarea>
+                            <textarea id="recipe_intro" name="intro" class="mf_textarea mf_textarea_small" placeholder="레시피 한 줄 소개를 짧게 작성해주세요" maxlength="140" required></textarea>
                             <div class="mf_count"><span id="intro_count">0</span>/140</div>
                         </div>
                     </div>
@@ -95,7 +90,7 @@
                     <div class="mf_grid mf_grid_3">
                         <div class="mf_field">
                             <label class="mf_label" for="recipe_servings">몇 인분</label>
-                            <select id="recipe_servings" name="rc_servings" class="mf_select" required>
+                            <select id="recipe_servings" name="servings" class="mf_select" required>
                                 <option value="">선택</option>
                                 <option value="1">1인분</option>
                                 <option value="2">2인분</option>
@@ -113,20 +108,32 @@
                         <div class="mf_field">
                             <label class="mf_label" for="recipe_time">조리 시간(분)</label>
                             <div class="mf_input_unit">
-                                <input type="number" id="recipe_time" name="rc_time" class="mf_input" placeholder="예) 15" min="1" max="999" required>
+                                <input type="number" id="recipe_time" name="cook_time" class="mf_input" placeholder="예) 15" min="1" max="999" required>
                                 <span class="mf_unit">분</span>
                             </div>
                         </div>
 
                         <div class="mf_field">
                             <label class="mf_label" for="recipe_level">난이도</label>
-                            <select id="recipe_level" name="rc_level" class="mf_select" required>
+                            <select id="recipe_level" name="difficulty" class="mf_select" required>
                                 <option value="">선택</option>
-                                <option value="easy">쉬움</option>
-                                <option value="normal">보통</option>
-                                <option value="hard">어려움</option>
+                                <option value="EASY">쉬움</option>
+                                <option value="NORMAL">보통</option>
+                                <option value="HARD">어려움</option>
                             </select>
                         </div>
+						
+				       <div class="mf_field">
+				           <label class="mf_label" for="recipe_category">음식 분야</label>
+				           <select id="recipe_category" name="category" class="mf_select" required>
+				               <option value="">선택</option>
+				               <option value="KOREAN">한식</option>
+				               <option value="CHINESE">중식</option>
+				               <option value="JAPANESE">일식</option>
+				               <option value="WESTERN">양식</option>
+				               <option value="DESSERT">디저트</option>
+				           </select>
+				       </div>
                     </div>
                 </section>
 
@@ -181,6 +188,7 @@
 
                             <div class="mf_step_body">
                                 <div class="mf_step_text">
+									<input type="hidden" name="step_no[]" value="1" class="step_order_input">
                                     <label class="mf_label mf_label_inline">설명</label>
                                     <textarea name="step_content[]" class="mf_textarea" placeholder="예) 양파를 잘게 다져 중불에 2분 볶아주세요" required></textarea>
                                 </div>
@@ -199,7 +207,8 @@
                                             <label class="mf_btn mf_btn_outline" for="step_file_1">
                                                 <i class="fa-solid fa-upload"></i> 이미지 선택
                                             </label>
-                                            <input type="file" id="step_file_1" name="step_image[]" accept="image/*" class="mf_file_input mf_step_file" data_step="1">
+                                            <input type="hidden" name="image_type[]" value="STEP">
+                                            <input type="file" id="step_file_1" name="image_path[]" accept="image/*" class="mf_file_input mf_step_file" data_step="1">
 
                                             <button type="button" class="mf_btn mf_btn_ghost step_clear_btn" data_step="1">
                                                 <i class="fa-solid fa-rotate-left"></i> 해제
@@ -224,37 +233,6 @@
                     </div>
                 </section>
 
-                <!-- 마지막 완성사진 -->
-                <section class="mf_section" id="section_final">
-                    <div class="mf_section_title">
-                        <h2><i class="fa-solid fa-star"></i> 완성 사진</h2>
-                        <span class="mf_required">*</span>
-                    </div>
-
-                    <div class="mf_image_box">
-                        <div class="mf_image_preview" id="final_preview" aria-label="완성 사진 미리보기">
-                            <div class="mf_image_placeholder">
-                                <i class="fa-solid fa-camera-retro"></i>
-                                <div class="mf_image_placeholder_text">완성 사진을 업로드해주세요</div>
-                                <div class="mf_image_placeholder_hint">대표 이미지와 같아도 OK</div>
-                            </div>
-                        </div>
-
-                        <div class="mf_image_controls">
-                            <label class="mf_btn mf_btn_outline" for="final_file">
-                                <i class="fa-solid fa-upload"></i> 이미지 선택
-                            </label>
-                            <input type="file" id="final_file" name="rc_final_image" accept="image/*" class="mf_file_input">
-
-                            <button type="button" class="mf_btn mf_btn_ghost" id="final_clear_btn">
-                                <i class="fa-solid fa-rotate-left"></i> 선택 해제
-                            </button>
-
-                            <div class="mf_help">상세 페이지 하단의 "완성" 영역에 노출돼요.</div>
-                        </div>
-                    </div>
-                </section>
-
                 <!-- 팁 -->
                 <section class="mf_section" id="section_tip">
                     <div class="mf_section_title">
@@ -263,7 +241,7 @@
 
                     <div class="mf_field">
                         <label class="mf_label" for="recipe_tip">요리 팁</label>
-                        <textarea id="recipe_tip" name="rc_tip" class="mf_textarea" placeholder="예) 마지막에 참기름 한 방울 넣으면 고소함이 확 살아나요"></textarea>
+                        <textarea id="recipe_tip" name="tip" class="mf_textarea" placeholder="예) 마지막에 참기름 한 방울 넣으면 고소함이 확 살아나요"></textarea>
                     </div>
                 </section>
 
@@ -284,7 +262,7 @@
                         </div>
 
                         <div class="mf_tag_list" id="tag_list"></div>
-                        <input type="hidden" name="rc_tags" id="tag_hidden" value="">
+                        <input type="hidden" name="tags" id="tag_hidden" value="">
 
                         <div class="mf_help">팁: "#" 없이 입력해도 자동으로 태그로 들어가요.</div>
                     </div>
@@ -387,15 +365,15 @@
     recipe_title.addEventListener("input", function() {
         set_count(recipe_title, "title_count", 60);
     });
-    recipe_subtitle.addEventListener("input", function() {
-        set_count(recipe_subtitle, "subtitle_count", 60);
-    });
+    //recipe_subtitle.addEventListener("input", function() {
+      //  set_count(recipe_subtitle, "subtitle_count", 60);
+    //});
     recipe_intro.addEventListener("input", function() {
         set_count(recipe_intro, "intro_count", 140);
     });
 
     set_count(recipe_title, "title_count", 60);
-    set_count(recipe_subtitle, "subtitle_count", 60);
+    //set_count(recipe_subtitle, "subtitle_count", 60);
     set_count(recipe_intro, "intro_count", 140);
 
     // 취소
@@ -420,20 +398,20 @@
     });
 
     // 완성 사진
-    var final_file = document.getElementById("final_file");
-    var final_preview = document.getElementById("final_preview");
-    var final_clear_btn = document.getElementById("final_clear_btn");
+    //var final_file = document.getElementById("final_file");
+    //var final_preview = document.getElementById("final_preview");
+    //var final_clear_btn = document.getElementById("final_clear_btn");
 
-    final_file.addEventListener("change", function() {
-        if (final_file.files && final_file.files[0]) {
-            render_image_preview(final_file.files[0], final_preview);
-        }
-    });
+    //final_file.addEventListener("change", function() {
+    //    if (final_file.files && final_file.files[0]) {
+    //        render_image_preview(final_file.files[0], final_preview);
+    //    }
+    //});
 
-    final_clear_btn.addEventListener("click", function() {
-        final_file.value = "";
-        clear_final_preview(final_preview);
-    });
+    //final_clear_btn.addEventListener("click", function() {
+    //    final_file.value = "";
+    //    clear_final_preview(final_preview);
+    //});
 
     // 재료 추가/삭제
     var ingredient_list = document.getElementById("ingredient_list");
@@ -503,6 +481,11 @@
             if (no_el) {
                 no_el.textContent = String(no);
             }
+			
+			var order_input = step.querySelector("input[name='step_no[]']");
+		    if (order_input) {
+		        order_input.value = String(no);
+		    }
 
             var file_el = step.querySelector(".mf_step_file");
             if (file_el) {
@@ -589,6 +572,7 @@
             "</div>" +
             "<div class='mf_step_body'>" +
                 "<div class='mf_step_text'>" +
+					"<input type='hidden' name='step_no[]' value='" + String(step_count) + "' class='step_order_input'>" +
                     "<label class='mf_label mf_label_inline'>설명</label>" +
                     "<textarea name='step_content[]' class='mf_textarea' placeholder='예) 팬에 기름을 두르고 계란을 스크램블 해주세요' required></textarea>" +
                 "</div>" +
@@ -605,7 +589,8 @@
                             "<label class='mf_btn mf_btn_outline' for='step_file_" + String(step_count) + "'>" +
                                 "<i class='fa-solid fa-upload'></i> 이미지 선택" +
                             "</label>" +
-                            "<input type='file' id='step_file_" + String(step_count) + "' name='step_image[]' accept='image/*' class='mf_file_input mf_step_file' data_step='" + String(step_count) + "'>" +
+                            "<input type='hidden' name='image_type[]' value='STEP'>" +
+                            "<input type='file' id='step_file_" + String(step_count) + "' name='image_path[]' accept='image/*' class='mf_file_input mf_step_file' data_step='" + String(step_count) + "'>" +
                             "<button type='button' class='mf_btn mf_btn_ghost step_clear_btn' data_step='" + String(step_count) + "'>" +
                                 "<i class='fa-solid fa-rotate-left'></i> 해제" +
                             "</button>" +
@@ -721,9 +706,9 @@
         }
     });
 
-    // 간단 검증(프론트)
+    // 간단 검증
     document.getElementById("recipe_write_form").addEventListener("submit", function(e) {
-        // 대표/완성 이미지 필수 체크(원하면 서버에서만 해도 OK)
+        // 대표/완성 이미지 필수 체크
         if (!thumbnail_file.files || !thumbnail_file.files[0]) {
             e.preventDefault();
             alert("대표 이미지를 업로드해주세요.");

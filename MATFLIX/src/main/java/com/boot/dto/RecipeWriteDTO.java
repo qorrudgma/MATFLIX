@@ -2,6 +2,8 @@ package com.boot.dto;
 
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeDTO {
+public class RecipeWriteDTO {
 	private int recipe_id;
 	private int mf_no;
 	private String title;
@@ -19,10 +21,26 @@ public class RecipeDTO {
 	private String difficulty;
 	private String category;
 	private String tip;
+	private String[] tags;
 	private int star;
 	private LocalDateTime created_at;
 	private LocalDateTime updated_at;
 
 	// 화면용
 	private String display_updated_at;
+
+	// 재료
+	private int[] ingredient_id;
+	private String[] ingredient_name;
+	private String[] ingredient_amount;
+
+	// 순서
+	private int[] step_id;
+	private String[] step_no;
+	private String[] step_content;
+
+	// 이미지
+	private int[] image_id;
+	private String[] image_type;
+	private MultipartFile[] image_path;
 }

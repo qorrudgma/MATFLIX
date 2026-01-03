@@ -1,7 +1,7 @@
-package com.boot.dao;
+package com.boot.service;
 
 import com.boot.dto.RecipeWriteDTO;
 
-public interface RecipeDAO {
+public interface RecipeService {
 	public void save_recipe(RecipeWriteDTO dto);
 }

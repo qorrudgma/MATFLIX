@@ -30,9 +30,9 @@
 		
 		<!-- 레시피 -->
 		<mapper resource="mybatis/mappers/recipe.xml"/>
-		<mapper resource="mybatis/mappers/recipe_ingredient.xml"/>
-		<mapper resource="mybatis/mappers/recipe_step.xml"/>
-		<mapper resource="mybatis/mappers/recipe_image.xml"/>
+<!--		<mapper resource="mybatis/mappers/recipe_ingredient.xml"/>-->
+<!--		<mapper resource="mybatis/mappers/recipe_step.xml"/>-->
+<!--		<mapper resource="mybatis/mappers/recipe_image.xml"/>-->
 		
 		
 		<!-- ========================================== -->

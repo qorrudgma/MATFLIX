@@ -72,7 +72,7 @@
 	</select>
 	
 <!--	마이페이지 내 레시피-->
-	<select id="get_recipe_by_user_id" resultType="com.boot.dto.RecipeRWDTO">
+	<select id="get_recipe_by_user_id" resultType="com.boot.dto.RecipeRDTO">
 		select rc_recipe_id, rc_name, rc_description, rc_category1_id, rc_category2_id, rc_cooking_time, rc_difficulty, rc_created_at, rc_img, rc_tip, rc_tag, mf_no, star_score from recipe_r where mf_no = #{mf_no}
 	</select>
 	
