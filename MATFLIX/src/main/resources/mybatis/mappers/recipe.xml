@@ -6,10 +6,10 @@
 
 	<!-- 레시피 등록 -->
 	<insert id="insert_recipe" parameterType="com.boot.dto.RecipeDTO" useGeneratedKeys="true" keyProperty="recipe_id">
-		INSERT INTO recipe (title, intro, servings, cook_time, difficulty, category, tip, tegs
-				) VALUES (#{title}, #{intro}, #{servings}, #{cook_time}, #{difficulty}, #{category}, #{tip}, #{tegs})
+		INSERT INTO recipe (mf_no, title, intro, servings, cook_time, difficulty, category, tip
+				) VALUES (#{mf_no}, #{title}, #{intro}, #{servings}, #{cook_time}, #{difficulty}, #{category}, #{tip})
 	</insert>
-	
+
 	<!-- 재료 insert -->
 	<insert id="insert_recipe_ingredient" parameterType="com.boot.dto.RecipeIngredientDTO" useGeneratedKeys="true" keyProperty="ingredient_id">
 	        INSERT INTO recipe_ingredient (recipe_id, ingredient_name, ingredient_amount )
@@ -19,7 +19,13 @@
 	<!-- 순서 insert -->
 	<insert id="insert_recipe_step" parameterType="com.boot.dto.RecipeStepDTO" useGeneratedKeys="true" keyProperty="step_id">
 	        INSERT INTO recipe_step (recipe_id, step_no, step_content )
-	        						VALUES (#{recipe_id}, #{step_no}, #{step_content})
+    						VALUES (#{recipe_id}, #{step_no}, #{step_content})
+	</insert>
+	
+	<!-- 태그 insert -->
+	<insert id="insert_recipe_tag" parameterType="com.boot.dto.RecipeTagDTO" useGeneratedKeys="true" keyProperty="tag_id">
+	        INSERT INTO recipe_tag (recipe_id, tag)
+    						VALUES (#{recipe_id}, #{tag})
 	</insert>
 	
 	<!-- 이미지 insert -->

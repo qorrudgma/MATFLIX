@@ -210,7 +210,7 @@ CREATE TABLE recipe (
     difficulty    VARCHAR(20) NOT NULL,       -- EASY / NORMAL / HARD
     category      VARCHAR(50) NOT NULL,       -- KOREAN / CHINESE / JAPANESE / WESTERN / DESSERT
     tip           TEXT,
-    tags          VARCHAR(50) NOT NULL,
+    tags          VARCHAR(100) NOT NULL,
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -258,6 +258,18 @@ CREATE TABLE recipe_step (
 
     CONSTRAINT uq_recipe_step
         UNIQUE (recipe_id, step_no)
+);
+
+-- 태그
+CREATE TABLE recipe_tag (
+    tag_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id   BIGINT NOT NULL,
+    tag     	VARCHAR(20) NOT NULL,
+
+    CONSTRAINT fk_tag_recipe
+        FOREIGN KEY (recipe_id)
+        REFERENCES recipe(recipe_id)
+        ON DELETE CASCADE
 );
 
 -- 이미지

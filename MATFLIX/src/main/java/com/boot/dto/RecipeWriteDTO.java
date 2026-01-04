@@ -21,7 +21,6 @@ public class RecipeWriteDTO {
 	private String difficulty;
 	private String category;
 	private String tip;
-	private String[] tags;
 	private int star;
 	private LocalDateTime created_at;
 	private LocalDateTime updated_at;
@@ -39,8 +38,12 @@ public class RecipeWriteDTO {
 	private String[] step_no;
 	private String[] step_content;
 
+	// 태그
+	private String[] tags;
+
 	// 이미지
 	private int[] image_id;
 	private String[] image_type;
 	private MultipartFile[] image_path;
+
 }
