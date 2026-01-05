@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class RecipeStepDTO {
 	private int step_id;
 	private int recipe_id;
-	private String step_no;
+	private int step_no;
 	private String step_content;
 }

@@ -63,6 +63,7 @@ import com.boot.service.RecipeBoardService;
 import com.boot.service.RecipeCommentService;
 import com.boot.service.RecipePageService;
 import com.boot.service.RecipeRService;
+import com.boot.service.RecipeService;
 import com.boot.service.RecipeUploadService;
 import com.boot.service.TeamService;
 
@@ -74,6 +75,9 @@ import net.coobird.thumbnailator.Thumbnailator;
 public class RecipeController {
 	@Autowired
 	private RecipeRService service;
+
+	@Autowired
+	private RecipeService recipeService;
 
 	@Autowired
 	private RecipeUploadService service_attach;
@@ -94,8 +98,28 @@ public class RecipeController {
 	public String recipe_write(RecipeWriteDTO dto, HttpSession session) {
 		log.info("recipe_write 컨트롤러에 왔음");
 		log.info("dto => " + dto);
+		recipeService.process_recipe_write(dto);
 		return "redirect:/recipe_write_new";
 	}
+
+	@RequestMapping("/insert_recipe")
+	public String insert_recipe() {
+		return "insert_recipe";
+	}
+
+	@RequestMapping("/delete_recipe")
+	public String delete_recipe(int recipe_id) {
+		recipeService.delete_recipe(recipe_id);
+		// 레시피 메인으로 가는걸로 바꾸기
+		return "insert_recipe";
+	}
+
+	@GetMapping("/recipe_list")
+	public String recipe_list(Model model) {
+		return "recipe_list";
+	}
+
+	// ----------------------------------------------------------
 
 	@RequestMapping("/main")
 	public String main(Model model, HttpServletRequest request) {
@@ -164,12 +188,6 @@ public class RecipeController {
 //	public String profile() {
 //		return "profile";
 //	}
-
-	@RequestMapping("/insert_recipe")
-	public String insert_recipe() {
-//		return "insert_recipe";
-		return "recipe_write_new";
-	}
 
 //	@RequestMapping("/recipe_write")
 	public String insertRecipe(@RequestParam HashMap<String, String> params,

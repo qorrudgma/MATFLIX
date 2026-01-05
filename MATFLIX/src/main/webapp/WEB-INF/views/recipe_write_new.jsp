@@ -46,6 +46,7 @@
                             <label class="mf_btn mf_btn_outline" for="thumbnail_file">
                                 <i class="fa-solid fa-upload"></i> 이미지 선택
                             </label>
+                            <input type="hidden" name="step_no[]" value="0">
                             <input type="hidden" name="image_type[]" value="THUMBNAIL">
                             <input type="file" id="thumbnail_file" name="image_path[]" accept="image/*" class="mf_file_input">
 

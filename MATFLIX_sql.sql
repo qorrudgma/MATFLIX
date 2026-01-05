@@ -210,26 +210,11 @@ CREATE TABLE recipe (
     difficulty    VARCHAR(20) NOT NULL,       -- EASY / NORMAL / HARD
     category      VARCHAR(50) NOT NULL,       -- KOREAN / CHINESE / JAPANESE / WESTERN / DESSERT
     tip           TEXT,
-    tags          VARCHAR(100) NOT NULL,
+    star      	  INT DEFAULT NULL, 	 		  -- 몇인분
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 select * from recipe;
-
-INSERT INTO recipe (
-    title,
-    intro,
-    servings,
-    cook_time,
-    difficulty,
-    category,
-    tip
-) VALUES (
-    ("제목1"), ("간단한 소개1"), (2), (30), ("easy"), ("카테고리1"), ("팁")
-);
-
-
 
 -- 재료
 CREATE TABLE recipe_ingredient (
@@ -243,6 +228,8 @@ CREATE TABLE recipe_ingredient (
         REFERENCES recipe(recipe_id)
         ON DELETE CASCADE
 );
+select * from recipe_ingredient;
+
 
 -- 순서
 CREATE TABLE recipe_step (
@@ -259,6 +246,7 @@ CREATE TABLE recipe_step (
     CONSTRAINT uq_recipe_step
         UNIQUE (recipe_id, step_no)
 );
+select * from recipe_step;
 
 -- 태그
 CREATE TABLE recipe_tag (
@@ -271,20 +259,22 @@ CREATE TABLE recipe_tag (
         REFERENCES recipe(recipe_id)
         ON DELETE CASCADE
 );
+select * from recipe_tag;
 
 -- 이미지
 CREATE TABLE recipe_image (
     image_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
     recipe_id  BIGINT NOT NULL,
     image_type VARCHAR(20) NOT NULL,		-- THUMBNAIL, STEP
-    step_no    INT NULL,
-    image_path VARCHAR(255) NOT NULL,
+    step_no    INT NOT NULL DEFAULT 0,
+    image_path VARCHAR(255),
 
     CONSTRAINT fk_image_recipe
         FOREIGN KEY (recipe_id)
         REFERENCES recipe(recipe_id)
         ON DELETE CASCADE
 );
+select * from recipe_image;
 
 -- 리뷰
 CREATE TABLE recipe_review (
@@ -299,6 +289,7 @@ CREATE TABLE recipe_review (
     UNIQUE (recipe_id, mf_id),
     FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE
 );
+select * from recipe_review;
 
 
 

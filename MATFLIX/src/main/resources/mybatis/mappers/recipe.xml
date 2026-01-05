@@ -12,33 +12,38 @@
 
 	<!-- 재료 insert -->
 	<insert id="insert_recipe_ingredient" parameterType="com.boot.dto.RecipeIngredientDTO" useGeneratedKeys="true" keyProperty="ingredient_id">
-	        INSERT INTO recipe_ingredient (recipe_id, ingredient_name, ingredient_amount )
-	        						VALUES (#{recipe_id}, #{ingredient_name}, #{ingredient_amount})
+        INSERT INTO recipe_ingredient (recipe_id, ingredient_name, ingredient_amount )
+        						VALUES (#{recipe_id}, #{ingredient_name}, #{ingredient_amount})
 	</insert>
 	
 	<!-- 순서 insert -->
 	<insert id="insert_recipe_step" parameterType="com.boot.dto.RecipeStepDTO" useGeneratedKeys="true" keyProperty="step_id">
-	        INSERT INTO recipe_step (recipe_id, step_no, step_content )
-    						VALUES (#{recipe_id}, #{step_no}, #{step_content})
+        INSERT INTO recipe_step (recipe_id, step_no, step_content )
+						VALUES (#{recipe_id}, #{step_no}, #{step_content})
 	</insert>
 	
 	<!-- 태그 insert -->
 	<insert id="insert_recipe_tag" parameterType="com.boot.dto.RecipeTagDTO" useGeneratedKeys="true" keyProperty="tag_id">
-	        INSERT INTO recipe_tag (recipe_id, tag)
-    						VALUES (#{recipe_id}, #{tag})
+        INSERT INTO recipe_tag (recipe_id, tag)
+						VALUES (#{recipe_id}, #{tag})
 	</insert>
 	
 	<!-- 이미지 insert -->
 	<insert id="insert_recipe_image" parameterType="com.boot.dto.RecipeImageDTO" useGeneratedKeys="true" keyProperty="image_id">
-	        INSERT INTO recipe_image (recipe_id, image_type, step_no, image_path)
-	        						VALUES (#{recipe_id}, #{image_type}, #{step_no}, #{image_path})
+        INSERT INTO recipe_image (recipe_id, image_type, step_no, image_path)
+        						VALUES (#{recipe_id}, #{image_type}, #{step_no}, #{image_path})
 	</insert>
 	
 	<!-- 리뷰 insert -->
 	<insert id="insert_recipe_review" parameterType="com.boot.dto.RecipeReviewDTO" useGeneratedKeys="true" keyProperty="review_id">
-	        INSERT INTO recipe_review (recipe_id, mf_no, rating, content, rating)
-	        						VALUES (#{recipe_id}, #{mf_no}, #{rating}, #{content}, #{rating})
+        INSERT INTO recipe_review (recipe_id, mf_no, rating, content, rating)
+        						VALUES (#{recipe_id}, #{mf_no}, #{rating}, #{content}, #{rating})
 	</insert>
+	
+	<delete id="delete_recipe" parameterType="int">
+		DELETE FROM recipe
+		 WHERE recipe_id = #{recipe_id}
+	</delete>
 
 	<!-- ========================================== -->
 

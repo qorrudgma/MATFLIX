@@ -75,7 +75,8 @@
 		<!-- 네비게이션 메뉴 (같은 헤더 안에 포함) -->
 		<nav id="header_nav">
 			<div class="nav_header_logo nav_action" onclick="location.href='${pageContext.request.contextPath}/main'"><h3>MATFLIX</h3></div>
-			<div><a href="recipe_board?rc_type=&rc_keyword=&rc_pageNum=1&rc_amount=12"><div>레시피</div></a></div>
+<!--			<div><a href="recipe_board?rc_type=&rc_keyword=&rc_pageNum=1&rc_amount=12"><div>레시피</div></a></div>-->
+			<div><a href="${pageContext.request.contextPath}/recipe_list"><div>레시피</div></a></div>
 			<div><a href="${pageContext.request.contextPath}/user_rank"><div> 랭킹 </div></a></div>
 			<div><a href="${pageContext.request.contextPath}/list"><div>게시판</div></a></div>
 			<div><a href="${pageContext.request.contextPath}/notice_list"><div> 공지사항 </div></a></div>

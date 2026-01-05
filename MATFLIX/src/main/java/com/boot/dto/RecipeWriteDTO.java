@@ -35,7 +35,7 @@ public class RecipeWriteDTO {
 
 	// 순서
 	private int[] step_id;
-	private String[] step_no;
+	private int[] step_no;
 	private String[] step_content;
 
 	// 태그
