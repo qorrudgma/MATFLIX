@@ -11,6 +11,7 @@
     <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/recipe_list.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -53,209 +54,210 @@
             <div class="banner-indicators" id="bannerIndicators">
             </div>
         </div>
-        
-        <!-- 한식 카테고리 섹션 -->
-        <div class="category-section">
-            <div class="category-header">
-                <h2 class="category-title">
-                    <i class="fas fa-utensils"></i>
-                    한식 <span class="en-title">(Korean Food)</span>
-                </h2>
-                <div class="slider-controls">
-                    <button class="slider-button prev-btn" onclick="slideRecipes('korean-slider', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="slider-button next-btn" onclick="slideRecipes('korean-slider', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <a href="${pageContext.request.contextPath}/recipe_category?category=1" class="slider-button more-btn">
-                        더보기 <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="recipe-slider" id="korean-slider">
-                <c:forEach var="img" items="${korean_food_list}">
-                    <c:forEach var="recipe" items="${korean_food_recipe_list}">
-                        <c:if test="${img.rc_recipe_id == recipe.rc_recipe_id}">
-                            <a href="recipe_content_view?rc_recipe_id=${img.rc_recipe_id}" class="recipe-card">
-                                <div class="recipe-image">
-                                    <img src="${pageContext.request.contextPath}/upload/${img.uploadPath}/${img.uuid}_${img.fileName}" alt="Korean food image" />
-                                    <div class="recipe-category">한식</div>
-                                </div>
-                                <div class="recipe-info">
-                                    <h3>${recipe.rc_name}</h3>
-                                    <p><strong>난이도:</strong> ${recipe.rc_difficulty}</p>
-                                </div>
-                            </a>
-                        </c:if>
-                    </c:forEach>
-                </c:forEach>
-            </div>
-        </div>
-        
-        <!-- 양식 카테고리 섹션 -->
-        <div class="category-section">
-            <div class="category-header">
-                <h2 class="category-title">
-                    <i class="fas fa-pizza-slice"></i>
-                    양식 <span class="en-title">(American Food)</span>
-                </h2>
-                <div class="slider-controls">
-                    <button class="slider-button prev-btn" onclick="slideRecipes('american-slider', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="slider-button next-btn" onclick="slideRecipes('american-slider', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <a href="${pageContext.request.contextPath}/recipe_category?category=2" class="slider-button more-btn">
-                        더보기 <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="recipe-slider" id="american-slider">
-                <c:forEach var="img" items="${american_food_list}">
-                    <c:forEach var="recipe" items="${american_food_recipe_list}">
-                        <c:if test="${img.rc_recipe_id == recipe.rc_recipe_id}">
-                            <a href="recipe_content_view?rc_recipe_id=${img.rc_recipe_id}" class="recipe-card">
-                                <div class="recipe-image">
-                                    <img src="${pageContext.request.contextPath}/upload/${img.uploadPath}/${img.uuid}_${img.fileName}" alt="American food image" />
-                                    <div class="recipe-category">양식</div>
-                                </div>
-                                <div class="recipe-info">
-                                    <h3>${recipe.rc_name}</h3>
-                                    <p><strong>난이도:</strong> ${recipe.rc_difficulty}</p>
-                                </div>
-                            </a>
-                        </c:if>
-                    </c:forEach>
-                </c:forEach>
-            </div>
-        </div>
-        
-        <!-- 일식 카테고리 섹션 -->
-        <div class="category-section">
-            <div class="category-header">
-                <h2 class="category-title">
-                    <i class="fas fa-fish"></i>
-                    일식 <span class="en-title">(Japanese Food)</span>
-                </h2>
-                <div class="slider-controls">
-                    <button class="slider-button prev-btn" onclick="slideRecipes('japanese-slider', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="slider-button next-btn" onclick="slideRecipes('japanese-slider', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <a href="${pageContext.request.contextPath}/recipe_category?category=3" class="slider-button more-btn">
-                        더보기 <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="recipe-slider" id="japanese-slider">
-                <c:forEach var="img" items="${japanese_food_list}">
-                    <c:forEach var="recipe" items="${japanese_food_recipe_list}">
-                        <c:if test="${img.rc_recipe_id == recipe.rc_recipe_id}">
-                            <a href="recipe_content_view?rc_recipe_id=${img.rc_recipe_id}" class="recipe-card">
-                                <div class="recipe-image">
-                                    <img src="${pageContext.request.contextPath}/upload/${img.uploadPath}/${img.uuid}_${img.fileName}" alt="Japanese food image" />
-                                    <div class="recipe-category">일식</div>
-                                </div>
-                                <div class="recipe-info">
-                                    <h3>${recipe.rc_name}</h3>
-                                    <p><strong>난이도:</strong> ${recipe.rc_difficulty}</p>
-                                </div>
-                            </a>
-                        </c:if>
-                    </c:forEach>
-                </c:forEach>
-            </div>
-        </div>
-        
-        <!-- 중식 카테고리 섹션 -->
-        <div class="category-section">
-            <div class="category-header">
-                <h2 class="category-title">
-                    <i class="fas fa-drumstick-bite"></i>
-                    중식 <span class="en-title">(Chinese Food)</span>
-                </h2>
-                <div class="slider-controls">
-                    <button class="slider-button prev-btn" onclick="slideRecipes('chinese-slider', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="slider-button next-btn" onclick="slideRecipes('chinese-slider', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <a href="${pageContext.request.contextPath}/recipe_category?category=4" class="slider-button more-btn">
-                        더보기 <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="recipe-slider" id="chinese-slider">
-                <c:forEach var="img" items="${chinese_food_list}">
-                    <c:forEach var="recipe" items="${chinese_food_recipe_list}">
-                        <c:if test="${img.rc_recipe_id == recipe.rc_recipe_id}">
-                            <a href="recipe_content_view?rc_recipe_id=${img.rc_recipe_id}" class="recipe-card">
-                                <div class="recipe-image">
-                                    <img src="${pageContext.request.contextPath}/upload/${img.uploadPath}/${img.uuid}_${img.fileName}" alt="Chinese food image" />
-                                    <div class="recipe-category">중식</div>
-                                </div>
-                                <div class="recipe-info">
-                                    <h3>${recipe.rc_name}</h3>
-                                    <p><strong>난이도:</strong> ${recipe.rc_difficulty}</p>
-                                </div>
-                            </a>
-                        </c:if>
-                    </c:forEach>
-                </c:forEach>
-            </div>
-        </div>
-        
-        <!-- 디저트 카테고리 섹션 -->
-        <div class="category-section">
-            <div class="category-header">
-                <h2 class="category-title">
-                    <i class="fas fa-ice-cream"></i>
-                    디저트 <span class="en-title">(Dessert)</span>
-                </h2>
-                <div class="slider-controls">
-                    <button class="slider-button prev-btn" onclick="slideRecipes('dessert-slider', -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="slider-button next-btn" onclick="slideRecipes('dessert-slider', 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <a href="${pageContext.request.contextPath}/recipe_category?category=5" class="slider-button more-btn">
-                        더보기 <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="recipe-slider" id="dessert-slider">
-                <c:forEach var="img" items="${dessert_list}">
-                    <c:forEach var="recipe" items="${dessert_recipe_list}">
-                        <c:if test="${img.rc_recipe_id == recipe.rc_recipe_id}">
-                            <a href="recipe_content_view?rc_recipe_id=${img.rc_recipe_id}" class="recipe-card">
-                                <div class="recipe-image">
-                                    <img src="${pageContext.request.contextPath}/upload/${img.uploadPath}/${img.uuid}_${img.fileName}" alt="Dessert image" />
-                                    <div class="recipe-category">디저트</div>
-                                </div>
-                                <div class="recipe-info">
-                                    <h3>${recipe.rc_name}</h3>
-                                    <p><strong>난이도:</strong> ${recipe.rc_difficulty}</p>
-                                </div>
-                            </a>
-                        </c:if>
-                    </c:forEach>
-                </c:forEach>
-            </div>
-        </div>
+
+		<!-- KOREAN -->
+		<section class="category-section" id="cat-korean">
+			<div class="category-header">
+				<h3 class="category-title"><i class="fas fa-bowl-food"></i> 한식 <span class="en-title">(Korean Food)</span></h3>
+			</div>
+
+			<div class="recipe_slider_wrap">
+			        <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+			        <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+					
+				<div class="recipe_slider">
+					<c:set var="hasKorean" value="false" />
+					<c:forEach var="r" items="${recipe_list}">
+						<c:if test="${r.category eq 'KOREAN'}">
+							<c:set var="hasKorean" value="true" />
+							<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+								<div class="recipe-image">
+									<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+									<div class="recipe-category">한식</div>
+								</div>
+								<div class="recipe-info">
+									<h3>${r.title}</h3>
+									<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
+								</div>
+							</a>
+						</c:if>
+					</c:forEach>
+
+					<c:if test="${not hasKorean}">
+						<div class="empty-box">한식 레시피가 아직 없어요.</div>
+					</c:if>
+				</div>
+			</div>
+		</section>
+
+		<!-- CHINESE -->
+		<section class="category-section" id="cat-chinese">
+			<div class="category-header">
+		    	<h3 class="category-title"><i class="fas fa-bowl-food"></i> 중식 <span class="en-title">(Chinese Food)</span></h3>
+		    </div>
+
+		    <div class="recipe_slider_wrap">
+			    <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+			    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+	
+			    <div class="recipe_slider">
+			    	<c:set var="hasChinese" value="false" />
+			        <c:forEach var="r" items="${recipe_list}">
+			        	<c:if test="${r.category eq 'CHINESE'}">
+			          		<c:set var="hasChinese" value="true" />
+			          		<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+			            		<div class="recipe-image">
+				              		<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+				              		<div class="recipe-category">중식</div>
+			            		</div>
+			            		<div class="recipe-info">
+			              			<h3>${r.title}</h3>
+			              			<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
+			            		</div>
+			          		</a>
+			        	</c:if>
+			        </c:forEach>
+	
+			        <c:if test="${not hasChinese}">
+			        	<div class="empty-box">중식 레시피가 아직 없어요.</div>
+			       	</c:if>
+		    	</div>
+		  	</div>
+		</section>
+
+
+		<!-- JAPANESE -->
+		<section class="category-section" id="cat-japanese">
+			<div class="category-header">
+		    	<h3 class="category-title"><i class="fas fa-bowl-food"></i> 일식 <span class="en-title">(Japanese Food)</span></h3>
+		  	</div>
+
+		  	<div class="recipe_slider_wrap">
+		    	<button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+			    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+	
+			    <div class="recipe_slider">
+			      	<c:set var="hasJapanese" value="false" />
+			      	<c:forEach var="r" items="${recipe_list}">
+			        	<c:if test="${r.category eq 'JAPANESE'}">
+			          		<c:set var="hasJapanese" value="true" />
+			          		<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+			            		<div class="recipe-image">
+			              			<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+			              			<div class="recipe-category">일식</div>
+			            		</div>
+			            		<div class="recipe-info">
+				              		<h3>${r.title}</h3>
+				              		<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
+			            		</div>
+			          		</a>
+			        	</c:if>
+			      	</c:forEach>
+	
+			      	<c:if test="${not hasJapanese}">
+			        	<div class="empty-box">일식 레시피가 아직 없어요.</div>
+			      	</c:if>
+		    	</div>
+		  	</div>
+		</section>
+
+
+		<!-- WESTERN -->
+		<section class="category-section" id="cat-western">
+		  	<div class="category-header">
+		    	<h3 class="category-title"><i class="fas fa-bowl-food"></i> 양식 <span class="en-title">(Western Food)</span></h3>
+		  	</div>
+
+		  	<div class="recipe_slider_wrap">
+			    <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+			    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+	
+			    <div class="recipe_slider">
+			      	<c:set var="hasWestern" value="false" />
+		      		<c:forEach var="r" items="${recipe_list}">
+			        	<c:if test="${r.category eq 'WESTERN'}">
+			          		<c:set var="hasWestern" value="true" />
+			          		<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+			            		<div class="recipe-image">
+			              			<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+			              			<div class="recipe-category">양식</div>
+			            		</div>
+		            			<div class="recipe-info">
+			              			<h3>${r.title}</h3>
+			              			<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
+			            		</div>
+			          		</a>
+			        	</c:if>
+			      	</c:forEach>
+	
+			        <c:if test="${not hasWestern}">
+			        	<div class="empty-box">양식 레시피가 아직 없어요.</div>
+			        </c:if>
+			    </div>
+		  	</div>
+		</section>
+
+		<!-- DESSERT -->
+		<section class="category-section" id="cat-dessert">
+		  	<div class="category-header">
+		    	<h3 class="category-title"><i class="fas fa-ice-cream"></i> 디저트 <span class="en-title">(Dessert)</span></h3>
+		  	</div>
+
+		  	<div class="recipe_slider_wrap">
+			    <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+			    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+
+	    		<div class="recipe_slider">
+		      		<c:set var="hasDessert" value="false" />
+		      		<c:forEach var="r" items="${recipe_list}">
+		        		<c:if test="${r.category eq 'DESSERT'}">
+		          			<c:set var="hasDessert" value="true" />
+	          				<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+	            				<div class="recipe-image">
+		              				<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+		              				<div class="recipe-category">디저트</div>
+		            			</div>
+		            			<div class="recipe-info">
+		              				<h3>${r.title}</h3>
+		              				<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
+	            				</div>
+		          			</a>
+		        		</c:if>
+		      		</c:forEach>
+
+		      		<c:if test="${not hasDessert}">
+		        		<div class="empty-box">디저트 레시피가 아직 없어요.</div>
+		      		</c:if>
+		    	</div>
+		  	</div>
+		</section>
     </div>
+	
+	<!-- 레시피 등록 버튼 -->
+    <button class="add_recipe_btn" onclick="location.href='recipe_write_new'">
+        <i class="fas fa-plus"></i>
+    </button>
     
     <jsp:include page="footer.jsp" />
     <script src="${pageContext.request.contextPath}/js/main.js"></script>
+	<script>
+		const korean_slider = document.querySelector('#cat-korean .recipe_slider');
+	
+		document.querySelector('#cat-korean .prev_btn')
+		  .addEventListener('click', () => {
+		    korean_slider.scrollBy({
+		      left: -300,
+		      behavior: 'smooth'
+		    });
+		  });
+	
+		document.querySelector('#cat-korean .next_btn')
+		  .addEventListener('click', () => {
+		    korean_slider.scrollBy({
+		      left: 300,
+		      behavior: 'smooth'
+		    });
+		  });
+	</script>
 </body>
 </html>

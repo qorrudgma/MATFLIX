@@ -1,5 +1,7 @@
 package com.boot.service;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -114,5 +116,19 @@ public class RecipeServiceImpl implements RecipeService {
 	public void delete_recipe(int recipe_id) {
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
 		dao.delete_recipe(recipe_id);
+	}
+
+	@Override
+	public List<RecipeDTO> recipe_list() {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeDTO> dto = dao.recipe_list();
+		return dto;
+	}
+
+	@Override
+	public List<RecipeDTO> my_recipe_list(int mf_no) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeDTO> dto = dao.my_recipe_list(mf_no);
+		return dto;
 	}
 }

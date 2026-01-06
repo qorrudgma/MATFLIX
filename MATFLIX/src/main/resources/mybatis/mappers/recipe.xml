@@ -40,10 +40,36 @@
         						VALUES (#{recipe_id}, #{mf_no}, #{rating}, #{content}, #{rating})
 	</insert>
 	
+	<!-- 레시피 삭제 -->	
 	<delete id="delete_recipe" parameterType="int">
 		DELETE FROM recipe
 		 WHERE recipe_id = #{recipe_id}
 	</delete>
+
+	<!-- 레시피 리스트 -->	
+	<select id="recipe_list" resultType="com.boot.dto.RecipeDTO">
+		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.updated_at, m.mf_nickname, ri.image_path
+		  FROM recipe r
+		  JOIN matflix m
+			ON r.mf_no = m.mf_no
+		  LEFT JOIN recipe_image ri
+		    ON r.recipe_id = ri.recipe_id
+		   AND ri.image_type ="THUMBNAIL"
+		 ORDER BY r.updated_at DESC
+	</select>
+
+	<!-- 마이 레시피 리스트 -->	
+	<select id="my_recipe_list" resultType="com.boot.dto.RecipeDTO">
+		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.updated_at, m.mf_nickname, ri.image_path
+		  FROM recipe r
+		  JOIN matflix m
+			ON r.mf_no = m.mf_no
+		  LEFT JOIN recipe_image ri
+		    ON r.recipe_id = ri.recipe_id
+		   AND ri.image_type ="THUMBNAIL"
+		 WHERE r.mf_no = #{mf_no}
+		 ORDER BY r.updated_at DESC
+	</select>
 
 	<!-- ========================================== -->
 

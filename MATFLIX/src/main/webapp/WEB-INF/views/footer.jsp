@@ -1,6 +1,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/footer.css">
 <footer class="footer">
+
     <div class="container">
         <div class="footer_content">
             <!-- 푸터 로고 및 설명 -->

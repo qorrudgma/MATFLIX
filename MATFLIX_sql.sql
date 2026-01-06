@@ -215,6 +215,8 @@ CREATE TABLE recipe (
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 select * from recipe;
+DELETE FROM recipe
+WHERE recipe_id = 1;
 
 -- 재료
 CREATE TABLE recipe_ingredient (
@@ -229,7 +231,8 @@ CREATE TABLE recipe_ingredient (
         ON DELETE CASCADE
 );
 select * from recipe_ingredient;
-
+DELETE FROM recipe_ingredient
+WHERE recipe_id = 1;
 
 -- 순서
 CREATE TABLE recipe_step (
@@ -247,6 +250,8 @@ CREATE TABLE recipe_step (
         UNIQUE (recipe_id, step_no)
 );
 select * from recipe_step;
+DELETE FROM recipe_step
+WHERE recipe_id = 1;
 
 -- 태그
 CREATE TABLE recipe_tag (
@@ -260,6 +265,8 @@ CREATE TABLE recipe_tag (
         ON DELETE CASCADE
 );
 select * from recipe_tag;
+DELETE FROM recipe_tag
+WHERE recipe_id = 1;
 
 -- 이미지
 CREATE TABLE recipe_image (
@@ -275,6 +282,10 @@ CREATE TABLE recipe_image (
         ON DELETE CASCADE
 );
 select * from recipe_image;
+DELETE FROM recipe_image
+WHERE recipe_id = 1;
+
+
 
 -- 리뷰
 CREATE TABLE recipe_review (

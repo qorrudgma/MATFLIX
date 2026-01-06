@@ -25,4 +25,9 @@ public class RecipeDTO {
 
 	// 화면용
 	private String display_updated_at;
+
+	// 리스트용
+	private int recommend;
+	private String mf_nickname;
+	private String image_path;
 }

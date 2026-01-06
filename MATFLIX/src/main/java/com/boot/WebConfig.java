@@ -9,7 +9,9 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/upload/**").addResourceLocations("file:///C:/develop/upload/")
-				.setCachePeriod(3600).resourceChain(true);
+//		registry.addResourceHandler("/upload/**").addResourceLocations("file:///C:/develop/upload/")
+		registry.addResourceHandler("/recipe/thumbnail/**")
+				.addResourceLocations("file:///C:/matflix_upload/recipe/thumbnail/").setCachePeriod(3600)
+				.resourceChain(true);
 	}
 }

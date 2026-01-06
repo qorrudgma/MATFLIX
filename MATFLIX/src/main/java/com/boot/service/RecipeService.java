@@ -1,5 +1,7 @@
 package com.boot.service;
 
+import java.util.List;
+
 import com.boot.dto.RecipeDTO;
 import com.boot.dto.RecipeImageDTO;
 import com.boot.dto.RecipeWriteDTO;
@@ -18,4 +20,8 @@ public interface RecipeService {
 	public void insert_recipe_image(RecipeImageDTO dto);
 
 	public void delete_recipe(int recipe_id);
+
+	public List<RecipeDTO> recipe_list();
+
+	public List<RecipeDTO> my_recipe_list(int mf_no);
 }

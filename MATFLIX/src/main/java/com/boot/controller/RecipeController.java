@@ -97,14 +97,12 @@ public class RecipeController {
 	@RequestMapping("/recipe_write")
 	public String recipe_write(RecipeWriteDTO dto, HttpSession session) {
 		log.info("recipe_write 컨트롤러에 왔음");
-		log.info("dto => " + dto);
+		log.info("dto 1 => " + dto);
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		dto.setMf_no(user.getMf_no());
+		log.info("dto 2 => " + dto);
 		recipeService.process_recipe_write(dto);
-		return "redirect:/recipe_write_new";
-	}
-
-	@RequestMapping("/insert_recipe")
-	public String insert_recipe() {
-		return "insert_recipe";
+		return "redirect:/recipe_list";
 	}
 
 	@RequestMapping("/delete_recipe")
@@ -116,12 +114,19 @@ public class RecipeController {
 
 	@GetMapping("/recipe_list")
 	public String recipe_list(Model model) {
+		model.addAttribute("recipe_list", recipeService.recipe_list());
 		return "recipe_list";
+	}
+
+	@GetMapping("/main")
+	public String main(Model model) {
+		model.addAttribute("recipe_list", recipeService.recipe_list());
+		return "main";
 	}
 
 	// ----------------------------------------------------------
 
-	@RequestMapping("/main")
+//	@RequestMapping("/main")
 	public String main(Model model, HttpServletRequest request) {
 
 //		카테고리 별 레시피id 모음

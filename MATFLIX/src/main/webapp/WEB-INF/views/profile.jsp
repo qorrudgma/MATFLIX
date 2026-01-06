@@ -9,6 +9,7 @@
     <title>MATFLIX - 프로필</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -79,26 +80,18 @@
         <div class="tab_content active" id="my_recipes_content">
             <!-- 내 레시피 목록 -->
             <div class="recipe_grid">
-                <c:forEach var="recipe" items="${my_recipe}">
-                    <a href="recipe_content_view?rc_recipe_id=${recipe.rc_recipe_id}">
-                        <div class="recipe_card">
-                            <c:set var="imageShown" value="false" scope="page" />
-                            <c:forEach var="attach" items="${my_recipe_attach}">
-                                <c:if test="${!imageShown && attach.rc_recipe_id == recipe.rc_recipe_id && not empty attach.fileName}">
-                                    <img src="/upload/${attach.uploadPath}/${attach.uuid}_${attach.fileName}" alt="${recipe.rc_name}" />
-                                    <c:set var="imageShown" value="true" scope="page" />
-                                </c:if>
-                            </c:forEach>
-                            <p>
-                                ${recipe.rc_recipe_id}. ${recipe.rc_name} <br/>
-                                (${recipe.rc_created_at})
-                                <c:if test="${not empty recipe.rc_difficulty}">
-                                    <br/>난이도: ${recipe.rc_difficulty}
-                                </c:if>
-                            </p>
-                        </div>
-                    </a>
-                </c:forEach>
+				<c:forEach var="r" items="${my_recipe}">
+					<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+						<div class="recipe-image">
+							<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+							<div class="recipe-category">한식</div>
+						</div>
+						<div class="recipe-info">
+							<h3>${r.title}</h3>
+							<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
+						</div>
+					</a>
+				</c:forEach>
                 
                 <c:if test="${empty my_recipe}">
                     <div class="empty-state">
@@ -110,13 +103,12 @@
                     </div>
                 </c:if>
             </div>
-            
-            <c:if test="${not empty my_recipe}">
-                <a href="insert_recipe" class="floating_add_btn">
-                    <i class="fas fa-plus"></i>
-                </a>
-            </c:if>
         </div>
+		
+		<!-- 레시피 등록 버튼 -->
+	    <button class="add_recipe_btn" onclick="location.href='recipe_write_new'">
+	        <i class="fas fa-plus"></i>
+	    </button>
         
         <div class="tab_content" id="favorites_content">
             <!-- 즐겨찾기 목록 -->

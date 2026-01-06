@@ -17,9 +17,7 @@
 
 package com.boot.controller;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.boot.dto.FavoriteDTO;
 import com.boot.dto.NotifSettingDTO;
-import com.boot.dto.RecipeAttachDTO;
-import com.boot.dto.RecipeRDTO;
+import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.EmailService;
@@ -47,6 +43,7 @@ import com.boot.service.FollowService;
 import com.boot.service.NotifSettingService;
 import com.boot.service.NotificationService;
 import com.boot.service.RecipeRService;
+import com.boot.service.RecipeService;
 import com.boot.service.RecipeUploadService;
 import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
@@ -74,7 +71,10 @@ public class TeamController {
 	private BoardService boardService;
 
 	@Autowired
-	private RecipeRService recipeService;
+	private RecipeRService recipeRService;
+
+	@Autowired
+	private RecipeService recipeService;
 
 	@Autowired
 	private RecipeUploadService recipeUploadService;
@@ -107,46 +107,38 @@ public class TeamController {
 			board.put("recommend_count", recommend_count);
 		}
 
-		String mf_no = Integer.toString(user.getMf_no());
-		List<RecipeAttachDTO> my_recipe_attach = new ArrayList<>();
-		List<RecipeRDTO> my_recipe = recipeService.get_recipe_by_user_id(mf_no);
-
-		for (int i = 0; i < my_recipe.size(); i++) {
-			my_recipe_attach.add(recipeUploadService.get_upload_by_id(my_recipe.get(i).getRc_recipe_id()));
-		}
+		int mf_no = user.getMf_no();
+		List<RecipeDTO> my_recipe = recipeService.my_recipe_list(mf_no);
 
 		int mfNo = user.getMf_no();
 
 		// 즐겨찾기
-		List<FavoriteDTO> originalFavoriteList = favoriteService.getUserFavoriteRecipes(mfNo);
-
-		List<Map<String, Object>> favoritesForView = new ArrayList<>();
-
-		for (FavoriteDTO f_dto : originalFavoriteList) {
-			Map<String, Object> favoriteMap = new HashMap<>();
-			favoriteMap.put("favoriteId", f_dto.getFavoriteId());
-			favoriteMap.put("mfNo", f_dto.getMfNo());
-			favoriteMap.put("recipeId", f_dto.getRecipeId());
-
-			if (f_dto.getCreatedAt() != null) {
-				Date createdAtAsDate = Date.from(f_dto.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant());
-				favoriteMap.put("createdAt", createdAtAsDate);
-			} else {
-				favoriteMap.put("createdAt", null);
-			}
-
-			favoritesForView.add(favoriteMap);
-		}
-		int my_recipe_count = recipeService.my_recipe_count(mfNo);
+//		List<FavoriteDTO> originalFavoriteList = favoriteService.getUserFavoriteRecipes(mfNo);
+//
+//		List<Map<String, Object>> favoritesForView = new ArrayList<>();
+//
+//		for (FavoriteDTO f_dto : originalFavoriteList) {
+//			Map<String, Object> favoriteMap = new HashMap<>();
+//			favoriteMap.put("favoriteId", f_dto.getFavoriteId());
+//			favoriteMap.put("mfNo", f_dto.getMfNo());
+//			favoriteMap.put("recipeId", f_dto.getRecipeId());
+//
+//			if (f_dto.getCreatedAt() != null) {
+//				Date createdAtAsDate = Date.from(f_dto.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant());
+//				favoriteMap.put("createdAt", createdAtAsDate);
+//			} else {
+//				favoriteMap.put("createdAt", null);
+//			}
+//
+//			favoritesForView.add(favoriteMap);
+//		}
 		int user_follow_count = followService.user_follow_count(mfNo);
 		int user_follower_count = followService.user_follower_count(mfNo);
 
-		model.addAttribute("favorites", favoritesForView);
+//		model.addAttribute("favorites", favoritesForView);
 		model.addAttribute("my_recipe", my_recipe);
-		model.addAttribute("my_recipe_attach", my_recipe_attach);
 		model.addAttribute("dto", dto);
 		model.addAttribute("profile_board", profile_board);
-		model.addAttribute("my_recipe_count", my_recipe_count);
 		model.addAttribute("user_follow_count", user_follow_count);
 		model.addAttribute("user_follower_count", user_follower_count);
 

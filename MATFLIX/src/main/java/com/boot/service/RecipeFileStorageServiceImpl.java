@@ -71,7 +71,7 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 				img.setRecipe_id(recipe_id);
 				img.setImage_type(type);
 				img.setStep_no(step_no[i]);
-				img.setImage_path("/upload/recipe/" + type_dir + "/" + save_file_name);
+				img.setImage_path("/recipe/" + type_dir + "/" + save_file_name);
 
 				dao.insert_recipe_image(img);
 

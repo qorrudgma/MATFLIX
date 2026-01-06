@@ -31,6 +31,8 @@ public class CommentRecommendServiceImpl implements CommentRecommendService {
 		NotifSettingDAO NSdao = sqlSession.getMapper(NotifSettingDAO.class);
 		NotificationDAO Ndao = sqlSession.getMapper(NotificationDAO.class);
 		CRdao.add_comment_recommend(commentNo, mf_no);
+		Cdao.add_comment_count(commentNo);
+		log.info("추천 된거지?");
 		int recommend_count = Cdao.recommend_count(commentNo);
 
 		if (recommend_count % 50 == 0) {
