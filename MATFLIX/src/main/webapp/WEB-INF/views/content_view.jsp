@@ -142,7 +142,7 @@
             <div class="comment-form">
                 <div class="form-group">
                     <input type="text" id="commentContent" placeholder="댓글을 입력하세요">
-	                <button type="button" onclick="commentWrite(0)" class="btn-comment">댓글작성</button>
+	                <button type="button" onclick="commentWrite(0)" class="btn-comment">등록</button>
                 </div>
             </div>
 			

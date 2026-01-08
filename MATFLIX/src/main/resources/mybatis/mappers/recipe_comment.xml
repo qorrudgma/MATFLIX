@@ -2,44 +2,25 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.boot.dao.CommentDAO">
+<mapper namespace="com.boot.dao.RecipeCommentDAO">
     
     <!-- 댓글 작성 -->
-    <insert id="save">
-		insert into board_comment(commentWriter 	
-			 , commentContent 	
-			 , boardNo
-			 , userNo
+    <insert id="insert_recipe_comment">
+		insert into recipe_comment(recipe_id
+			 , mf_no 	
+			 , comment_content
 			 , parentCommentNo)
-		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo},#{parentCommentNo})
-    </insert>
-
-    <!-- 답글 작성 -->
-    <insert id="save_comment">
-		insert into board_comment(commentWriter 	
-			 , commentContent 	
-			 , boardNo
-			 , userNo
-			 , parentCommentNo)
-		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo},#{parentCommentNo})
+		values(#{recipe_id},#{mf_no},#{comment_content},#{parentCommentNo})
     </insert>
     
     <!-- 댓글 리스트 -->
     <!-- 이거대신 recommended 로 대신 사용 -->
-    <select id="findAll" resultType="com.boot.dto.CommentDTO">
-		select commentNo
-			 , commentWriter
-			 , commentContent
-			 , boardNo
-			 , userNo
-			 , commentCreatedTime
-			 , parentCommentNo
-			 , updatedTime
-			 , recommend_count
-		  from board_comment
-		 where boardNo=#{boardNo}
+    <select id="all_recipe_comment" resultType="com.boot.dto.RecipeCommentDTO">
+		select *
+		  from recipe_comment
+		 where recipe_id=#{recipe_id}
 		   and deleted != 1
-		 order by commentNo desc
+		 order by comment_no desc
     </select>
     
     <!-- 게시글 삭제로 인한 댓글 삭제 -->

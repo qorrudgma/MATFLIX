@@ -15,15 +15,13 @@
 package com.boot.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.RecipeCommentDTO;
@@ -34,39 +32,28 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-@RequestMapping("/rc_comment")
 public class RecipeCommentController {
 
 	@Autowired
-	private RecipeCommentService service;
+	private RecipeCommentService recipeCommentService;
 
-	@RequestMapping("/save")
-	public @ResponseBody ArrayList<RecipeCommentDTO> save(@RequestParam HashMap<String, String> param,
-			HttpServletRequest request) {
-		log.info("@# save()");
-		log.info("@# param=>" + param);
+	@PostMapping("/recipe/comment")
+	@ResponseBody
+	public List<RecipeCommentDTO> save(RecipeCommentDTO recipeCommentDTO, HttpSession session) {
+		log.info("@# /recipe/comment");
+		log.info("@# recipeCommentDTO=>" + recipeCommentDTO);
+		List<RecipeCommentDTO> recipeCommentList = new ArrayList<>();
 
-		HttpSession session = request.getSession();
-		TeamDTO dto = (TeamDTO) session.getAttribute("user");
-		int mf_no = dto.getMf_no();
-		log.info("@# mf_no => " + mf_no);
-		log.info("@# rc_board =>" + Integer.parseInt(param.get("rc_boardNo")));
-		log.info("여기까지 됨");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		recipeCommentDTO.setMf_no(mf_no);
+		recipeCommentService.insert_recipe_comment(recipeCommentDTO);
+		log.info("mf_no => " + mf_no);
+		int recipt_id = recipeCommentDTO.getRecipe_id();
+		recipeCommentList = recipeCommentService.all_recipe_comment(recipt_id);
+		log.info("recipt_id => " + recipt_id);
 
-		int result = service.count_comment_by_id(mf_no, Integer.parseInt(param.get("rc_boardNo")));
-
-		log.info("@#user Session =>" + dto);
-		log.info("@# result =>" + result);
-		ArrayList<RecipeCommentDTO> commentList = new ArrayList<>();
-
-		if (result == 0) {
-			service.save(param, mf_no);
-			commentList = service.findAll(Integer.parseInt(param.get("rc_boardNo")));
-		}
-		// 해당 게시글에 작성된 댓글 리스트를 가져옴
-
-//		return null;
-		return commentList;
+		return recipeCommentList;
 	}
 
 }

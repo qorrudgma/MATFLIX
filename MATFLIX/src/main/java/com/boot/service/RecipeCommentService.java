@@ -1,16 +1,11 @@
 package com.boot.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.apache.ibatis.annotations.Param;
+import java.util.List;
 
 import com.boot.dto.RecipeCommentDTO;
 
 public interface RecipeCommentService {
-	public void save(HashMap<String, String> param, @Param("mf_no") int mf_no);
+	public void insert_recipe_comment(RecipeCommentDTO recipeCommentDTO);
 
-	public ArrayList<RecipeCommentDTO> findAll(int rc_boardNo);
-
-	public int count_comment_by_id(int mf_no, int rc_boardNo);
+	public List<RecipeCommentDTO> all_recipe_comment(int recipt_id);
 }

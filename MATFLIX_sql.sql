@@ -326,9 +326,24 @@ CREATE TABLE recipe_comment (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     recommend_count INT DEFAULT 0,
-    recommend_notify_step INT DEFAULT 0
+    recommend_notify_step INT DEFAULT 0,
+    
+    CONSTRAINT fk_recipe_comment_recipe
+        FOREIGN KEY (recipe_id)
+        REFERENCES recipe (recipe_id)
+        ON DELETE CASCADE,
+        
+    CONSTRAINT fk_recipe_comment_user
+        FOREIGN KEY (mf_no)
+        REFERENCES matflix (mf_no)
+        ON DELETE CASCADE
 );
-select * from board_comment;
+select * from recipe_comment;
+insert into recipe_comment(recipe_id
+			 , mf_no 	
+			 , comment_content
+			 , parentCommentNo)
+		values(6,61,"test1",0)
 
 -- 리뷰
 CREATE TABLE recipe_review (

@@ -1,7 +1,7 @@
 package com.boot.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,25 +19,18 @@ public class RecipeCommentServiceImpl implements RecipeCommentService {
 	private SqlSession sqlSession;
 
 	@Override
-	public void save(HashMap<String, String> param, int mf_no) {
+	public void insert_recipe_comment(RecipeCommentDTO recipeCommentDTO) {
+		log.info("!@# insert_recipe_comment");
 		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
-		param.put("mf_no", String.valueOf(mf_no)); // mf_no를 HashMap에 추가
-		dao.save(param); // 수정된 HashMap을 DAO에 전달
+		dao.insert_recipe_comment(recipeCommentDTO);
 	}
 
 	@Override
-	public ArrayList<RecipeCommentDTO> findAll(int rc_boardNo) {
+	public List<RecipeCommentDTO> all_recipe_comment(int recipt_id) {
 		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
-		ArrayList<RecipeCommentDTO> list = dao.findAll(rc_boardNo);
-		return list;
-	}
-
-	@Override
-	public int count_comment_by_id(int mf_no, int rc_boardNo) {
-		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
-		log.info("Service 된다.");
-		int result = dao.count_comment_by_id(mf_no, rc_boardNo);
-		return result;
+		List<RecipeCommentDTO> recipe_coment_list = new ArrayList<>();
+		recipe_coment_list = dao.all_recipe_comment(recipt_id);
+		return recipe_coment_list;
 	}
 
 }

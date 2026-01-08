@@ -118,24 +118,14 @@
 
         <!-- 댓글 입력 -->
         <div class="comment_input">
-            <input type="text" placeholder="맛평을 입력하세요...">
-            <button>등록</button>
+            <input type="text" id="input_recipe_comment" placeholder="맛평을 입력하세요...">
+            <button type="button" onclick="commentWrite(0)" class="btn-comment">등록</button>
         </div>
 
         <!-- 댓글 리스트 (값은 네가 연결) -->
         <div class="comment_list">
-            <!-- 예시 구조 -->
-            <div class="comment_item">
-                <div class="comment_profile"></div>
-                <div class="comment_body">
-                    <strong>요리사123</strong>
-                    <p>와 진짜 부드러워요!</p>
-                    <span class="comment_date">2026.01.06</span>
-                </div>
-            </div>
         </div>
     </section>
-
 </div>
 
 <jsp:include page="footer.jsp" />
@@ -194,16 +184,10 @@
 	// 댓글 작성
     function commentWrite(parentCommentNo) {
         console.log("유저 넘 => " + sessionUserNo);
-        const writer = document.getElementById("commentWriter").value;
-		let content = "";
-		if(parentCommentNo == 0){
-        	content = document.getElementById("commentContent").value;
-		}else{
-        	content = document.getElementById("replyContent").value;
-		}
+    	let content = document.getElementById("input_recipe_comment").value;
 
 		// 로그인 체크
-	    if (sessionUserNo == null) {
+	    if (sessionUserNo == '') {
 	        alert("로그인 후 이용 가능합니다.");
 	        return;
 	    }
@@ -216,20 +200,18 @@
         $.ajax({
             type: "post",
             data: {
-                commentWriter: writer,
-                commentContent: content,
-                boardNo: no,
-                userNo: sessionUserNo,
+                recipe_id: recipe_id,
+                comment_content: content,
 				parentCommentNo: parentCommentNo
             },
-            url: "/comment/save",
-            success: function(commentList) {
+            url: "/recipe/comment",
+            success: function(recipeCommentList) {
                 console.log("작성 성공");
-                document.getElementById("commentContent").value = "";
+                document.getElementById("input_recipe_comment").value = "";
 				// 답글 모드에서 일반 댓글 모드로 돌아감
 				parentCommentNo = 0;
                 // 댓글 목록 새로고침
-                loadComments();
+                //loadComments();
             },
             error: function() {
                 console.log("실패");
