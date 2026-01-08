@@ -23,4 +23,8 @@ public class RecipeCommentDTO {
 
 	// 화면에 보여지는 시간
 	private LocalDateTime display_time;
+
+	// 프론트에 필요한거
+	private String mf_nickname;
+	private int recommended;
 }

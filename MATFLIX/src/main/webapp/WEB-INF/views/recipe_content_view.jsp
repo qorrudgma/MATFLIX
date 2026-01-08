@@ -123,7 +123,7 @@
         </div>
 
         <!-- 댓글 리스트 (값은 네가 연결) -->
-        <div class="comment_list">
+        <div id="comment_list" class="comment_list">
         </div>
     </section>
 </div>
@@ -180,6 +180,124 @@
             }
         });
     });
+	
+	// 댓글 목록 로드
+    function loadComments() {
+        $.ajax({
+            type: "get",
+            url: "/recipe/comment/list",
+            data: { recipe_id: recipe_id },
+            success: function(recipeCommentList) {
+                console.log(recipeCommentList);
+                renderCommentList(recipeCommentList);
+            },
+            error: function() {
+                console.log("댓글 목록 불러오기 실패");
+            }
+        });
+    }
+	
+	function renderCommentList(commentList) {
+	    let output = "";
+
+	    // 부모 자식 분리
+	    const parents = commentList.filter(c => c.parentCommentNo == 0);
+	    const children = commentList.filter(c => c.parentCommentNo != 0);
+
+	    // 부모 기준으로 출력
+	    parents.forEach(parent => {
+	        // 부모 댓글 출력
+	        output += renderParent(parent);
+
+	        // 해당 부모의 자식 댓글 출력
+	        children.filter(child => child.parentCommentNo == parent.comment_no)
+					.reverse()
+		            .forEach(child => {
+		                output += renderChild(child);
+		            });
+	    });
+
+	    // 화면에 반영
+	    document.getElementById("comment_list").innerHTML = output;
+	}
+
+	// 부모 댓글 표시
+	function renderParent(c) {
+	    let html = `<div class="comment-item parent">
+				        <div class="comment-main">
+				            <div class="comment-profile">
+				                <div class="comment-avatar">
+				                    <i class="fas fa-user"></i>
+				                </div>
+				            </div>
+				            <div class="comment-content">
+				                <div class="comment-header">
+				                    <span class="comment-author">` + (c.mf_nickname) + `<span class="comment_no">` + c.comment_no + `</span>`
+				                        + (c.mf_no == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
+				                        `<span class="comment-date">(`+(c.created_at)+`)</span>
+				                    </span>
+				                </div>
+				                <div class="comment-text">` + c.comment_content + `</div>
+				                <div class="comment-footer">
+				                    <span class="comment-like ` + (c.recommended == 1 ? 'active' : '') + `"onclick="commentRecommend(` + c.comment_no+`, this)">
+				                        <span class="like-count">` + c.recommend_count + `</span>
+				                        <i class="` + (c.recommended == 1 ? 'fas' : 'far') + ` fa-heart"></i>
+				                    </span>
+				                    <span class="reply-btn" onclick="setReply(this, ` + c.comment_no+`)">답글</span>
+				                </div>
+				            </div>
+				        </div>
+				        ` + (c.mf_no == sessionUserNo ? `
+				        <div class="comment-actions">
+				            <div class="dropdown-item delete"onclick="deleteComment(` + c.comment_no + `)">
+								<i class="fas fa-trash-alt"></i> 삭제
+				            </div>
+				        </div>` : ``) + `</div>`;
+	    return html;
+	}
+
+	// 자식 댓글 표시
+	function renderChild(c) {
+	    let html = `<div class="comment-item child">
+				        <div class="comment-main">
+				            <div class="comment-profile">
+				                <div class="comment-avatar">
+				                    <i class="fas fa-user"></i>
+				                </div>
+				            </div>
+				            <div class="comment-content">
+				                <div class="comment-header">
+				                    <span class="comment-author">` + c.mf_nickname+`<span class="comment_no">` + c.comment_no + `</span>`
+				                         + (c.mf_no == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
+										`<span class="comment-date">(` + c.created_at + `)</span>
+				                    </span>
+				                </div>
+				                <div class="comment-text">` + c.comment_content + `</div>
+				                <div class="comment-footer">
+				                    <span class="comment-like ` + (c.recommended == 1 ? 'active' : '') + `"onclick="commentRecommend(` + c.comment_no + `, this)">
+				                        <span class="like-count">` + c.recommend_count + `</span>
+				                        <i class="` + (c.recommended == 1 ? 'fas' : 'far') + ` fa-heart"></i>
+				                    </span>
+				                </div>
+				            </div>
+				        </div>
+				        ` + (c.mf_no == sessionUserNo ? `
+				        <div class="comment-actions">
+				            <div class="dropdown-item delete"
+				                 onclick="deleteComment(` + c.comment_no + `)">
+				                <i class="fas fa-trash-alt"></i> 삭제
+				            </div>
+				        </div>` : ``) + `</div>`;
+	    return html;
+	}
+
+	// 페이지 로드 시 댓글 목록 초기화
+	$(document).ready(function() {
+	    // 초기 댓글 목록 로드
+	        loadComments();
+	    if (comment_count > 0) {
+	    }
+	});
 	
 	// 댓글 작성
     function commentWrite(parentCommentNo) {

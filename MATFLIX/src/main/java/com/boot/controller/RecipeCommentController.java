@@ -21,7 +21,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.RecipeCommentDTO;
@@ -49,9 +51,19 @@ public class RecipeCommentController {
 		recipeCommentDTO.setMf_no(mf_no);
 		recipeCommentService.insert_recipe_comment(recipeCommentDTO);
 		log.info("mf_no => " + mf_no);
-		int recipt_id = recipeCommentDTO.getRecipe_id();
-		recipeCommentList = recipeCommentService.all_recipe_comment(recipt_id);
-		log.info("recipt_id => " + recipt_id);
+		int recipe_id = recipeCommentDTO.getRecipe_id();
+		recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id);
+		log.info("recipe_id => " + recipe_id);
+
+		return recipeCommentList;
+	}
+
+	@GetMapping("/recipe/comment/list")
+	@ResponseBody
+	public List<RecipeCommentDTO> comment_list(@RequestParam("recipe_id") int recipe_id) {
+		List<RecipeCommentDTO> recipeCommentList = new ArrayList<>();
+		recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id);
+		log.info("recipeCommentList => " + recipeCommentList);
 
 		return recipeCommentList;
 	}
