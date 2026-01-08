@@ -13,5 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/recipe/thumbnail/**")
 				.addResourceLocations("file:///C:/matflix_upload/recipe/thumbnail/").setCachePeriod(3600)
 				.resourceChain(true);
+
+		registry.addResourceHandler("/recipe/step/**").addResourceLocations("file:///C:/matflix_upload/recipe/step/")
+				.setCachePeriod(3600).resourceChain(true);
 	}
 }

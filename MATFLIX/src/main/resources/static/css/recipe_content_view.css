@@ -1,247 +1,267 @@
-/* 레시피 상세 보기 페이지 스타일 */
-.recipe-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: var(--shadow);
+.recipe_view_container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px;
 }
 
-/* 레시피 헤더 */
-.recipe-header {
-  text-align: center;
-  margin-bottom: 30px;
+/* Hero */
+.recipe_hero {
+    position: relative;
+    height: 420px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 30px;
 }
 
-.recipe-header h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-color);
-  margin-bottom: 15px;
+.recipe_hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.recipe-header img {
-  width: 100%;
-  max-width: 600px;
-  height: auto;
-  border-radius: 8px;
-  margin: 20px 0;
-  box-shadow: var(--shadow);
-}
-
-.recipe-header p {
-  color: var(--light-text);
-  margin-bottom: 5px;
-  font-size: 15px;
-}
-
-/* 즐겨찾기 버튼 */
-.favorite-toggle-button {
-  padding: 10px 20px;
-  font-size: 15px;
-  cursor: pointer;
-  border: 1px solid var(--border-color);
-  border-radius: 50px;
-  background-color: white;
-  color: var(--text-color);
-  margin: 15px 0;
-  transition: var(--transition);
-  font-weight: 500;
-}
-
-.favorite-toggle-button:hover {
-  background-color: #f5f5f5;
-}
-
-.favorite-toggle-button.favorited {
-  background-color: #ffd700;
-  color: white;
-  border-color: #ffc107;
-}
-
-.favorite-toggle-button .fa-star {
-  margin-right: 5px;
-}
-
-/* 섹션 스타일 */
-.section-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--primary-color);
-  margin: 30px 0 15px;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 8px;
-}
-
-/* 재료 목록 */
-.ingredients ul {
-  list-style: none;
-  padding: 0;
-}
-
-.ingredients li {
-  padding: 10px 15px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.ingredients li:last-child {
-  margin-bottom: 0;
-}
-
-/* 조리 과정 */
-.steps ol {
-  list-style-position: inside;
-  padding-left: 0;
-}
-
-.steps li {
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  margin-bottom: 15px;
-}
-
-.steps li:last-child {
-  margin-bottom: 0;
-}
-
-.steps li strong {
-  color: var(--primary-color);
-}
-
-.steps .step-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  margin-top: 10px;
-  box-shadow: var(--shadow);
-}
-
-/* 요리 팁 */
-.tip p {
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  border-left: 4px solid var(--secondary-color);
-}
-
-/* 댓글 섹션 */
-.comment-section {
-  margin-top: 40px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-}
-
-.comment-input-area {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.comment-input-area input[type="text"] {
-  flex: 1;
-  min-width: 200px;
-  padding: 12px 15px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 15px;
-}
-
-.star-rating-container-comment {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.star-rating {
-  display: flex;
-  font-size: 20px;
-  color: #ddd;
-}
-
-.star-rating .star {
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.star-rating .star:hover {
-  transform: scale(1.2);
-}
-
-.star-rating .filled {
-  color: #ffc107;
-}
-
-.comment-input-area button {
-  padding: 12px 20px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.comment-input-area button:hover {
-  background-color: #d44637;
-}
-
-/* 댓글 목록 */
-#comment-list .comment-item {
-  padding: 15px;
-  background-color: white;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-#comment-list .comment-item:last-child {
-  margin-bottom: 0;
-}
-
-#comment-list .comment-writer {
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-#comment-list .comment-date {
-  color: var(--light-text);
-  font-size: 14px;
-}
-
-#comment-list .comment-content {
-  margin: 10px 0;
-}
-
-#comment-list .comment-stars {
-  margin-top: 5px;
-}
-
-/* 반응형 */
-@media (max-width: 768px) {
-  .recipe-container {
-    padding: 20px;
-    margin: 20px;
-  }
-
-  .recipe-header h1 {
-    font-size: 24px;
-  }
-
-  .comment-input-area {
+.hero_overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75), transparent 60%);
+    padding: 30px;
+    display: flex;
     flex-direction: column;
-  }
+    justify-content: flex-end;
+    color: #fff;
+}
 
-  .star-rating-container-comment {
+.hero_category {
+    background: #e50914;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    width: fit-content;
+}
+
+.hero_overlay h1 {
+    font-size: 32px;
     margin: 10px 0;
-  }
+}
+
+.recommend{
+	font-size: large;
+	font-weight: bold;
+}
+
+/* Intro */
+.recipe_intro_section {
+    font-size: 18px;
+	font-weight: bold;
+    margin-bottom: 40px;
+	background-color: #ffffff;
+	border-radius: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	border: 1px solid #f0f0f0;
+	padding: 30px;
+}
+
+/* Block */
+.recipe_block {
+    margin-bottom: 50px;
+	background-color: #ffffff;
+	border-radius: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	border: 1px solid #f0f0f0;
+	padding: 30px;
+}
+
+.recipe_block h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+/* Ingredient */
+.ingredient_list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px 24px;
+}
+
+.ingredient_list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background-color: #fafafa;
+    font-size: 16px;
+}
+
+.ingredient_list li span {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Steps */
+.step_item {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+    margin-bottom: 40px;
+	background-color: #ffffff;
+	border-radius: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	border: 1px solid #f0f0f0;
+	padding: 30px;
+}
+
+.step_text {
+    margin-bottom: 15px;
+	font-size: larger;
+	flex: 1;
+}
+
+.step_no {
+    font-weight: bold;
+    color: #e50914;
+}
+
+.step_image img {
+	flex: 1;
+}
+
+.step_image img {
+    width: 300px;
+    border-radius: 14px;
+}
+
+/* Tags */
+.recipe_tag_section {
+    margin: 40px 0;
+}
+
+.recipe_tag {
+    display: inline-block;
+    background:rgba(229, 9, 20, 0.14);
+    padding: 8px 14px;
+    border-radius: 20px;
+    margin-right: 8px;
+    font-size: 15px;
+    font-weight: bold;
+	color: #e50914;
+}
+
+/* 사진 리뷰 섹션 */
+.photo_review_section {
+    margin: 50px 0;
+	background-color: #ffffff;
+	border-radius: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	border: 1px solid #f0f0f0;
+	padding: 30px;
+}
+
+.photo_review_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.photo_review_header h2 {
+    font-size: 22px;
+}
+
+.photo_review_like_btn {
+    background: #e50914;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* 가로 스크롤 영역 */
+.photo_review_list {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+/* 스크롤바 살짝 숨기기 */
+.photo_review_list::-webkit-scrollbar {
+    height: 6px;
+}
+.photo_review_list::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+.photo_review_list {
+    cursor: grab;
+}
+
+.photo_review_list:active {
+    cursor: grabbing;
+}
+
+/* 사진 하나 */
+.photo_review_item img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+/* Comments */
+.comment_section {
+    margin-top: 60px;
+	background-color: #ffffff;
+	border-radius: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	border: 1px solid #f0f0f0;
+	padding: 30px;
+}
+
+.comment_input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.comment_input input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.comment_input button {
+    background: #e50914;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 20px;
+}
+
+.comment_item {
+    display: flex;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comment_profile {
+    width: 40px;
+    height: 40px;
+    background: #ddd;
+    border-radius: 50%;
+}
+
+.comment_body p {
+    margin: 4px 0;
+}
+
+.comment_date {
+    font-size: 12px;
+    color: #999;
 }

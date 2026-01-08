@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dto.RcCourseDTO;
@@ -63,6 +65,7 @@ import com.boot.service.RecipeBoardService;
 import com.boot.service.RecipeCommentService;
 import com.boot.service.RecipePageService;
 import com.boot.service.RecipeRService;
+import com.boot.service.RecipeRecommendService;
 import com.boot.service.RecipeService;
 import com.boot.service.RecipeUploadService;
 import com.boot.service.TeamService;
@@ -78,6 +81,9 @@ public class RecipeController {
 
 	@Autowired
 	private RecipeService recipeService;
+
+	@Autowired
+	private RecipeRecommendService recipeRecommendService;
 
 	@Autowired
 	private RecipeUploadService service_attach;
@@ -124,6 +130,49 @@ public class RecipeController {
 		return "main";
 	}
 
+	@GetMapping("/recipe_content_view")
+	public String recipe_content_view(@RequestParam("recipe_id") int recipe_id, Model model, HttpSession session) {
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		model.addAttribute("recipe", recipeService.recipe(recipe_id));
+		model.addAttribute("ingredient_list", recipeService.recipe_ingredient(recipe_id));
+		model.addAttribute("step_list", recipeService.recipe_step(recipe_id));
+		model.addAttribute("image_list", recipeService.recipe_image(recipe_id));
+		model.addAttribute("tag_list", recipeService.recipe_tag(recipe_id));
+		if (user != null) {
+			model.addAttribute("recommended",
+					recipeRecommendService.check_recipe_recommend(recipe_id, user.getMf_no()));
+		}
+		log.info("model => " + model);
+		return "recipe_content_view";
+	}
+
+	@PostMapping("/recipe_recommend")
+	@ResponseBody
+	public Map<String, Object> recipe_recommend(@RequestParam("recipe_id") int recipe_id, HttpSession session) {
+		log.info("recipe_recommend()");
+		Map<String, Object> result = new HashMap<>();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+
+		if (recipeRecommendService.check_recipe_recommend(recipe_id, user.getMf_no()) == 0) {
+			log.info("추천하러옴");
+			recipeRecommendService.recipe_recommend(recipe_id, user.getMf_no());
+			log.info("추천함");
+			recipeRecommendService.add_recipe_recommend(recipe_id);
+			log.info("추천 수 증가시킴");
+			result.put("status", "recommended");
+		} else {
+			recipeRecommendService.delete_recipe_recommend(recipe_id, user.getMf_no());
+			recipeRecommendService.minus_recipe_recommend(recipe_id);
+			result.put("status", "cancel");
+		}
+		result.put("count", recipeService.recipe_recommend_count(recipe_id));
+		log.info("result => " + result);
+
+		return result;
+	}
+
+	// ----------------------------------------------------------
+	// ----------------------------------------------------------
 	// ----------------------------------------------------------
 
 //	@RequestMapping("/main")
@@ -463,8 +512,8 @@ public class RecipeController {
 		return "recipe_board";
 	}
 
-	@RequestMapping("/recipe_content_view")
-	public String recipe_content_view(@RequestParam("rc_recipe_id") int rc_recipe_id, Model model) {
+//	@RequestMapping("/recipe_content_view")
+	public String recipes_content_view(@RequestParam("rc_recipe_id") int rc_recipe_id, Model model) {
 		log.info("rc_recipe_id" + rc_recipe_id);
 
 //		해당 아이디로 정보 가져오기

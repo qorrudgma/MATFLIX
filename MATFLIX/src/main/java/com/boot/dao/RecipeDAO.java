@@ -24,4 +24,16 @@ public interface RecipeDAO {
 	public List<RecipeDTO> recipe_list();
 
 	public List<RecipeDTO> my_recipe_list(int mf_no);
+
+	public RecipeDTO recipe(int recipe_id);
+
+	public List<RecipeIngredientDTO> recipe_ingredient(int recipe_id);
+
+	public List<RecipeStepDTO> recipe_step(int recipe_id);
+
+	public List<RecipeImageDTO> recipe_image(int recipe_id);
+
+	public List<RecipeTagDTO> recipe_tag(int recipe_id);
+
+	public int recipe_recommend_count(int recipe_id);
 }

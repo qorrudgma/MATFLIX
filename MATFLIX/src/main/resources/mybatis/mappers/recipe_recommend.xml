@@ -1,0 +1,44 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.RecipeRecommendDAO">
+    
+    <!-- 추천 하기 -->
+    <insert id="recipe_recommend" parameterType="com.boot.dto.RecipeRecommendDTO">
+		insert into recipe_recommend(recipe_id, mf_no)
+		                   values(#{recipe_id}, #{mf_no})
+    </insert>
+    
+    <!-- 레시피 추천 수 증가 -->
+    <update id="add_recipe_recommend">
+		update recipe
+		   set recommend = recommend + 1
+		 where recipe_id = #{recipe_id}
+    </update>
+    
+    <!-- 레시피 추천 취소 -->
+    <delete id="delete_recipe_recommend">
+    	delete from recipe_recommend
+		 where recipe_id=#{recipe_id}
+		   and mf_no=#{mf_no}
+    </delete>
+    
+    <!-- 레시피 추천 수 감소 -->
+    <update id="minus_recipe_recommend">
+		update recipe
+		   set recommend = recommend - 1
+		 where recipe_id = #{recipe_id}
+    </update>
+    
+    <!-- 레시피 추천 확인 -->
+    <select id="check_recipe_recommend" resultType="int">
+    	SELECT EXISTS (
+			select 1
+			  from recipe_recommend
+			 where recipe_id = #{recipe_id}
+			   and mf_no = #{mf_no} 
+	    )
+    </select>
+    
+</mapper>

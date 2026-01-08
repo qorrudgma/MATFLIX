@@ -113,7 +113,7 @@ CREATE TABLE board_comment (
     recommend_count INT DEFAULT 0,
     recommend_notify_step INT DEFAULT 0
 );
-select commentNo, recommend_count FROM board_comment where boardNo = 331 order by 1 desc;
+select commentNo, recommend_count FROM board_comment where boardNo = 332 order by 1 desc;
 update board_comment
     	   set recommend_count = recommend_count - 1
  		 where commentNo=281;
@@ -137,7 +137,9 @@ CREATE TABLE comment_recommend (
     updateTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	-- 업데이트 시간
     UNIQUE KEY unique_recommend (commentNo, mf_no) 	-- 게시글 번호와 사용자 번호의 조합이 유일하도록 제약
 );
-select * from comment_recommend;
+select * from comment_recommend order by 1 desc;
+insert into comment_recommend(commentNo, mf_no)
+		values (308, 61);
    
 SELECT c.commentNo
 	 , c.commentWriter
@@ -210,13 +212,18 @@ CREATE TABLE recipe (
     difficulty    VARCHAR(20) NOT NULL,       -- EASY / NORMAL / HARD
     category      VARCHAR(50) NOT NULL,       -- KOREAN / CHINESE / JAPANESE / WESTERN / DESSERT
     tip           TEXT,
-    star      	  INT DEFAULT NULL, 	 		  -- 몇인분
+    star      	  INT DEFAULT NULL, 	 		  -- 리뷰
+    recommend     INT DEFAULT 0, 	 		  -- 추천
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-select * from recipe;
+select recommend from recipe where recipe_id =6;
+update recipe
+		   set recommend = recommend + 1
+		 where recipe_id = 6;
 DELETE FROM recipe
 WHERE recipe_id = 1;
+alter table recipe add recommend INT DEFAULT 0;
 
 -- 재료
 CREATE TABLE recipe_ingredient (
@@ -285,6 +292,28 @@ select * from recipe_image;
 DELETE FROM recipe_image
 WHERE recipe_id = 1;
 
+-- 레시피 추천 테이블
+CREATE TABLE recipe_recommend (
+    recommend_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id BIGINT NOT NULL,
+    mf_no INT NOT NULL,
+
+    UNIQUE KEY unique_recommend (recipe_id, mf_no),
+	-- 레시피 삭제 시 삭제
+    CONSTRAINT fk_recommend_recipe
+    FOREIGN KEY (recipe_id)
+    REFERENCES recipe(recipe_id)
+    ON DELETE CASCADE,
+	-- 유저 탈퇴 시 삭제
+    CONSTRAINT fk_recommend_user
+    FOREIGN KEY (mf_no)
+    REFERENCES matflix(mf_no)
+    ON DELETE CASCADE
+);
+select * from recipe_recommend order by 1 desc;
+delete from recipe_recommend
+		 where recipe_id=6
+		   and mf_no=62;
 
 
 -- 리뷰

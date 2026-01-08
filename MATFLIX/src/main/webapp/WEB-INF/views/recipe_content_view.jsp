@@ -1,357 +1,192 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.boot.dto.TeamDTO" %>
-<%
-    // 현재 로그인한 사용자의 닉네임을 세션에서 가져옵니다.
-    TeamDTO user = (TeamDTO) session.getAttribute("user"); // user 세션 속성 사용
-    String writer = "";
-    if (user != null) {
-        writer = user.getMf_nickname();
-    } else {
-        writer = "익명"; // 로그인하지 않은 경우 "익명"으로 표시
-    }
-%>
-<!DOCTYPE html>
+
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${dto.rc_name} - 레시피 상세</title>
-    <!-- 공통 CSS -->
+    <title>${recipe.title}</title>
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-    <!-- 레시피 상세 CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/recipe_content_view.css">
-    <!-- 폰트어썸 아이콘 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
-    <style>
-        li{
-            list-style: none;
-        }
-    </style>
 </head>
 <body>
-    <jsp:include page="header.jsp" />
-    
-    <div class="recipe-container">
-        <div class="recipe-header">
-            <h1>${dto.rc_name}</h1>
-            
-            <% if(user != null) { %>
-                <button type="button" id="favoriteToggleButton"
-                        class="favorite-toggle-button"
-                        data-recipe-id="${dto.rc_recipe_id}"
-                        data-is-favorited="false">
-                    <i class="fa-regular fa-star"></i> <span>즐겨찾기 추가</span>
-                </button>
-            <% } else { %>
-                <p style="color: var(--light-text); font-size: 14px; margin-bottom: 15px;">
-                    <a href="${pageContext.request.contextPath}/login" style="color: var(--primary-color);">로그인</a> 후 즐겨찾기 기능을 이용할 수 있습니다.
-                </p>
-            <% } %>
-            
-            <c:if test="${not empty img_list}">
-                <img src="/upload/${img_list.uploadPath}/${img_list.uuid}_${img_list.fileName}"
-                     alt="${dto.rc_name}" />
-            </c:if>
-            <c:if test="${empty img_list}">
-                <img src="${pageContext.request.contextPath}/images/default-recipe.jpg" alt="${dto.rc_name}" />
-            </c:if>
-            
-            <p><strong>작성자:</strong> ${mem_dto.mf_nickname}</p>
-            <p><strong>등록일:</strong> ${dto.rc_created_at}</p>
-            <p><strong>카테고리:</strong>
-                <c:choose>
-                    <c:when test="${dto.rc_category1_id == 1}">한식</c:when>
-                    <c:when test="${dto.rc_category1_id == 2}">양식</c:when>
-                    <c:when test="${dto.rc_category1_id == 3}">일식</c:when>
-                    <c:when test="${dto.rc_category1_id == 4}">중식</c:when>
-                    <c:when test="${dto.rc_category1_id == 5}">디저트</c:when>
-                    <c:otherwise>기타</c:otherwise>
-                </c:choose>
-            </p>
-            <p><strong>소요시간:</strong> ${dto.rc_cooking_time}분</p>
-            <p><strong>난이도:</strong> ${dto.rc_difficulty}</p>
-            <c:if test="${not empty dto.rc_tag}">
-                <p><strong>태그:</strong> ${dto.rc_tag}</p>
-            </c:if>
+
+<jsp:include page="header.jsp" />
+
+<div class="recipe_view_container">
+
+    <!-- 대표 이미지 -->
+    <section class="recipe_hero">
+        <img src="${pageContext.request.contextPath}${recipe.image_path}" alt="${recipe.title}">
+        <div class="hero_overlay">
+            <span class="hero_category">${recipe.category}</span>
+            <h1>${recipe.title}</h1>
+            <p>${recipe.mf_nickname} · ${recipe.updated_at}</p>
+            <p class="recommend">추천 · <span id="recommend_count">${recipe.recommend}</span></p>
         </div>
+    </section>
 
-        <div class="description">
-            <p class="section-title">레시피 설명</p>
-            <p>${dto.rc_description}</p>
-        </div>
+    <!-- 레시피 소개 -->
+    <section class="recipe_intro_section">
+        <p>${recipe.intro}</p>
+    </section>
 
-        <div class="ingredients">
-            <p class="section-title">재료</p>
-            <ul>
-                <c:forEach var="ing" items="${ing_list}">
-                    <li>
-                        <span>${ing.rc_ingredient_name}</span>
-                        <span>${ing.rc_ingredient_amount}</span>
-                    </li>
-                </c:forEach>
-            </ul>
-        </div>
+    <!-- 재료 -->
+    <section class="recipe_block">
+        <h2>재료</h2>
+        <ul class="ingredient_list">
+            <c:forEach var="i" items="${ingredient_list}">
+                <li>
+                    <span>${i.ingredient_name}</span>
+                    <span>${i.ingredient_amount}</span>
+                </li>
+            </c:forEach>
+        </ul>
+    </section>
 
-        <div class="steps">
-            <p class="section-title">요리 순서</p>
-            <ol>
-                <c:forEach var="step" items="${course_list}" varStatus="status">
-                    <li>
-                        <p><strong>Step ${status.index + 1}:</strong> ${step.rc_course_description}</p>
-                        <c:forEach var="img" items="${course_img_list}">
-                            <c:if test="${img.rc_recipe_id == dto.rc_recipe_id && img.image && fn:contains(img.fileName, '_step' + (status.index + 1))}">
-                                <img src="/upload/${img.uploadPath}/${img.uuid}_${img.fileName}"
-                                     alt="Step ${status.index + 1}" class="step-image" />
-                            </c:if>
-                        </c:forEach>
-                    </li>
-                </c:forEach>
-            </ol>
-        </div>
+    <!-- 조리 과정 -->
+    <section class="recipe_block">
+        <h2>조리 방법</h2>
 
-        <c:if test="${not empty dto.rc_tip}">
-            <div class="tip">
-                <p class="section-title">요리 팁</p>
-                <p>${dto.rc_tip}</p>
-            </div>
-        </c:if>
-
-        <div class="comment-section">
-            <p class="section-title">리뷰 작성</p>
-            <div class="comment-input-area">
-                <input type="hidden" id="rc_commentWriter" value="<%= writer %>">
-                <input type="text" id="rc_commentContent" placeholder="맛있게 드셨나요? 여러분의 의견을 남겨주세요.">
-                <div class="star-rating-container-comment">
-                    <label for="user_star_scoreValue">별점:</label>
-                    <div class="star-rating" id="commentStarRating" data-current-rating="0">
-                        <span class="star" data-value="1">&#9733;</span>
-                        <span class="star" data-value="2">&#9733;</span>
-                        <span class="star" data-value="3">&#9733;</span>
-                        <span class="star" data-value="4">&#9733;</span>
-                        <span class="star" data-value="5">&#9733;</span>
-                    </div>
-                    <input type="hidden" id="user_star_scoreValue" name="user_star_score" value="0">
-                    <span id="commentRatingText">(0점)</span>
+        <c:forEach var="s" items="${step_list}">
+            <div class="step_item">
+                <div class="step_text">
+                    <span class="step_no">STEP ${s.step_no}</span>
+                    <p>${s.step_content}</p>
                 </div>
-                <button onclick="commentWrite()">리뷰 등록</button>
-            </div>
 
-            <p class="section-title">리뷰 목록</p>
-            <div id="comment-list">
-                <c:forEach items="${commentList}" var="comment">
-                    <div class="comment-item">
-                        <div class="comment-writer">${comment.rc_commentWriter}</div>
-                        <div class="comment-date">${comment.rc_commentCreatedTime}</div>
-                        <div class="comment-content">${comment.rc_commentContent}</div>
-                        <div class="comment-stars">
-                            <c:forEach begin="1" end="5" var="i">
-                                <c:choose>
-                                    <c:when test="${i <= comment.user_star_score}">
-                                        <span style="color: #ffc107;">★</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span style="color: #ddd;">★</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                            <span style="color: var(--light-text); font-size: 14px; margin-left: 5px;">(${comment.user_star_score}점)</span>
-                        </div>
-                    </div>
-                </c:forEach>
-                <c:if test="${empty commentList}">
-                    <div class="comment-item" style="text-align: center; color: var(--light-text);">
-                        작성된 댓글이 없습니다. 첫 댓글을 남겨보세요!
-                    </div>
-                </c:if>
+                <!-- 같은 step_no 이미지 -->
+                <div class="step_image">
+                    <c:forEach var="img" items="${image_list}">
+                        <c:if test="${img.step_no == s.step_no}">
+						<img src="${pageContext.request.contextPath}${img.image_path}" alt="이미지">
+                        </c:if>
+                    </c:forEach>
+                </div>
+            </div>
+        </c:forEach>
+    </section>
+
+    <!-- 태그 -->
+    <section class="recipe_tag_section">
+        <c:forEach var="t" items="${tag_list}">
+            <span class="recipe_tag">#${t.tag}</span>
+        </c:forEach>
+    </section>
+	
+	<!-- 사진 리뷰 -->
+	<section class="photo_review_section">
+	    <div class="photo_review_header">
+	        <h2>사진 리뷰</h2>
+	        <!-- 추천 버튼 -->
+			<c:choose>
+				<c:when test="${recommended != 1}">
+			        <button class="photo_review_like_btn">
+			            <i class="fas fa-thumbs-up"></i> 추천
+			        </button>
+				</c:when>
+				<c:otherwise>
+					<button class="photo_review_like_btn active">
+					    <i class="fas fa-thumbs-up"></i> 추천 취소
+					</button>
+				</c:otherwise>
+			</c:choose>
+	    </div>
+
+	    <div class="photo_review_list">
+	        <!-- 나중에 리뷰 이미지로 교체 -->
+	        <c:forEach var="img" items="${image_list}">
+	            <c:if test="${img.image_type eq 'STEP'}">
+	                <div class="photo_review_item">
+	                    <img src="${pageContext.request.contextPath}${img.image_path}" alt="리뷰 사진">
+	                </div>
+	            </c:if>
+	        </c:forEach>
+	        <c:forEach var="img" items="${image_list}">
+	            <c:if test="${img.image_type eq 'STEP'}">
+	                <div class="photo_review_item">
+	                    <img src="${pageContext.request.contextPath}${img.image_path}" alt="리뷰 사진">
+	                </div>
+	            </c:if>
+	        </c:forEach>
+	    </div>
+	</section>
+
+    <!-- 댓글 -->
+    <section class="comment_section">
+        <h2>댓글</h2>
+
+        <!-- 댓글 입력 -->
+        <div class="comment_input">
+            <input type="text" placeholder="맛평을 입력하세요...">
+            <button>등록</button>
+        </div>
+
+        <!-- 댓글 리스트 (값은 네가 연결) -->
+        <div class="comment_list">
+            <!-- 예시 구조 -->
+            <div class="comment_item">
+                <div class="comment_profile"></div>
+                <div class="comment_body">
+                    <strong>요리사123</strong>
+                    <p>와 진짜 부드러워요!</p>
+                    <span class="comment_date">2026.01.06</span>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <jsp:include page="footer.jsp" />
+    </section>
 
+</div>
+
+<jsp:include page="footer.jsp" />
+
+</body>
+</html>
 <script>
-    $(document).ready(function() {
-        // 별점 기능
-        $(document).on('click', '.star-rating .star', function() {
-            const ratingValue = $(this).data('value');
-            $('#user_star_scoreValue').val(ratingValue);
-            $('#commentRatingText').text('(' + ratingValue + '점)');
+	// 변수
+	var sessionUserNo = ${not empty user ? user.mf_no : null};
+    var recipe_id = ${recipe.recipe_id};
+	
+	document.addEventListener("DOMContentLoaded", function () {
+	    const photoReview = document.querySelector(".photo_review_list");
+	
+	    if (!photoReview) return;
+	
+	    photoReview.addEventListener("wheel", function (e) {
+	        e.preventDefault();
+	
+	        // 휠 움직임을 가로 스크롤로 전환
+	        photoReview.scrollLeft += e.deltaY;
+	    }, { passive: false });
+	});
+	
+	// 추천 버튼
+    $(document).on("click", ".photo_review_like_btn", function (e) {
+        e.preventDefault();
 
-            $('.star-rating .star').each(function(index) {
-                if (index < ratingValue) {
-                    $(this).html('<i class="fas fa-star"></i>');
-                } else {
-                    $(this).html('<i class="far fa-star"></i>');
-                }
-            });
-
-            $('#commentStarRating').data('current-rating', ratingValue);
-        });
-        
-        // 별점 호버 효과
-        $('.star-rating .star').on('mouseover', function() {
-            const ratingValue = $(this).data('value');
-            
-            $('.star-rating .star').each(function(index) {
-                if (index < ratingValue) {
-                    $(this).html('<i class="fas fa-star"></i>');
-                } else {
-                    $(this).html('<i class="far fa-star"></i>');
-                }
-            });
-        }).on('mouseout', function() {
-            const currentRating = $('#commentStarRating').data('current-rating');
-            
-            $('.star-rating .star').each(function(index) {
-                if (index < currentRating) {
-                    $(this).html('<i class="fas fa-star"></i>');
-                } else {
-                    $(this).html('<i class="far fa-star"></i>');
-                }
-            });
-        });
-        
-        // 즐겨찾기 기능
-        const favoriteButton = $('#favoriteToggleButton');
-        const recipeId = favoriteButton.data('recipe-id');
-
-        if (recipeId && favoriteButton.length > 0) {
-            const ajaxHeaders = {
-                'Content-Type': 'application/json'
-            };
-            checkFavoriteStatus(recipeId);
-
-            // 버튼 클릭 이벤트 핸들러
-            favoriteButton.on('click', function() {
-                const isCurrentlyFavorited = $(this).data('is-favorited');
-                if (isCurrentlyFavorited) {
-                    removeRecipeFromFavorites(recipeId);
-                } else {
-                    addRecipeToFavorites(recipeId);
-                }
-            });
-
-            // 서버에 현재 즐겨찾기 상태를 물어보는 함수
-            function checkFavoriteStatus(currentRecipeId) {
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/favorites/recipe/status',
-                    type: 'GET',
-                    data: { recipeId: currentRecipeId },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response && typeof response.isFavorited !== 'undefined') {
-                            updateFavoriteButtonUI(response.isFavorited, currentRecipeId);
-                        } else {
-                            updateFavoriteButtonUI(false, currentRecipeId);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        updateFavoriteButtonUI(false, currentRecipeId);
-                    }
-                });
-            }
-
-            // 즐겨찾기 추가 함수
-            function addRecipeToFavorites(currentRecipeId) {
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/favorites/recipe/add',
-                    type: 'POST',
-                    headers: ajaxHeaders,
-                    data: JSON.stringify({ recipeId: currentRecipeId }),
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            alert(response.message || '즐겨찾기에 추가되었습니다.');
-                            updateFavoriteButtonUI(true, currentRecipeId);
-                        } else {
-                            alert(response.message || '즐겨찾기 추가에 실패했습니다.');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('즐겨찾기 추가 중 오류가 발생했습니다.');
-                    }
-                });
-            }
-
-            // 즐겨찾기 삭제 함수
-            function removeRecipeFromFavorites(currentRecipeId) {
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/favorites/recipe/remove',
-                    type: 'POST',
-                    headers: ajaxHeaders,
-                    data: JSON.stringify({ recipeId: currentRecipeId }),
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            alert(response.message || '즐겨찾기에서 삭제되었습니다.');
-                            updateFavoriteButtonUI(false, currentRecipeId);
-                        } else {
-                            alert(response.message || '즐겨찾기 삭제에 실패했습니다.');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('즐겨찾기 삭제 중 오류가 발생했습니다.');
-                    }
-                });
-            }
-
-            // 버튼 UI 업데이트 함수
-            function updateFavoriteButtonUI(isFavorited, currentRecipeId) {
-                const button = $('#favoriteToggleButton[data-recipe-id="' + currentRecipeId + '"]');
-                button.data('is-favorited', isFavorited);
-
-                if (isFavorited) {
-                    button.html('<i class="fa-solid fa-star"></i> <span>즐겨찾기됨</span>');
-                    button.addClass('favorited');
-                } else {
-                    button.html('<i class="fa-regular fa-star"></i> <span>즐겨찾기 추가</span>');
-                    button.removeClass('favorited');
-                }
-            }
-        }
-    });
-    
-    // 댓글 작성 함수
-    function commentWrite() {
-        const writer = $("#rc_commentWriter").val();
-        const content = $("#rc_commentContent").val();
-        const boardNo = "${rc_board.rc_boardNo}";
-        const rating = $("#user_star_scoreValue").val();
-
-        if (!content.trim()) {
-            alert("댓글 내용을 입력해주세요.");
-            $("#rc_commentContent").focus();
-            return;
-        }
-        
-        if (rating == 0) {
-            alert("별점을 선택해주세요.");
+        if (sessionUserNo == null) {
+            alert("로그인 후 이용 가능합니다.");
             return;
         }
 
         $.ajax({
-            type: "post",
-            url: "/rc_comment/save",
-            data: {
-                rc_commentWriter: writer,
-                rc_commentContent: content,
-                rc_boardNo: boardNo,
-                user_star_score: rating
-            },
-            dataType: "json",
-            success: function (commentList) {
-                alert("댓글이 작성되었습니다.");
-                window.location.reload();
-            },
-            error: function (xhr, status, error) {
-                console.error("댓글 작성 실패:", error);
-                alert("댓글 작성에 실패했습니다.");
+             type: "POST"
+            ,data: {recipe_id: recipe_id}
+            ,url: "/recipe_recommend"
+            ,success: function (result) {
+				console.log(result);
+				$("#recommend_count").text(result.count);
+                if(result.status === "recommended") {
+					console.log("recommended");
+                    $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천 취소').addClass("active");
+                } else {
+					console.log("cancel");
+                    $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천').removeClass("active");
+                }
+            }
+            ,error: function () {
+                console.log("추천 실패");
             }
         });
-    }
+    });
 </script>
-</body>
-</html>

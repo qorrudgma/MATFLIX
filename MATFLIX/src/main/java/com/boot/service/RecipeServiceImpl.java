@@ -131,4 +131,46 @@ public class RecipeServiceImpl implements RecipeService {
 		List<RecipeDTO> dto = dao.my_recipe_list(mf_no);
 		return dto;
 	}
+
+	@Override
+	public RecipeDTO recipe(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		RecipeDTO dto = dao.recipe(recipe_id);
+		return dto;
+	}
+
+	@Override
+	public List<RecipeIngredientDTO> recipe_ingredient(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeIngredientDTO> dto = dao.recipe_ingredient(recipe_id);
+		return dto;
+	}
+
+	@Override
+	public List<RecipeStepDTO> recipe_step(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeStepDTO> dto = dao.recipe_step(recipe_id);
+		return dto;
+	}
+
+	@Override
+	public List<RecipeImageDTO> recipe_image(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeImageDTO> dto = dao.recipe_image(recipe_id);
+		return dto;
+	}
+
+	@Override
+	public List<RecipeTagDTO> recipe_tag(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeTagDTO> dto = dao.recipe_tag(recipe_id);
+		return dto;
+	}
+
+	@Override
+	public int recipe_recommend_count(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		int count = dao.recipe_recommend_count(recipe_id);
+		return count;
+	}
 }

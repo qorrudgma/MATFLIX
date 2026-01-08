@@ -20,6 +20,7 @@ public class RecipeDTO {
 	private String category;
 	private String tip;
 	private int star;
+	private int recommend;
 	private LocalDateTime created_at;
 	private LocalDateTime updated_at;
 
@@ -27,7 +28,6 @@ public class RecipeDTO {
 	private String display_updated_at;
 
 	// 리스트용
-	private int recommend;
 	private String mf_nickname;
 	private String image_path;
 }
