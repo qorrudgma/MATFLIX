@@ -138,30 +138,17 @@
         <!-- 댓글 섹션 - 새로운 디자인 -->
         <div class="comment-section">
             <h3>댓글</h3>
-            
-            <!-- 댓글 목록 -->
-            <div id="comment-list" class="comments-list">
-				<!-- 여기에 댓글 나타남 -->
-            </div>
-            
             <!-- 댓글 작성 폼 -->
             <div class="comment-form">
                 <div class="form-group">
-                    <label for="commentWriter">작성자</label>
-					<c:choose>
-						<c:when test="${user != null}">
-                    		<input type="text" id="commentWriter" value="${user.mf_nickname}" readonly>
-						</c:when>
-						<c:otherwise>
-                    		<input type="text" id="commentWriter" value="로그인 후 이용 가능합니다." readonly>
-						</c:otherwise>
-					</c:choose>
-                </div>
-                <div class="form-group">
-                    <label for="commentContent">내용</label>
                     <input type="text" id="commentContent" placeholder="댓글을 입력하세요">
+	                <button type="button" onclick="commentWrite(0)" class="btn-comment">댓글작성</button>
                 </div>
-                <button type="button" onclick="commentWrite(0)" class="btn-comment">댓글작성</button>
+            </div>
+			
+			<!-- 댓글 목록 -->
+            <div id="comment-list" class="comments-list">
+				<!-- 여기에 댓글 나타남 -->
             </div>
         </div>
         

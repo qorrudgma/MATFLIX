@@ -144,8 +144,9 @@
 </html>
 <script>
 	// 변수
-	var sessionUserNo = ${not empty user ? user.mf_no : null};
-    var recipe_id = ${recipe.recipe_id};
+	var sessionUserNo = "${not empty user ? user.mf_no : '' }";
+    var recipe_id = "${recipe.recipe_id}";
+	var parentCommentNo = 0;
 	
 	document.addEventListener("DOMContentLoaded", function () {
 	    const photoReview = document.querySelector(".photo_review_list");
@@ -164,7 +165,7 @@
     $(document).on("click", ".photo_review_like_btn", function (e) {
         e.preventDefault();
 
-        if (sessionUserNo == null) {
+        if (sessionUserNo == '') {
             alert("로그인 후 이용 가능합니다.");
             return;
         }
@@ -189,4 +190,50 @@
             }
         });
     });
+	
+	// 댓글 작성
+    function commentWrite(parentCommentNo) {
+        console.log("유저 넘 => " + sessionUserNo);
+        const writer = document.getElementById("commentWriter").value;
+		let content = "";
+		if(parentCommentNo == 0){
+        	content = document.getElementById("commentContent").value;
+		}else{
+        	content = document.getElementById("replyContent").value;
+		}
+
+		// 로그인 체크
+	    if (sessionUserNo == null) {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
+		// 빈칸 작성 확인
+        if (!content.trim()) {
+            alert("댓글 내용을 입력해주세요.");
+            return;
+        }
+
+        $.ajax({
+            type: "post",
+            data: {
+                commentWriter: writer,
+                commentContent: content,
+                boardNo: no,
+                userNo: sessionUserNo,
+				parentCommentNo: parentCommentNo
+            },
+            url: "/comment/save",
+            success: function(commentList) {
+                console.log("작성 성공");
+                document.getElementById("commentContent").value = "";
+				// 답글 모드에서 일반 댓글 모드로 돌아감
+				parentCommentNo = 0;
+                // 댓글 목록 새로고침
+                loadComments();
+            },
+            error: function() {
+                console.log("실패");
+            }
+        });
+    }
 </script>

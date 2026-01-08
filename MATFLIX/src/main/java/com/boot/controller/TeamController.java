@@ -38,13 +38,10 @@ import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.EmailService;
-import com.boot.service.FavoriteService;
 import com.boot.service.FollowService;
 import com.boot.service.NotifSettingService;
 import com.boot.service.NotificationService;
-import com.boot.service.RecipeRService;
 import com.boot.service.RecipeService;
-import com.boot.service.RecipeUploadService;
 import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
 
@@ -71,16 +68,7 @@ public class TeamController {
 	private BoardService boardService;
 
 	@Autowired
-	private RecipeRService recipeRService;
-
-	@Autowired
 	private RecipeService recipeService;
-
-	@Autowired
-	private RecipeUploadService recipeUploadService;
-
-	@Autowired
-	private FavoriteService favoriteService;
 
 	@Autowired
 	private RecommendService recommendService;

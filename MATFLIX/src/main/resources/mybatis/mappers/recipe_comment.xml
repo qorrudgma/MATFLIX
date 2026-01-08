@@ -1,0 +1,124 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.CommentDAO">
+    
+    <!-- 댓글 작성 -->
+    <insert id="save">
+		insert into board_comment(commentWriter 	
+			 , commentContent 	
+			 , boardNo
+			 , userNo
+			 , parentCommentNo)
+		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo},#{parentCommentNo})
+    </insert>
+
+    <!-- 답글 작성 -->
+    <insert id="save_comment">
+		insert into board_comment(commentWriter 	
+			 , commentContent 	
+			 , boardNo
+			 , userNo
+			 , parentCommentNo)
+		values(#{commentWriter},#{commentContent},#{boardNo},#{userNo},#{parentCommentNo})
+    </insert>
+    
+    <!-- 댓글 리스트 -->
+    <!-- 이거대신 recommended 로 대신 사용 -->
+    <select id="findAll" resultType="com.boot.dto.CommentDTO">
+		select commentNo
+			 , commentWriter
+			 , commentContent
+			 , boardNo
+			 , userNo
+			 , commentCreatedTime
+			 , parentCommentNo
+			 , updatedTime
+			 , recommend_count
+		  from board_comment
+		 where boardNo=#{boardNo}
+		   and deleted != 1
+		 order by commentNo desc
+    </select>
+    
+    <!-- 게시글 삭제로 인한 댓글 삭제 -->
+    <delete id="boardCommentDelete">
+    	delete from board_comment
+ 		 where boardNo=#{boardNo}
+    </delete>
+    
+    <!-- 유저 본인이 댓글 삭제 -->
+    <update id="userCommentDelete">
+    	update board_comment
+    	   set deleted = 1
+ 		 where commentNo=#{commentNo}
+    </update>
+    
+    <!-- 댓글 추천 + -->
+    <update id="add_comment_count">
+    	update board_comment
+    	   set recommend_count = recommend_count + 1
+ 		 where commentNo=#{commentNo}
+    </update>
+    
+    <!-- 댓글 추천 - -->
+    <update id="minus_comment_count">
+    	update board_comment
+    	   set recommend_count = recommend_count - 1
+ 		 where commentNo=#{commentNo}
+ 		   and recommend_count > 0
+    </update>
+    
+    <!-- 댓글 갯수 -->
+    <select id="comment_count" resultType="int">
+    	select count(*)
+    	  from board_comment
+		 where boardNo = #{boardNo}
+		   and deleted = 0
+    </select>
+    
+    <!-- 댓글 갯수 -->
+    <select id="recommended" resultType="com.boot.dto.CommentDTO">
+		SELECT c.commentNo
+			 , c.commentWriter
+			 , c.commentContent
+		     , c.userNo
+		     , c.commentCreatedTime
+			 , c.parentCommentNo
+			 , c.recommend_count
+		     , CASE WHEN cr.mf_no IS NULL THEN 0 ELSE 1 END AS recommended
+		  FROM board_comment c
+		  LEFT JOIN comment_recommend cr
+		    ON c.commentNo = cr.commentNo AND cr.mf_no = #{mf_no}
+		 WHERE c.boardNo = #{boardNo} AND c.deleted = 0
+		 ORDER BY c.commentCreatedTime DESC
+    </select>
+    	
+    <!-- 댓글 추천 수 -->
+    <select id="recommend_count" resultType="int">
+	    select recommend_count
+		  from board_comment
+		 where commentNo = #{commentNo}
+	</select>
+	
+    <!-- 추천 알림 가져오기 -->
+    <select id="recommend_notify_step" resultType="int">
+	    select recommend_notify_step
+		  from board_comment
+		 where commentNo = #{commentNo}
+	</select>
+	
+	<!-- 추천 알림 업데이트 -->
+    <update id="update_recommend_notify_step">
+	    update board_comment set recommend_notify_step = recommend_notify_step +50 where commentNo=#{commentNo}
+    </update>
+    
+    <!-- 댓글로 게시글 위치 가져오기 -->
+    <select id="commentNo_boardNo" resultType="int">
+	    select boardNo
+		  from board_comment
+		 where commentNo = #{commentNo}
+	</select>
+    
+</mapper>

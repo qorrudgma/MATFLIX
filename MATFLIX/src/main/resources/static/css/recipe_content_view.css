@@ -222,6 +222,10 @@
 	padding: 30px;
 }
 
+.comment_section h2 {
+    margin-bottom: 10px;
+}
+
 .comment_input {
     display: flex;
     gap: 10px;

@@ -315,6 +315,20 @@ delete from recipe_recommend
 		 where recipe_id=6
 		   and mf_no=62;
 
+-- 레시피 댓글 테이블
+CREATE TABLE recipe_comment (
+    comment_no INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    recipe_id bigint not null,
+    mf_no int not null,
+    comment_content VARCHAR(300),
+    parentCommentNo INT DEFAULT 0,
+    deleted int default 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    recommend_count INT DEFAULT 0,
+    recommend_notify_step INT DEFAULT 0
+);
+select * from board_comment;
 
 -- 리뷰
 CREATE TABLE recipe_review (
