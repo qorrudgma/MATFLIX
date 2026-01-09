@@ -33,4 +33,21 @@ public class RecipeCommentServiceImpl implements RecipeCommentService {
 		return recipe_coment_list;
 	}
 
+	@Override
+	public void recipe_comment_delete(int comment_no) {
+		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
+		dao.recipe_comment_delete(comment_no);
+	}
+
+	@Override
+	public void add_recipe_comment_recommend(int comment_no) {
+		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
+		dao.add_recipe_comment_recommend(comment_no);
+	}
+
+	@Override
+	public void minus_recipe_comment_recommend(int comment_no) {
+		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
+		dao.minus_recipe_comment_recommend(comment_no);
+	}
 }

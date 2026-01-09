@@ -9,5 +9,9 @@ public interface RecipeCommentService {
 
 	public List<RecipeCommentDTO> all_recipe_comment(int recipt_id);
 
-//	public void add_recipe_recommend(@Param("recipe_id") int recipe_id, @Param("mf_no") int mf_no);
+	public void recipe_comment_delete(int comment_no);
+
+	public void add_recipe_comment_recommend(int comment_no);
+
+	public void minus_recipe_comment_recommend(int comment_no);
 }

@@ -31,6 +31,7 @@
 		<mapper resource="mybatis/mappers/recipe.xml"/>
 		<mapper resource="mybatis/mappers/recipe_recommend.xml"/>
 		<mapper resource="mybatis/mappers/recipe_comment.xml"/>
+		<mapper resource="mybatis/mappers/recipe_comment_recommend.xml"/>
 		
 		<!-- 공지사항 -->
 		<mapper resource="mybatis/mappers/notice_board.xml"/>

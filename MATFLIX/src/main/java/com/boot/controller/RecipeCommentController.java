@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.RecipeCommentDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.service.RecipeCommentRecommendService;
 import com.boot.service.RecipeCommentService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,9 @@ public class RecipeCommentController {
 
 	@Autowired
 	private RecipeCommentService recipeCommentService;
+
+	@Autowired
+	private RecipeCommentRecommendService recipeCommentRecommendService;
 
 	@PostMapping("/recipe/comment")
 	@ResponseBody
@@ -68,4 +72,30 @@ public class RecipeCommentController {
 		return recipeCommentList;
 	}
 
+	@PostMapping("/recipe/comment/delete")
+	@ResponseBody
+	public void recipe_comment_delete(@RequestParam("comment_no") int comment_no) {
+		log.info("comment_no => " + comment_no);
+		recipeCommentService.recipe_comment_delete(comment_no);
+		log.info("디비에 deleted = 1");
+	}
+
+	@PostMapping("/recipe/comment/recommend")
+	@ResponseBody
+	public String recipe_comment_recommend(@RequestParam("comment_no") int comment_no, HttpSession session) {
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+
+		int check = recipeCommentRecommendService.recipe_comment_yn(comment_no, mf_no);
+
+		if (check == 1) {
+			recipeCommentRecommendService.minus_recipe_comment_recommend(comment_no, mf_no);
+			log.info("@# 댓글 추천 취소 성공");
+			return "cancel";
+		} else {
+			recipeCommentRecommendService.add_recipe_comment_recommend(comment_no, mf_no);
+			log.info("@# 댓글 추천 성공");
+			return "recommend";
+		}
+	}
 }

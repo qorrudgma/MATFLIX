@@ -181,6 +181,13 @@
         });
     });
 	
+
+	// 페이지 로드 시 댓글 목록 초기화
+	$(document).ready(function() {
+	    // 초기 댓글 목록 로드
+        loadComments();
+	});
+	
 	// 댓글 목록 로드
     function loadComments() {
         $.ajax({
@@ -211,7 +218,6 @@
 
 	        // 해당 부모의 자식 댓글 출력
 	        children.filter(child => child.parentCommentNo == parent.comment_no)
-					.reverse()
 		            .forEach(child => {
 		                output += renderChild(child);
 		            });
@@ -290,14 +296,6 @@
 				        </div>` : ``) + `</div>`;
 	    return html;
 	}
-
-	// 페이지 로드 시 댓글 목록 초기화
-	$(document).ready(function() {
-	    // 초기 댓글 목록 로드
-	        loadComments();
-	    if (comment_count > 0) {
-	    }
-	});
 	
 	// 댓글 작성
     function commentWrite(parentCommentNo) {
@@ -309,31 +307,151 @@
 	        alert("로그인 후 이용 가능합니다.");
 	        return;
 	    }
-		// 빈칸 작성 확인
-        if (!content.trim()) {
-            alert("댓글 내용을 입력해주세요.");
-            return;
-        }
+		
+		if (parentCommentNo > 0) {
+	        const replyInput = document.querySelector(".reply-box input");
+	        if (!replyInput || !replyInput.value.trim()) {
+	            alert("답글 내용을 입력해주세요.");
+	            return;
+	        }
+	        content = replyInput.value;
+	    }
+	    // 일반 댓글이면 메인 input
+	    else {
+	        const mainInput = document.getElementById("input_recipe_comment");
+	        if (!mainInput.value.trim()) {
+	            alert("댓글 내용을 입력해주세요.");
+	            return;
+	        }
+	        content = mainInput.value;
+	    }
 
         $.ajax({
             type: "post",
+            url: "/recipe/comment",
             data: {
                 recipe_id: recipe_id,
                 comment_content: content,
 				parentCommentNo: parentCommentNo
             },
-            url: "/recipe/comment",
             success: function(recipeCommentList) {
                 console.log("작성 성공");
                 document.getElementById("input_recipe_comment").value = "";
 				// 답글 모드에서 일반 댓글 모드로 돌아감
 				parentCommentNo = 0;
                 // 댓글 목록 새로고침
-                //loadComments();
+                loadComments();
             },
             error: function() {
                 console.log("실패");
             }
         });
     }
+	
+	// 답글
+	function setReply(el) {
+		// 로그인 체크
+	    if (sessionUserNo == '') {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
+		// 답글창 이미 열려있으면 닫기
+		document.querySelectorAll(".reply-box").forEach(box => box.remove());
+		// 답글이 속한 div 찾기
+		const commentItem = el.closest(".comment-item");
+		// 부모 댓글 번호 가져오기
+	    parentCommentNo = commentItem.querySelector(".comment_no").textContent;
+
+	    console.log("답글 대상 comment_no =", parentCommentNo);
+
+		// 답글 입력창 생성
+		const replyBox = document.createElement("div");
+		replyBox.className = "reply-box";
+
+		replyBox.innerHTML = `
+			<div class="reply-form">
+			    <div class="reply-top">
+			        <div class="reply-target">↳ 작성자에게 답글</div>
+			        <input type="text" id="replyContent" placeholder="답글을 입력하세요">
+			    </div>
+
+			    <div class="reply-actions">
+			        <button class="btn-comment reply_btn" onclick="commentWrite(`+parentCommentNo+`)">등록</button>
+			        <button class="btn-comment reply_btn" onclick="cancelReply()">취소</button>
+			    </div>
+			</div>
+		`;
+
+		// 댓글 바로 아래에 삽입
+		commentItem.appendChild(replyBox);
+		replyBox.querySelector("#replyContent").focus();
+	}
+
+	// 답글 취소
+	function cancelReply() {
+	    parentCommentNo = 0;
+	    document.querySelectorAll(".reply-box").forEach(box => box.remove());
+	}
+	
+	
+	// 댓글 삭제 기능
+    function deleteComment(comment_no) {
+        $.ajax({
+            type: "post",
+            url: "/recipe/comment/delete",
+            data: { comment_no: comment_no },
+            success: function() {
+                console.log("댓글 삭제 성공"); 
+                loadComments();
+            },
+            error: function() {
+                console.log("댓글 삭제 실패");
+            }
+        });
+    }
+	
+
+	// 댓글 추천
+	function commentRecommend(comment_no, el){
+		console.log("commentRecommend 누름");
+		// 로그인 체크
+	    if (sessionUserNo == '') {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
+		
+		$.ajax({
+			type: "post",
+			url: "/recipe/comment/recommend",
+			data: {comment_no: comment_no},
+			success: function(result){
+				if(result == "recommend"){
+					console.log("추천됨 {}"+result);
+					$(el).addClass("active");
+	                $(el).find("i").removeClass("far").addClass("fas");
+					updateLike(el, true);
+				}else if(result == "cancel"){
+					console.log("추천 취소됨 {}"+result);
+					$(el).removeClass("active");
+	                $(el).find("i").removeClass("fas").addClass("far");
+					updateLike(el, false);
+				}
+			},
+			error:function(result){
+				console.log("실패"+result);
+			}
+		});
+	}
+	// 추천 수 확인
+	function updateLike(el, recommend) {
+	    const $countEl = $(el).find(".like-count");
+	    let count = parseInt($countEl.text(), 10) || 0;
+		console.log("찾은 엘리먼트:", $countEl);
+
+	    if (recommend) {
+	        $countEl.text(count + 1);
+	    } else {
+	        $countEl.text(Math.max(0, count - 1));
+	    }
+	}
 </script>

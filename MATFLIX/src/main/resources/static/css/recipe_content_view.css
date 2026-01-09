@@ -212,60 +212,249 @@
     flex-shrink: 0;
 }
 
-/* Comments */
+/* =========================
+   댓글 영역
+========================= */
 .comment_section {
     margin-top: 60px;
-	background-color: #ffffff;
-	border-radius: 16px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-	border: 1px solid #f0f0f0;
-	padding: 30px;
+    padding: 30px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 }
 
 .comment_section h2 {
-    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
 }
 
+/* 댓글 입력 */
 .comment_input {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .comment_input input {
     flex: 1;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid #ddd;
+    font-size: 14px;
 }
 
-.comment_input button {
-    background: #e50914;
-    color: white;
+.btn-comment {
+    padding: 0 18px;
+    border-radius: 10px;
     border: none;
-    border-radius: 8px;
-    padding: 0 20px;
+    background: #ff6b6b;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-.comment_item {
+.btn-comment:hover {
+    background: #ff5252;
+}
+
+/* =========================
+   댓글 리스트
+========================= */
+.comment_list {
     display: flex;
-    gap: 12px;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
+    flex-direction: column;
+/*    gap: 18px;*/
 }
 
-.comment_profile {
-    width: 40px;
-    height: 40px;
-    background: #ddd;
+.comment-item {
+    position: relative;
+    padding: 18px;
+    border-radius: 14px;
+    background: #fafafa;
+}
+
+.comment-item.parent {
+    border: 1px solid #eee;
+}
+
+.comment-item.child {
+    margin-left: 60px;
+    background: #f7f7f7;
+    border-left: 4px solid #ff6b6b;
+}
+
+.comment-item.child::before {
+    content: "↳";
+    position: absolute;
+    left: -25px;
+    top: 10px;
+    color: #999;
+    font-size: 30px;
+}
+
+.comment_no{
+	display: none;
+}
+
+/* =========================
+   댓글 내부 구조
+========================= */
+.comment-main {
+    display: flex;
+    gap: 14px;
+}
+
+.comment-avatar {
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
+    background: #eaeaea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 16px;
 }
 
-.comment_body p {
-    margin: 4px 0;
+.comment-content {
+    flex: 1;
 }
 
-.comment_date {
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.comment-author {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+}
+
+.author-tag {
+    margin-left: 6px;
+    padding: 2px 6px;
+    font-size: 11px;
+    background: #ff6b6b;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.comment-date {
+    margin-left: 8px;
     font-size: 12px;
     color: #999;
+}
+
+.comment-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #444;
+}
+
+/* =========================
+   댓글 하단 버튼
+========================= */
+.comment-footer {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.comment-like {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #888;
+    cursor: pointer;
+}
+
+.comment-like.active {
+    color: #ff6b6b;
+}
+
+.comment-like i {
+    font-size: 14px;
+}
+
+.reply-btn {
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+}
+
+.reply-btn:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   삭제 버튼
+========================= */
+.comment-actions {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+}
+
+.comment-actions .delete {
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+}
+
+.comment-actions .delete:hover {
+    color: #ff5252;
+}
+
+/* =========================
+   답글 입력 박스
+========================= */
+.reply-box {
+    margin-top: 14px;
+    padding: 14px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eee;
+}
+
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reply-top {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.reply-target {
+    font-size: 12px;
+    color: #ff6b6b;
+    font-weight: 600;
+}
+
+.reply-box input {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.reply-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.reply_btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
 }

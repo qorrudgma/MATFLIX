@@ -22,6 +22,7 @@
 		     , rc.parentCommentNo
 		     , rc.deleted
 		     , rc.created_at
+		     , rc.recommend_count
 		     , u.mf_nickname
     	  FROM recipe_comment rc
           JOIN matflix u
@@ -31,4 +32,18 @@
          ORDER BY rc.comment_no ASC
     </select>
 
+	<!-- 댓글 삭제 -->
+    <update id="recipe_comment_delete">
+    	update recipe_comment set deleted = 1 where comment_no=#{comment_no}
+    </update>
+
+	<!-- 댓글 추천 추가 -->
+    <update id="add_recipe_comment_recommend">
+    	update recipe_comment set recommend_count = recommend_count + 1 where comment_no=#{comment_no}
+    </update>
+
+	<!-- 댓글 추천 삭제 -->
+    <update id="minus_recipe_comment_recommend">
+    	update recipe_comment set recommend_count = recommend_count - 1 where comment_no=#{comment_no}
+    </update>
 </mapper>

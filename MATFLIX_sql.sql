@@ -339,17 +339,30 @@ CREATE TABLE recipe_comment (
         ON DELETE CASCADE
 );
 select * from recipe_comment;
-insert into recipe_comment(recipe_id
-			 , mf_no 	
-			 , comment_content
-			 , parentCommentNo)
-		values(6,61,"test1",0)
+
+CREATE TABLE recipe_comment_recommend (
+	recipe_comment_recommend_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
+    comment_no  int NOT NULL,
+    mf_no  		int NOT NULL,
+    updateTime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	-- 업데이트 시간
+    UNIQUE KEY unique_recommend (comment_no, mf_no), 	-- 레시피 번호와 사용자 번호의 조합이 유일하도록 제약
+    -- 댓글 삭제 시 추천 자동 삭제
+	CONSTRAINT fk_recipe_comment_recommend_comment
+        FOREIGN KEY (comment_no)
+        REFERENCES recipe_comment (comment_no)
+        ON DELETE CASCADE,
+    -- 유저 삭제 시 추천 자동 삭제
+	constraint fk_recipe_comment_recommend_user
+		FOREIGN KEY (mf_no)
+		REFERENCES matflix (mf_no)
+		ON DELETE CASCADE
+);
 
 -- 리뷰
 CREATE TABLE recipe_review (
     review_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
     recipe_id  BIGINT NOT NULL,
-    mf_no  		BIGINT NOT NULL,
+    mf_no  	   int NOT NULL,
     rating     INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     content    TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
