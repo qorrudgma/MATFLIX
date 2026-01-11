@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
@@ -74,11 +75,10 @@
         </c:forEach>
     </section>
 	
-	<!-- 사진 리뷰 -->
+	<!-- 사진 리뷰 test -->
 	<section class="photo_review_section">
 	    <div class="photo_review_header">
 	        <h2>사진 리뷰</h2>
-	        <!-- 추천 버튼 -->
 			<c:choose>
 				<c:when test="${recommended != 1}">
 			        <button class="photo_review_like_btn">
@@ -92,23 +92,118 @@
 				</c:otherwise>
 			</c:choose>
 	    </div>
+		
+		<div class="review_summary">
+		    <!-- 평균 -->
+		    <div class="review_avg">
+		        <div class="avg_score">
+					${rating_avg}
+				</div>
+		        <div class="avg_star">
+					<c:forEach begin="1" end="${star}">★</c:forEach>
+					<c:forEach begin="${star + 1}" end="5">☆</c:forEach>
+		        </div>
+		        <div class="avg_text">총 ${review_summary_list.review_count}개의 리뷰</div>
+		    </div>
+
+		    <!-- 분포 -->
+		    <div class="review_distribution">
+		        <div class="dist_row">
+		            <span>5점</span>
+		            <div class="dist_bar">
+		                <div class="dist_fill" style="width:${p_5}%"></div>
+		            </div>
+		            <span class="dist_count">${review_summary_list.rating_5}</span>
+		        </div>
+
+		        <div class="dist_row">
+		            <span>4점</span>
+		            <div class="dist_bar">
+		                <div class="dist_fill" style="width:${p_4}%"></div>
+		            </div>
+		            <span class="dist_count">${review_summary_list.rating_4}</span>
+		        </div>
+
+		        <div class="dist_row">
+		            <span>3점</span>
+		            <div class="dist_bar">
+		                <div class="dist_fill" style="width:${p_3}%"></div>
+		            </div>
+		            <span class="dist_count">${review_summary_list.rating_3}</span>
+		        </div>
+
+		        <div class="dist_row">
+		            <span>2점</span>
+		            <div class="dist_bar">
+		                <div class="dist_fill" style="width:${p_2}%"></div>
+		            </div>
+		            <span class="dist_count">${review_summary_list.rating_2}</span>
+		        </div>
+
+		        <div class="dist_row">
+		            <span>1점</span>
+		            <div class="dist_bar">
+		                <div class="dist_fill" style="width:${p_1}%"></div>
+		            </div>
+		            <span class="dist_count">${review_summary_list.rating_1}</span>
+		        </div>
+		    </div>
+		</div>
+
 
 	    <div class="photo_review_list">
-	        <!-- 나중에 리뷰 이미지로 교체 -->
-	        <c:forEach var="img" items="${image_list}">
-	            <c:if test="${img.image_type eq 'STEP'}">
+	        <c:forEach var="img" items="${review_image_list}">
+				<div class = "img_div">
 	                <div class="photo_review_item">
 	                    <img src="${pageContext.request.contextPath}${img.image_path}" alt="리뷰 사진">
 	                </div>
-	            </c:if>
+			        <div class="avg_star">
+						<c:forEach begin="1" end="${img.rating}">★</c:forEach>
+						<c:forEach begin="${img.rating + 1}" end="5">☆</c:forEach>
+					</div>
+				</div>
 	        </c:forEach>
-	        <c:forEach var="img" items="${image_list}">
-	            <c:if test="${img.image_type eq 'STEP'}">
-	                <div class="photo_review_item">
-	                    <img src="${pageContext.request.contextPath}${img.image_path}" alt="리뷰 사진">
-	                </div>
-	            </c:if>
-	        </c:forEach>
+	    </div>
+		<div class="review_add_btn_div">
+	        <button class="photo_review_add_btn">리뷰 추가</button>
+		</div>
+		<div class="review_form_wrapper" style="display:none;">
+		    <form id="review_form" method="post" action="review/write" enctype="multipart/form-data">
+	            <input type="hidden" name="recipe_id" value="${recipe.recipe_id}">
+		        <!-- 별점 -->
+		        <div class="review_star">
+		            <span data_value=1>★</span>
+		            <span data_value=2>★</span>
+		            <span data_value=3>★</span>
+		            <span data_value=4>★</span>
+		            <span data_value=5>★</span>
+		            <input type="hidden" name="rating" id="rating_value">
+		        </div>
+		        <!-- 내용 -->
+		        <textarea name="content" placeholder="리뷰를 작성해주세요"></textarea>
+		        <!-- 이미지 -->
+		        <input type="file" name="image_file" accept="image/*">
+		        <div class="review_form_actions">
+		            <button type="submit">등록</button>
+		            <button type="button" class="review_form_cancel">취소</button>
+		        </div>
+		    </form>
+		</div>
+		
+		<!-- 드롭다운 리뷰 상세 -->
+	    <div class="photo_review_detail" id="photo_review_detail">
+	        <div class="photo_review_detail_inner">
+	            <button class="photo_review_close_btn">×</button>
+
+	            <div class="photo_review_detail_image">
+	                <img id="detail_review_image" src="" alt="">
+	            </div>
+
+	            <div class="photo_review_detail_content">
+	                <p class="photo_review_writer" id="detail_writer"></p>
+	                <p class="photo_review_text" id="detail_text"></p>
+	            </div>
+	        </div>
 	    </div>
 	</section>
 
@@ -138,50 +233,109 @@
     var recipe_id = "${recipe.recipe_id}";
 	var parentCommentNo = 0;
 	
+	// 추천 수 확인
+	function updateLike(el, recommend) {
+	    const $countEl = $(el).find(".like-count");
+	    let count = parseInt($countEl.text(), 10) || 0;
+		console.log("찾은 엘리먼트:", $countEl);
+
+	    if (recommend) {
+	        $countEl.text(count + 1);
+	    } else {
+	        $countEl.text(Math.max(0, count - 1));
+	    }
+	}
+
+	// 리뷰 부분================
 	document.addEventListener("DOMContentLoaded", function () {
 	    const photoReview = document.querySelector(".photo_review_list");
-	
+
 	    if (!photoReview) return;
-	
+
 	    photoReview.addEventListener("wheel", function (e) {
+	        const delta = e.deltaY;
+
+	        const isAtLeftEnd = photoReview.scrollLeft === 0;
+	        const isAtRightEnd =
+	            photoReview.scrollLeft + photoReview.clientWidth >= photoReview.scrollWidth;
+
+	        // 왼쪽 끝에서 위로 스크롤 => 세로 스크롤 허용
+	        if (delta < 0 && isAtLeftEnd) {
+	            return;
+	        }
+	        // 오른쪽 끝에서 아래로 스크롤 => 세로 스크롤 허용
+	        if (delta > 0 && isAtRightEnd) {
+	            return;
+	        }
+	        // 그 외에는 가로 스크롤로 처리
 	        e.preventDefault();
-	
-	        // 휠 움직임을 가로 스크롤로 전환
-	        photoReview.scrollLeft += e.deltaY;
+	        photoReview.scrollLeft += delta;
 	    }, { passive: false });
 	});
-	
+
 	// 추천 버튼
-    $(document).on("click", ".photo_review_like_btn", function (e) {
-        e.preventDefault();
+	$(document).on("click", ".photo_review_like_btn", function (e) {
+	    e.preventDefault();
 
-        if (sessionUserNo == '') {
-            alert("로그인 후 이용 가능합니다.");
-            return;
-        }
+	    if (sessionUserNo == '') {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
 
-        $.ajax({
-             type: "POST"
-            ,data: {recipe_id: recipe_id}
-            ,url: "/recipe_recommend"
-            ,success: function (result) {
+	    $.ajax({
+	         type: "POST"
+	        ,data: {recipe_id: recipe_id}
+	        ,url: "/recipe_recommend"
+	        ,success: function (result) {
 				console.log(result);
 				$("#recommend_count").text(result.count);
-                if(result.status === "recommended") {
+	            if(result.status === "recommended") {
 					console.log("recommended");
-                    $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천 취소').addClass("active");
-                } else {
+	                $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천 취소').addClass("active");
+	            } else {
 					console.log("cancel");
-                    $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천').removeClass("active");
-                }
-            }
-            ,error: function () {
-                console.log("추천 실패");
-            }
-        });
-    });
-	
+	                $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천').removeClass("active");
+	            }
+	        }
+	        ,error: function () {
+	            console.log("추천 실패");
+	        }
+	    });
+	});
 
+	// 리뷰 추가 버튼
+	$('.photo_review_add_btn').click(function () {
+		if (sessionUserNo == '') {
+		    alert("로그인 후 이용 가능합니다.");
+		    return;
+		}
+	    $('.review_form_wrapper').slideToggle();
+	});
+
+	$('.review_form_cancel').click(function () {
+	    $('.review_form_wrapper').slideUp();
+	});
+
+	// 폼 전송 부분
+	$('#review_form').on('submit', function (e) {
+	    const rating = $('#rating_value').val();
+
+	    if (!rating) {
+	        alert('별점을 선택해주세요.');
+	        e.preventDefault();
+	        return false;
+	    }
+	});
+
+	// 별점
+	$('.review_star span').on('click',function () {
+	    const val = $(this).attr('data_value');
+	    $('#rating_value').val(val);
+	    $(this).addClass('active').prevAll().addClass('active');
+	    $(this).nextAll().removeClass('active');
+	});
+	
+	// 댓글===============================================
 	// 페이지 로드 시 댓글 목록 초기화
 	$(document).ready(function() {
 	    // 초기 댓글 목록 로드
@@ -441,17 +595,5 @@
 				console.log("실패"+result);
 			}
 		});
-	}
-	// 추천 수 확인
-	function updateLike(el, recommend) {
-	    const $countEl = $(el).find(".like-count");
-	    let count = parseInt($countEl.text(), 10) || 0;
-		console.log("찾은 엘리먼트:", $countEl);
-
-	    if (recommend) {
-	        $countEl.text(count + 1);
-	    } else {
-	        $countEl.text(Math.max(0, count - 1));
-	    }
 	}
 </script>

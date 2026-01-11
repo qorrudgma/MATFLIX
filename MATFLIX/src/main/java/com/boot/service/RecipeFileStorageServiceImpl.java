@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.boot.dao.RecipeDAO;
 import com.boot.dto.RecipeImageDTO;
 import com.boot.dto.RecipeWriteDTO;
+import com.boot.dto.ReviewImageDTO;
 
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
@@ -81,4 +82,37 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 			}
 		}
 	}
+
+	@Override
+	public String save_review_image(ReviewImageDTO dto) {
+		MultipartFile file = dto.getImage_file();
+
+		String baseDir = "C:/matflix_upload/review";
+
+		try {
+			String original_name = file.getOriginalFilename();
+			String ext = "";
+
+			if (original_name != null && original_name.lastIndexOf(".") != -1) {
+				ext = original_name.substring(original_name.lastIndexOf("."));
+			}
+
+			String save_file_name = UUID.randomUUID() + ext;
+
+			File dir = new File(baseDir);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+
+			File save_file = new File(dir, save_file_name);
+			file.transferTo(save_file);
+
+			log.info("리뷰 이미지 저장 완료: {}", save_file.getAbsolutePath());
+			return "/review/" + save_file_name;
+		} catch (Exception e) {
+			log.error("리뷰 이미지 저장 실패", e);
+			throw new RuntimeException("이미지 저장 중 오류 발생");
+		}
+	}
+
 }

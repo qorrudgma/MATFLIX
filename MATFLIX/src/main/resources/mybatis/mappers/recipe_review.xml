@@ -1,0 +1,58 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.RecipeReviewDAO">
+
+	<!-- 리뷰 등록 -->
+	<insert id="insert_review" parameterType="com.boot.dto.RecipeReviewDTO" useGeneratedKeys="true" keyProperty="review_id">
+		INSERT INTO recipe_review (recipe_id, mf_no, rating, content
+				) VALUES (#{recipe_id}, #{mf_no}, #{rating}, #{content})
+	</insert>
+
+	<!-- 리뷰 삭제 -->	
+	<update id="delete_review">
+		UPDATE recipe_review SET deleted = 1 WHERE review_id = #{review_id}>
+	</update>
+
+	<!-- 리뷰 리스트 -->	
+	<select id="review_list" resultType="com.boot.dto.RecipeReviewDTO">
+		SELECT *
+		  FROM recipe_review
+		 WHERE recipe_id = #{recipe_id}
+	</select>
+	
+	<!-- 이미지 ======================= -->
+	<!-- 이미지 등록 -->
+	<insert id="insert_review_image" parameterType="com.boot.dto.ReviewImageDTO">
+		INSERT INTO review_image (review_id, image_path) VALUES (#{review_id}, #{image_path})
+	</insert>
+
+	<!-- 리뷰 이미지 리스트 -->	
+	<select id="review_image_list" resultType="com.boot.dto.ReviewImageDTO">
+		SELECT r.review_id
+			 , r.rating
+			 , i.image_path
+		 FROM recipe_review r
+		 LEFT JOIN review_image i
+	       ON r.review_id = i.review_id
+		WHERE r.recipe_id = #{review_id}
+		  AND r.deleted = 0
+		ORDER BY r.created_at DESC;
+<!--		SELECT r.review_id-->
+<!--			 , r.recipe_id-->
+<!--			 , r.mf_no-->
+<!--			 , r.rating-->
+<!--			 , r.content-->
+<!--			 , r.created_at-->
+<!--			 , r.updated_at-->
+<!--			 , i.image_id-->
+<!--			 , i.image_path-->
+<!--		 FROM recipe_review r-->
+<!--		 LEFT JOIN review_image i-->
+<!--	       ON r.review_id = i.review_id-->
+<!--		WHERE r.recipe_id = #{review_id}-->
+<!--		  AND r.deleted = 0-->
+<!--		ORDER BY r.created_at DESC;-->
+	</select>
+</mapper>

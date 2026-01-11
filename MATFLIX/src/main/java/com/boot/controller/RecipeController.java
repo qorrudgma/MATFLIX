@@ -33,9 +33,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.RecipeReviewSummaryDTO;
+import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.RecipeRecommendService;
+import com.boot.service.RecipeReviewService;
 import com.boot.service.RecipeService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,13 +52,14 @@ public class RecipeController {
 	@Autowired
 	private RecipeRecommendService recipeRecommendService;
 
+	@Autowired
+	private RecipeReviewService recipeReviewService;
+
 	@RequestMapping("/recipe_write")
 	public String recipe_write(RecipeWriteDTO dto, HttpSession session) {
 		log.info("recipe_write 컨트롤러에 왔음");
-		log.info("dto 1 => " + dto);
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		dto.setMf_no(user.getMf_no());
-		log.info("dto 2 => " + dto);
 		recipeService.process_recipe_write(dto);
 		return "redirect:/recipe_list";
 	}
@@ -87,6 +91,28 @@ public class RecipeController {
 		model.addAttribute("step_list", recipeService.recipe_step(recipe_id));
 		model.addAttribute("image_list", recipeService.recipe_image(recipe_id));
 		model.addAttribute("tag_list", recipeService.recipe_tag(recipe_id));
+		model.addAttribute("review_image_list", recipeReviewService.review_image_list(recipe_id));
+		RecipeReviewSummaryDTO RRSDTO = recipeReviewService.review_summary_list(recipe_id);
+		// 별점 부분
+		model.addAttribute("review_summary_list", RRSDTO);
+		int rating_sum = RRSDTO.getRating_sum();
+		int review_count = RRSDTO.getReview_count();
+		if (review_count > 0) {
+			double rating_avg = Math.round(((double) rating_sum / review_count) * 10) / 10.0;
+			int star = (int) Math.round(rating_avg);
+			model.addAttribute("rating_avg", rating_avg);
+			model.addAttribute("star", star);
+			int p_5 = RRSDTO.getRating_5() * 100 / RRSDTO.getReview_count();
+			int p_4 = RRSDTO.getRating_4() * 100 / RRSDTO.getReview_count();
+			int p_3 = RRSDTO.getRating_3() * 100 / RRSDTO.getReview_count();
+			int p_2 = RRSDTO.getRating_2() * 100 / RRSDTO.getReview_count();
+			int p_1 = RRSDTO.getRating_1() * 100 / RRSDTO.getReview_count();
+			model.addAttribute("p_5", p_5);
+			model.addAttribute("p_4", p_4);
+			model.addAttribute("p_3", p_3);
+			model.addAttribute("p_2", p_2);
+			model.addAttribute("p_1", p_1);
+		}
 		if (user != null) {
 			model.addAttribute("recommended",
 					recipeRecommendService.check_recipe_recommend(recipe_id, user.getMf_no()));
@@ -120,4 +146,14 @@ public class RecipeController {
 		return result;
 	}
 
+	@PostMapping("/review/write")
+	public String review_write(RecipeReviewWriteDTO recipeReviewWriteDTO, HttpSession session) {
+		log.info("review_write()");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		recipeReviewWriteDTO.setMf_no(mf_no);
+		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
+		recipeReviewService.process_recipe_write(recipeReviewWriteDTO);
+		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
+	}
 }

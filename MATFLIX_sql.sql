@@ -357,6 +357,8 @@ CREATE TABLE recipe_comment_recommend (
 		REFERENCES matflix (mf_no)
 		ON DELETE CASCADE
 );
+select * from recipe_comment_recommend;
+delete from recipe_comment_recommend where comment_no = 3;
 
 -- 리뷰
 CREATE TABLE recipe_review (
@@ -365,14 +367,36 @@ CREATE TABLE recipe_review (
     mf_no  	   int NOT NULL,
     rating     INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     content    TEXT,
+    deleted	   int DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    UNIQUE (recipe_id, mf_id),
-    FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE
+    UNIQUE KEY uk_recipe_user (recipe_id, mf_no),
+    -- 레시피 삭제시 삭제
+    CONSTRAINT fk_recipe_review
+		FOREIGN KEY (recipe_id)
+		REFERENCES recipe(recipe_id)
+		ON DELETE CASCADE,
+    -- 유저 삭제 시 추천 자동 삭제
+	constraint fk_review_user
+		FOREIGN KEY (mf_no)
+		REFERENCES matflix (mf_no)
+		ON DELETE CASCADE
 );
 select * from recipe_review;
+delete from recipe_review where recipe_id = 6;
 
+-- 리뷰 이미지
+CREATE TABLE review_image (
+    image_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    review_id  BIGINT NOT NULL,
+    image_path VARCHAR(255),
+
+    CONSTRAINT fk_image_review
+        FOREIGN KEY (review_id)
+        REFERENCES recipe_review(review_id)
+        ON DELETE CASCADE
+);
+select * from review_image;
 
 
 -- 공지사항

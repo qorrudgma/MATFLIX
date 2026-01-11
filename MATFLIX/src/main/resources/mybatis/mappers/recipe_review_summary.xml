@@ -1,0 +1,45 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.RecipeReviewDAO">
+
+	<!-- 리뷰 등록 -->
+	<insert id="insert_review_summary" parameterType="com.boot.dto.RecipeReviewSummaryDTO">
+	    INSERT INTO recipe_review_summary (
+	          recipe_id
+	        , review_count
+	        , rating_sum
+	        , rating_5
+	        , rating_4
+	        , rating_3
+	        , rating_2
+	        , rating_1
+	    )
+	    VALUES (
+	          #{recipe_id}
+	        , 1
+	        , #{rating}
+	        , CASE WHEN #{rating} = 5 THEN 1 ELSE 0 END
+	        , CASE WHEN #{rating} = 4 THEN 1 ELSE 0 END
+	        , CASE WHEN #{rating} = 3 THEN 1 ELSE 0 END
+	        , CASE WHEN #{rating} = 2 THEN 1 ELSE 0 END
+	        , CASE WHEN #{rating} = 1 THEN 1 ELSE 0 END
+	    )
+	    ON DUPLICATE KEY UPDATE
+	          review_count = review_count + 1
+	        , rating_sum   = rating_sum + #{rating}
+	        , rating_5     = rating_5 + CASE WHEN #{rating} = 5 THEN 1 ELSE 0 END
+	        , rating_4     = rating_4 + CASE WHEN #{rating} = 4 THEN 1 ELSE 0 END
+	        , rating_3     = rating_3 + CASE WHEN #{rating} = 3 THEN 1 ELSE 0 END
+	        , rating_2     = rating_2 + CASE WHEN #{rating} = 2 THEN 1 ELSE 0 END
+	        , rating_1     = rating_1 + CASE WHEN #{rating} = 1 THEN 1 ELSE 0 END
+	</insert>
+
+	<select id="review_summary_list" resultType="com.boot.dto.RecipeReviewSummaryDTO">
+		SELECT *
+		  FROM recipe_review_summary
+		 WHERE recipe_id = #{recipe_id}
+	</select>
+
+</mapper>

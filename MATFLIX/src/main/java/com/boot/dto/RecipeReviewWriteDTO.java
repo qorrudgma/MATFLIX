@@ -2,6 +2,8 @@ package com.boot.dto;
 
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeReviewDTO {
+public class RecipeReviewWriteDTO {
 	private int review_id;
 	private int recipe_id;
 	private int mf_no;
@@ -21,4 +23,9 @@ public class RecipeReviewDTO {
 
 	// 화면용
 	private String display_updated_at;
+
+	// 이미지
+	private int image_id;
+	private String image_path;
+	private MultipartFile image_file;
 }

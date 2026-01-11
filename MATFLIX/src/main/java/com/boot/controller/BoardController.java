@@ -1,13 +1,8 @@
 package com.boot.controller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,18 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.boot.dto.BoardAttachDTO;
 import com.boot.dto.BoardDTO;
 import com.boot.dto.CommentDTO;
 import com.boot.dto.RecommendDTO;
-import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentService;
 import com.boot.service.EmailService;
 import com.boot.service.FollowService;
 import com.boot.service.NotificationService;
 import com.boot.service.RecommendService;
-import com.boot.service.UploadService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,9 +33,6 @@ public class BoardController {
 	private CommentService commentService;
 
 	@Autowired
-	private UploadService uploadService;
-
-	@Autowired
 	private RecommendService recommendService;
 
 	@Autowired
@@ -54,22 +43,6 @@ public class BoardController {
 
 	@Autowired
 	private NotificationService notificationService;
-
-//	@RequestMapping("/main")
-//	public String main() {
-//		log.info("@# main()");
-//		return "main";
-//	}
-
-//	@RequestMapping("/main")
-//	public String list(Model model) {
-//		log.info("@# main()");
-//
-//		ArrayList<BoardDTO> list = service.list();
-//		model.addAttribute("list", list);
-//
-//		return "main";
-//	}
 
 	@RequestMapping("/write")
 	public String write(BoardDTO boardDTO) {
@@ -170,11 +143,7 @@ public class BoardController {
 		log.info("@# param=>" + param);
 		log.info("@# boardNo=>" + param.get("boardNo"));
 
-		List<BoardAttachDTO> fileList = uploadService.getFileList(Integer.parseInt(param.get("boardNo")));
-		log.info("@# fileList=>" + fileList);
-
 		service.delete(param);
-		uploadService.deleteFiles(fileList);
 		commentService.boardCommentDelete(param);
 		recommendService.delete_board(Integer.parseInt(param.get("boardNo")));
 
@@ -182,32 +151,5 @@ public class BoardController {
 		rttr.addAttribute("amount", param.get("amount"));
 
 		return "redirect:list";
-	}
-
-//	@RequestMapping("/follow_board_list")
-	public String follow_board_list(HttpSession session, Model model) {
-		log.info("@# follow_board_list()");
-		TeamDTO user = (TeamDTO) session.getAttribute("user");
-		int mf_no = user.getMf_no();
-		List<BoardDTO> follow_board_list = service.follow_board_list(mf_no);
-
-		// 게시글 시간 조정
-		LocalDate today = LocalDate.now();
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd");
-
-		for (BoardDTO dto : follow_board_list) {
-			LocalDateTime boardDate = dto.getBoardDate();
-
-			if (boardDate.toLocalDate().isEqual(today)) {
-				dto.setDisplayDate(boardDate.format(timeFormatter));
-			} else {
-				dto.setDisplayDate(boardDate.format(dateFormatter));
-			}
-		}
-
-		model.addAttribute("follow_board_list", follow_board_list);
-
-		return "follow_board_list";
 	}
 }
