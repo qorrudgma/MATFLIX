@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.RecipeReviewDTO;
 import com.boot.dto.RecipeReviewSummaryDTO;
 import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
@@ -40,6 +41,7 @@ import com.boot.dto.TeamDTO;
 import com.boot.service.RecipeRecommendService;
 import com.boot.service.RecipeReviewService;
 import com.boot.service.RecipeService;
+import com.boot.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -155,5 +157,17 @@ public class RecipeController {
 		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
 		recipeReviewService.process_recipe_write(recipeReviewWriteDTO);
 		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
+	}
+
+	@GetMapping("/review/detail")
+	@ResponseBody
+	public RecipeReviewDTO review_detail(@RequestParam int review_id) {
+		log.info("review_detail()");
+		RecipeReviewDTO review_detail = recipeReviewService.select_review(review_id);
+		review_detail.getUpdated_at();
+		String time = TimeUtil.timeAgo(review_detail.getUpdated_at());
+		review_detail.setDisplay_updated_at(time);
+		log.info("review_detail => " + review_detail);
+		return review_detail;
 	}
 }

@@ -22,7 +22,7 @@ public class RecipeCommentDTO {
 	private int recommend_notify_step;
 
 	// 화면에 보여지는 시간
-	private LocalDateTime display_time;
+	private String display_time;
 
 	// 프론트에 필요한거
 	private String mf_nickname;

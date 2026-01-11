@@ -78,6 +78,14 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	}
 
 	@Override
+	public RecipeReviewDTO select_review(int review_id) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		RecipeReviewDTO review_detail = new RecipeReviewDTO();
+		review_detail = dao.select_review(review_id);
+		return review_detail;
+	}
+
+	@Override
 	public void insert_review_image(ReviewImageDTO imageDTO) {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		dao.insert_review_image(imageDTO);
@@ -102,6 +110,7 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		RecipeReviewSummaryDTO review_summary_list = new RecipeReviewSummaryDTO();
 		review_summary_list = dao.review_summary_list(review_id);
+		log.info("review_summary_list => " + review_summary_list);
 		return review_summary_list;
 	}
 }

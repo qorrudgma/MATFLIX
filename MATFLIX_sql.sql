@@ -383,7 +383,6 @@ CREATE TABLE recipe_review (
 		ON DELETE CASCADE
 );
 select * from recipe_review;
-delete from recipe_review where recipe_id = 6;
 
 -- 리뷰 이미지
 CREATE TABLE review_image (
@@ -397,6 +396,27 @@ CREATE TABLE review_image (
         ON DELETE CASCADE
 );
 select * from review_image;
+
+-- 리뷰 점수
+CREATE TABLE recipe_review_summary (
+    recipe_id     BIGINT PRIMARY KEY,
+    review_count  INT DEFAULT 0,
+    rating_sum    INT DEFAULT 0,
+    rating_5      INT DEFAULT 0,
+    rating_4      INT DEFAULT 0,
+    rating_3      INT DEFAULT 0,
+    rating_2      INT DEFAULT 0,
+    rating_1      INT DEFAULT 0,
+
+    CONSTRAINT fk_summary_recipe
+        FOREIGN KEY (recipe_id)
+        REFERENCES recipe(recipe_id)
+        ON DELETE CASCADE
+);
+select * from recipe_review_summary;
+SELECT * 
+  FROM recipe_review_summary
+ WHERE recipe_id = 6;
 
 
 -- 공지사항

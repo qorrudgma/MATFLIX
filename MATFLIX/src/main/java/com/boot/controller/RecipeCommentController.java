@@ -30,6 +30,7 @@ import com.boot.dto.RecipeCommentDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.RecipeCommentRecommendService;
 import com.boot.service.RecipeCommentService;
+import com.boot.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,8 +66,12 @@ public class RecipeCommentController {
 	@GetMapping("/recipe/comment/list")
 	@ResponseBody
 	public List<RecipeCommentDTO> comment_list(@RequestParam("recipe_id") int recipe_id) {
-		List<RecipeCommentDTO> recipeCommentList = new ArrayList<>();
-		recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id);
+		List<RecipeCommentDTO> recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id);
+		if (recipeCommentList != null) {
+			for (RecipeCommentDTO c : recipeCommentList) {
+				c.setDisplay_time(TimeUtil.timeAgo(c.getCreated_at()));
+			}
+		}
 		log.info("recipeCommentList => " + recipeCommentList);
 
 		return recipeCommentList;

@@ -21,4 +21,5 @@ public class RecipeReviewDTO {
 
 	// 화면용
 	private String display_updated_at;
+	private String mf_nickname;
 }

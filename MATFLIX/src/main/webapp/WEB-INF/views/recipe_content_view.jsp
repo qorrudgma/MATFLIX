@@ -149,11 +149,18 @@
 		        </div>
 		    </div>
 		</div>
-
+		
+		<!-- 리뷰 정렬 -->
+		<div class="review_sort_simple">
+		    <span class="review_sort_btn active" data_sort="latest">최신순</span>
+		    <span class="review_sort_btn" data_sort="rating_desc">별점 높은순</span>
+		    <span class="review_sort_btn" data_sort="rating_asc">별점 낮은순</span>
+		    <input type="hidden" id="review_sort_value" value="latest">
+		</div>
 
 	    <div class="photo_review_list">
 	        <c:forEach var="img" items="${review_image_list}">
-				<div class = "img_div">
+			<div class = "img_div" data-review_id="${img.review_id}" data-img="${img.image_path}">
 	                <div class="photo_review_item">
 	                    <img src="${pageContext.request.contextPath}${img.image_path}" alt="리뷰 사진">
 	                </div>
@@ -302,37 +309,83 @@
 	        }
 	    });
 	});
+	
+	// 리뷰 정렬
+	$(document).on("click", ".review_sort_btn", function () {
+	    $(".review_sort_btn").removeClass("active");
+	    $(this).addClass("active");
+
+	    const sortValue = $(this).data("sort");
+	    $("#review_sort_value").val(sortValue);
+
+	    console.log("리뷰 정렬:", sortValue);
+
+	    // 여기서 정렬 로직 연결
+	    // loadReviewImages(sortValue);
+	});
+	
+	// 리뷰 이미지 클릭
+	$('.img_div').click(function () {
+		$("#photo_review_detail").fadeOut();
+		const review_id = this.dataset.review_id;
+		const review_img = this.dataset.img;
+		
+		$.ajax({
+		    url: "/review/detail",
+		    type: "GET",
+		    data: { review_id: review_id },
+		    success: function (review_detail) {
+
+			    // 이미지
+			    $("#detail_review_image").attr("src", "${pageContext.request.contextPath}" + review_img);
+			    // 작성자
+			    $("#detail_writer").text(review_detail.mf_nickname + " · " + review_detail.display_updated_at);
+			    // 내용
+			    $("#detail_text").text(review_detail.content);
+			    // 모달 열기
+			    $("#photo_review_detail").fadeIn();
+			},
+			error: function () {
+			    alert("리뷰 상세 불러오기 실패");
+			}
+		});
+	});
+	
+	// 리뷰 닫기
+	$('.photo_review_close_btn').click(function () {
+		$("#photo_review_detail").fadeOut();
+	});
 
 	// 리뷰 추가 버튼
-	$('.photo_review_add_btn').click(function () {
+	$(".photo_review_add_btn").click(function () {
 		if (sessionUserNo == '') {
 		    alert("로그인 후 이용 가능합니다.");
 		    return;
 		}
-	    $('.review_form_wrapper').slideToggle();
+	    $(".review_form_wrapper").slideToggle();
 	});
 
-	$('.review_form_cancel').click(function () {
-	    $('.review_form_wrapper').slideUp();
+	$(".review_form_cancel").click(function () {
+	    $(".review_form_wrapper").slideUp();
 	});
 
 	// 폼 전송 부분
-	$('#review_form').on('submit', function (e) {
-	    const rating = $('#rating_value').val();
+	$("#review_form").on("submit", function (e) {
+	    const rating = $("#rating_value").val();
 
 	    if (!rating) {
-	        alert('별점을 선택해주세요.');
+	        alert("별점을 선택해주세요.");
 	        e.preventDefault();
 	        return false;
 	    }
 	});
 
 	// 별점
-	$('.review_star span').on('click',function () {
-	    const val = $(this).attr('data_value');
-	    $('#rating_value').val(val);
-	    $(this).addClass('active').prevAll().addClass('active');
-	    $(this).nextAll().removeClass('active');
+	$(".review_star span").on("click",function () {
+	    const val = $(this).attr("data_value");
+	    $("#rating_value").val(val);
+	    $(this).addClass("active").prevAll().addClass("active");
+	    $(this).nextAll().removeClass("active");
 	});
 	
 	// 댓글===============================================
@@ -394,7 +447,7 @@
 				                <div class="comment-header">
 				                    <span class="comment-author">` + (c.mf_nickname) + `<span class="comment_no">` + c.comment_no + `</span>`
 				                        + (c.mf_no == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
-				                        `<span class="comment-date">(`+(c.created_at)+`)</span>
+				                        `<span class="comment-date">(`+(c.display_time)+`)</span>
 				                    </span>
 				                </div>
 				                <div class="comment-text">` + c.comment_content + `</div>
@@ -429,7 +482,7 @@
 				                <div class="comment-header">
 				                    <span class="comment-author">` + c.mf_nickname+`<span class="comment_no">` + c.comment_no + `</span>`
 				                         + (c.mf_no == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
-										`<span class="comment-date">(` + c.created_at + `)</span>
+										`<span class="comment-date">(` + c.display_time + `)</span>
 				                    </span>
 				                </div>
 				                <div class="comment-text">` + c.comment_content + `</div>

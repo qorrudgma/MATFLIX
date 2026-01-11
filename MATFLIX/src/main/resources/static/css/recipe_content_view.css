@@ -270,7 +270,6 @@
     grid-template-columns: 36px 1fr 30px;
     align-items: center;
     gap: 10px;
-
     font-size: 13px;
     color: #555;
 }
@@ -306,6 +305,42 @@
 }
 
 /* =========================
+   리뷰 정렬
+========================= */
+/* 리뷰 정렬 바 */
+.review_sort_simple {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 200px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.review_sort_btn {
+    font-size: 15px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    padding: 6px 8px;
+    padding-bottom: 0px;
+    transition: color 0.15s ease;
+}
+
+/* 선택된 상태 */
+.review_sort_btn.active {
+    color: #e50915;
+    font-weight: 700;
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid #e50915;
+    border-radius: 0;
+}
+
+.review_sort_btn:hover {
+    color: #e50915;
+}
+
+
+/* =========================
    사진 리뷰 섹션
 ========================= */
 .photo_review_section {
@@ -331,6 +366,11 @@
 }
 
 /* 리뷰 추가 버튼 */
+.review_add_btn_div{
+	display: flex;
+	justify-content: flex-end;
+}
+
 .photo_review_add_btn {
     background: #ff6b6b;
     color: #fff;
@@ -494,8 +534,8 @@
 
 /* 상세 이미지 */
 .photo_review_detail_image img {
-    width: 220px;
-    height: 220px;
+    width: 400px;
+    height: 400px;
     object-fit: cover;
     border-radius: 14px;
 }

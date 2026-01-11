@@ -18,6 +18,8 @@ public interface RecipeReviewDAO {
 
 	public List<RecipeReviewDTO> review_list();
 
+	public RecipeReviewDTO select_review(int review_id);
+
 //	이미지
 	public void insert_review_image(ReviewImageDTO imageDTO);
 

@@ -21,6 +21,22 @@
 		  FROM recipe_review
 		 WHERE recipe_id = #{recipe_id}
 	</select>
+
+	<!-- 리뷰 가져오기 -->	
+	<select id="select_review" resultType="com.boot.dto.RecipeReviewDTO">
+		SELECT r.review_id
+		     , r.recipe_id
+		     , r.mf_no
+		     , r.rating
+		     , r.content
+		     , r.deleted
+		     , r.updated_at
+		     , m.mf_nickname
+		  FROM recipe_review r
+		  JOIN matflix m
+		    ON r.mf_no = m.mf_no
+		 WHERE review_id = #{review_id}
+	</select>
 	
 	<!-- 이미지 ======================= -->
 	<!-- 이미지 등록 -->
