@@ -61,11 +61,11 @@ public class FollowServiceImpl implements FollowService {
 	}
 
 	@Override
-	public int follow_unfollow(int following_id, int follower_id) {
+	public int check_follow(int follower_id, int following_id) {
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
-		int follow_unfollow = dao.follow_unfollow(following_id, follower_id);
+		int check_follow = dao.check_follow(follower_id, following_id);
 
-		return follow_unfollow;
+		return check_follow;
 	}
 
 	@Override

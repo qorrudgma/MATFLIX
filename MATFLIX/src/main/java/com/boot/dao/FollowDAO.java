@@ -31,7 +31,7 @@ public interface FollowDAO {
 	public List<Integer> follower_id_list(int following_id);
 
 	// 팔로우 유/무
-	public int follow_unfollow(@Param("following_id") int following_id, @Param("follower_id") int follower_id);
+	public int check_follow(@Param("follower_id") int follower_id, @Param("following_id") int following_id);
 
 	// 팔로우 취소
 	public void delete_follow(@Param("following_id") int following_id, @Param("follower_id") int follower_id);

@@ -20,6 +20,7 @@
 package com.boot.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -33,11 +34,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.RecipeDTO;
 import com.boot.dto.RecipeReviewDTO;
 import com.boot.dto.RecipeReviewSummaryDTO;
 import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
+import com.boot.dto.ReviewImageDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.service.FollowService;
 import com.boot.service.RecipeRecommendService;
 import com.boot.service.RecipeReviewService;
 import com.boot.service.RecipeService;
@@ -57,6 +61,9 @@ public class RecipeController {
 	@Autowired
 	private RecipeReviewService recipeReviewService;
 
+	@Autowired
+	private FollowService followService;
+
 	@RequestMapping("/recipe_write")
 	public String recipe_write(RecipeWriteDTO dto, HttpSession session) {
 		log.info("recipe_write 컨트롤러에 왔음");
@@ -64,6 +71,26 @@ public class RecipeController {
 		dto.setMf_no(user.getMf_no());
 		recipeService.process_recipe_write(dto);
 		return "redirect:/recipe_list";
+	}
+
+	// 레시피 작성
+	@RequestMapping("/recipe_write_new")
+	public String recipe_write_new(@RequestParam(value = "recipe_id", required = false) Integer recipe_id,
+			HttpSession session, Model model) {
+		if (recipe_id != null) {
+			RecipeDTO recipe = recipeService.recipe(recipe_id);
+			model.addAttribute("recipe", recipe);
+			model.addAttribute("ingredient_list", recipeService.recipe_ingredient(recipe_id));
+			model.addAttribute("step_list", recipeService.recipe_step(recipe_id));
+			model.addAttribute("image_list", recipeService.recipe_image(recipe_id));
+			model.addAttribute("tag_list", recipeService.recipe_tag(recipe_id));
+			model.addAttribute("mode", "modify");
+			log.info("#@$@!# model => " + model);
+		} else {
+			model.addAttribute("mode", "write");
+		}
+
+		return "recipe_write_new";
 	}
 
 	@RequestMapping("/delete_recipe")
@@ -88,36 +115,46 @@ public class RecipeController {
 	@GetMapping("/recipe_content_view")
 	public String recipe_content_view(@RequestParam("recipe_id") int recipe_id, Model model, HttpSession session) {
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
-		model.addAttribute("recipe", recipeService.recipe(recipe_id));
+		RecipeDTO recipe = recipeService.recipe(recipe_id);
+		String time = TimeUtil.timeAgo(recipe.getCreated_at());
+		recipe.setDisplay_updated_at(time);
+		model.addAttribute("recipe", recipe);
 		model.addAttribute("ingredient_list", recipeService.recipe_ingredient(recipe_id));
 		model.addAttribute("step_list", recipeService.recipe_step(recipe_id));
 		model.addAttribute("image_list", recipeService.recipe_image(recipe_id));
 		model.addAttribute("tag_list", recipeService.recipe_tag(recipe_id));
-		model.addAttribute("review_image_list", recipeReviewService.review_image_list(recipe_id));
 		RecipeReviewSummaryDTO RRSDTO = recipeReviewService.review_summary_list(recipe_id);
 		// 별점 부분
-		model.addAttribute("review_summary_list", RRSDTO);
-		int rating_sum = RRSDTO.getRating_sum();
-		int review_count = RRSDTO.getReview_count();
-		if (review_count > 0) {
-			double rating_avg = Math.round(((double) rating_sum / review_count) * 10) / 10.0;
-			int star = (int) Math.round(rating_avg);
-			model.addAttribute("rating_avg", rating_avg);
-			model.addAttribute("star", star);
-			int p_5 = RRSDTO.getRating_5() * 100 / RRSDTO.getReview_count();
-			int p_4 = RRSDTO.getRating_4() * 100 / RRSDTO.getReview_count();
-			int p_3 = RRSDTO.getRating_3() * 100 / RRSDTO.getReview_count();
-			int p_2 = RRSDTO.getRating_2() * 100 / RRSDTO.getReview_count();
-			int p_1 = RRSDTO.getRating_1() * 100 / RRSDTO.getReview_count();
-			model.addAttribute("p_5", p_5);
-			model.addAttribute("p_4", p_4);
-			model.addAttribute("p_3", p_3);
-			model.addAttribute("p_2", p_2);
-			model.addAttribute("p_1", p_1);
+
+		if (RRSDTO != null) {
+			int review_count = RRSDTO.getReview_count();
+
+			if (review_count > 0) {
+				model.addAttribute("review_image_list", recipeReviewService.review_image_list(recipe_id, "latest"));
+				model.addAttribute("review_summary_list", RRSDTO);
+
+				int rating_sum = RRSDTO.getRating_sum();
+				double rating_avg = Math.round(((double) rating_sum / review_count) * 10) / 10.0;
+				int star = (int) Math.round(rating_avg);
+
+				model.addAttribute("rating_avg", rating_avg);
+				model.addAttribute("star", star);
+
+				model.addAttribute("p_5", RRSDTO.getRating_5() * 100 / review_count);
+				model.addAttribute("p_4", RRSDTO.getRating_4() * 100 / review_count);
+				model.addAttribute("p_3", RRSDTO.getRating_3() * 100 / review_count);
+				model.addAttribute("p_2", RRSDTO.getRating_2() * 100 / review_count);
+				model.addAttribute("p_1", RRSDTO.getRating_1() * 100 / review_count);
+			}
 		}
 		if (user != null) {
 			model.addAttribute("recommended",
 					recipeRecommendService.check_recipe_recommend(recipe_id, user.getMf_no()));
+			if (followService.check_follow(user.getMf_no(), recipe.getMf_no()) == 1) {
+				model.addAttribute("follow", true);
+			} else {
+				model.addAttribute("follow", false);
+			}
 		}
 		log.info("model => " + model);
 		return "recipe_content_view";
@@ -164,10 +201,18 @@ public class RecipeController {
 	public RecipeReviewDTO review_detail(@RequestParam int review_id) {
 		log.info("review_detail()");
 		RecipeReviewDTO review_detail = recipeReviewService.select_review(review_id);
-		review_detail.getUpdated_at();
-		String time = TimeUtil.timeAgo(review_detail.getUpdated_at());
+		String time = TimeUtil.timeAgo(review_detail.getCreated_at());
+		log.info("time => " + time);
 		review_detail.setDisplay_updated_at(time);
 		log.info("review_detail => " + review_detail);
 		return review_detail;
+	}
+
+	@GetMapping("/review/sort")
+	@ResponseBody
+	public List<ReviewImageDTO> review_sort(int recipe_id, String sort) {
+		log.info("review_sort()");
+		List<ReviewImageDTO> review_sort = recipeReviewService.review_image_list(recipe_id, sort);
+		return review_sort;
 	}
 }

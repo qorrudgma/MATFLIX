@@ -30,7 +30,7 @@
 	</delete>
 	
 	<!-- 팔로우 확인 -->
-	<select id="follow_unfollow" resultType="int">
+	<select id="check_follow" resultType="int">
 		select count(*)
 		  from follow
 		 where follower_id = #{follower_id}

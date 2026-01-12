@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +19,14 @@
         <div class="mf_container">
             <div class="mf_header">
                 <div class="mf_header_left">
-                    <h1 class="mf_title">레시피 작성</h1>
+					<c:choose>
+					    <c:when test="${mode == 'modify'}">
+					        <h1>레시피 수정</h1>
+					    </c:when>
+					    <c:otherwise>
+					        <h1>레시피 작성</h1>
+					    </c:otherwise>
+					</c:choose>
                     <p class="mf_subtitle">나만의 레시피를 MATFLIX에 공유해보세요.</p>
                 </div>
 <!--                <div class="mf_header_right">-->
@@ -27,59 +37,95 @@
             <form id="recipe_write_form" class="mf_form" action="recipe_write" method="post" enctype="multipart/form-data" autocomplete="off">
 
                 <!-- 맨위에 대표 이미지 넣는 부분 -->
-                <section class="mf_section" id="section_thumbnail">
-                    <div class="mf_section_title">
-                        <h2><i class="fa-regular fa-image"></i> 대표 이미지</h2>
-                        <span class="mf_required">*</span>
-                    </div>
+				<section class="mf_section" id="section_thumbnail">
+				    <div class="mf_section_title">
+				        <h2><i class="fa-regular fa-image"></i> 대표 이미지</h2>
+				        <span class="mf_required">*</span>
+				    </div>
 
-                    <div class="mf_image_box">
-                        <div class="mf_image_preview" id="thumbnail_preview" aria-label="대표 이미지 미리보기">
-                            <div class="mf_image_placeholder">
-                                <i class="fa-solid fa-camera"></i>
-                                <div class="mf_image_placeholder_text">대표 이미지를 업로드해주세요</div>
-                                <div class="mf_image_placeholder_hint">JPG / PNG 권장 (최대 5MB)</div>
-                            </div>
-                        </div>
+				    <div class="mf_image_box">
 
-                        <div class="mf_image_controls">
-                            <label class="mf_btn mf_btn_outline" for="thumbnail_file">
-                                <i class="fa-solid fa-upload"></i> 이미지 선택
-                            </label>
-                            <input type="hidden" name="step_no[]" value="0">
-                            <input type="hidden" name="image_type[]" value="THUMBNAIL">
-                            <input type="file" id="thumbnail_file" name="image_path[]" accept="image/*" class="mf_file_input">
+				        <!-- 미리보기 영역 -->
+				        <div class="mf_image_preview" id="thumbnail_preview" aria-label="대표 이미지 미리보기">
+				            <c:choose>
+				                <c:when test="${mode eq 'modify' and not empty recipe.image_path}">
+				                    <img src="${pageContext.request.contextPath}${recipe.image_path}"
+				                         alt="대표 이미지">
+				                </c:when>
+				                <c:otherwise>
+				                    <div class="mf_image_placeholder">
+				                        <i class="fa-solid fa-camera"></i>
+				                        <div class="mf_image_placeholder_text">대표 이미지를 업로드해주세요</div>
+				                        <div class="mf_image_placeholder_hint">JPG / PNG 권장 (최대 5MB)</div>
+				                    </div>
+				                </c:otherwise>
+				            </c:choose>
+				        </div>
 
-                            <button type="button" class="mf_btn mf_btn_ghost" id="thumbnail_clear_btn">
-                                <i class="fa-solid fa-rotate-left"></i> 선택 해제
-                            </button>
+				        <div class="mf_image_controls">
+				            <label class="mf_btn mf_btn_outline" for="thumbnail_file">
+				                <i class="fa-solid fa-upload"></i> 이미지 선택
+				            </label>
+				            <!-- 기존 구조 그대로 -->
+				            <input type="hidden" name="step_no[]" value="0">
+				            <input type="hidden" name="image_type[]" value="THUMBNAIL">
+				            <input type="file" id="thumbnail_file" name="image_path[]" accept="image/*" class="mf_file_input">
+				            <!-- 수정 모드일 때만 기존 이미지 경로 유지 -->
+				            <c:if test="${mode eq 'modify'}">
+				                <input type="hidden" name="origin_thumbnail" value="${recipe.image_path}">
+				            </c:if>
 
-                            <div class="mf_help">대표 이미지는 목록/상세에서 가장 먼저 보여요.</div>
-                        </div>
-                    </div>
-                </section>
+				            <button type="button" class="mf_btn mf_btn_ghost" id="thumbnail_clear_btn">
+				                <i class="fa-solid fa-rotate-left"></i> 선택 해제
+				            </button>
+
+				            <div class="mf_help">대표 이미지는 목록/상세에서 가장 먼저 보여요.</div>
+				        </div>
+				    </div>
+				</section>
+
 
                 <!-- 기본 정보: 제목/간단 소개 -->
-                <section class="mf_section" id="section_basic">
-                    <div class="mf_section_title">
-                        <h2><i class="fa-solid fa-circle-info"></i> 기본 정보</h2>
-                        <span class="mf_required">*</span>
-                    </div>
+				<section class="mf_section" id="section_basic">
+				    <div class="mf_section_title">
+				        <h2><i class="fa-solid fa-circle-info"></i> 기본 정보</h2>
+				        <span class="mf_required">*</span>
+				    </div>
 
-                    <div class="mf_grid">
-                        <div class="mf_field">
-                            <label class="mf_label" for="recipe_title">제목</label>
-                            <input type="text" id="recipe_title" name="title" class="mf_input" placeholder="예) 자취생 10분 김치볶음밥" maxlength="60" required>
-                            <div class="mf_count"><span id="title_count">0</span>/60</div>
-                        </div>
+				    <div class="mf_grid">
+				        <div class="mf_field">
+				            <label class="mf_label" for="recipe_title">제목</label>
+				            <input type="text"
+				                   id="recipe_title"
+				                   name="title"
+				                   class="mf_input"
+				                   placeholder="예) 자취생 10분 김치볶음밥"
+				                   maxlength="60"
+				                   required
+				                   value="${mode eq 'modify' ? recipe.title : ''}">
+				            <div class="mf_count">
+				                <span id="title_count">
+				                    ${mode eq "modify" ? fn:length(recipe.title) : 0}
+				                </span>/60
+				            </div>
+				        </div>
 
-                        <div class="mf_field mf_field_full">
-                            <label class="mf_label" for="recipe_intro">간단 소개</label>
-                            <textarea id="recipe_intro" name="intro" class="mf_textarea mf_textarea_small" placeholder="레시피 한 줄 소개를 짧게 작성해주세요" maxlength="140" required></textarea>
-                            <div class="mf_count"><span id="intro_count">0</span>/140</div>
-                        </div>
-                    </div>
-                </section>
+				        <div class="mf_field mf_field_full">
+				            <label class="mf_label" for="recipe_intro">간단 소개</label>
+				            <textarea id="recipe_intro"
+				                      name="intro"
+				                      class="mf_textarea mf_textarea_small"
+				                      placeholder="레시피 한 줄 소개를 짧게 작성해주세요"
+				                      maxlength="140"
+				                      required>${mode eq 'modify' ? recipe.intro : ''}</textarea>
+				            <div class="mf_count">
+				                <span id="intro_count">
+				                    ${mode eq "modify" ? fn:length(recipe.intro) : 0}
+				                </span>/140
+				            </div>
+				        </div>
+				    </div>
+				</section>
 
                 <!-- 음식 양, 시간, 난이도 -->
                 <section class="mf_section" id="section_meta">
@@ -92,24 +138,31 @@
                         <div class="mf_field">
                             <label class="mf_label" for="recipe_servings">몇 인분</label>
                             <select id="recipe_servings" name="servings" class="mf_select" required>
-                                <option value="">선택</option>
-                                <option value="1">1인분</option>
-                                <option value="2">2인분</option>
-                                <option value="3">3인분</option>
-                                <option value="4">4인분</option>
-                                <option value="5">5인분</option>
-                                <option value="6">6인분</option>
-                                <option value="7">7인분</option>
-                                <option value="8">8인분</option>
-                                <option value="9">9인분</option>
-                                <option value="10">10인분+</option>
+								<option value="1" ${mode eq 'modify' and recipe.servings == 1 ? 'selected' : ''}>1인분</option>
+							    <option value="2" ${mode eq 'modify' and recipe.servings == 2 ? 'selected' : ''}>2인분</option>
+							    <option value="3" ${mode eq 'modify' and recipe.servings == 3 ? 'selected' : ''}>3인분</option>
+							    <option value="4" ${mode eq 'modify' and recipe.servings == 4 ? 'selected' : ''}>4인분</option>
+							    <option value="5" ${mode eq 'modify' and recipe.servings == 5 ? 'selected' : ''}>5인분</option>
+							    <option value="6" ${mode eq 'modify' and recipe.servings == 6 ? 'selected' : ''}>6인분</option>
+							    <option value="7" ${mode eq 'modify' and recipe.servings == 7 ? 'selected' : ''}>7인분</option>
+							    <option value="8" ${mode eq 'modify' and recipe.servings == 8 ? 'selected' : ''}>8인분</option>
+							    <option value="9" ${mode eq 'modify' and recipe.servings == 9 ? 'selected' : ''}>9인분</option>
+							    <option value="10" ${mode eq 'modify' and recipe.servings >= 10 ? 'selected' : ''}>10인분+</option>
                             </select>
                         </div>
 
                         <div class="mf_field">
                             <label class="mf_label" for="recipe_time">조리 시간(분)</label>
                             <div class="mf_input_unit">
-                                <input type="number" id="recipe_time" name="cook_time" class="mf_input" placeholder="예) 15" min="1" max="999" required>
+                                <input type="number"
+									   id="recipe_time"
+									   name="cook_time"
+									   class="mf_input"
+									   placeholder="예) 15"
+									   min="1"
+									   max="999"
+									   value="${mode eq 'modify' ? recipe.cook_time : ''}"
+									   required>
                                 <span class="mf_unit">분</span>
                             </div>
                         </div>
@@ -118,9 +171,9 @@
                             <label class="mf_label" for="recipe_level">난이도</label>
                             <select id="recipe_level" name="difficulty" class="mf_select" required>
                                 <option value="">선택</option>
-                                <option value="EASY">쉬움</option>
-                                <option value="NORMAL">보통</option>
-                                <option value="HARD">어려움</option>
+								<option value="EASY"   ${mode eq 'modify' and recipe.difficulty eq 'EASY'   ? 'selected' : ''}>쉬움</option>
+							    <option value="NORMAL" ${mode eq 'modify' and recipe.difficulty eq 'NORMAL' ? 'selected' : ''}>보통</option>
+							    <option value="HARD"   ${mode eq 'modify' and recipe.difficulty eq 'HARD'   ? 'selected' : ''}>어려움</option>
                             </select>
                         </div>
 						
@@ -128,11 +181,11 @@
 				           <label class="mf_label" for="recipe_category">음식 분야</label>
 				           <select id="recipe_category" name="category" class="mf_select" required>
 				               <option value="">선택</option>
-				               <option value="KOREAN">한식</option>
-				               <option value="CHINESE">중식</option>
-				               <option value="JAPANESE">일식</option>
-				               <option value="WESTERN">양식</option>
-				               <option value="DESSERT">디저트</option>
+							   <option value="KOREAN"  ${mode eq 'modify' and recipe.category eq 'KOREAN'  ? 'selected' : ''}>한식</option>
+						       <option value="CHINESE" ${mode eq 'modify' and recipe.category eq 'CHINESE' ? 'selected' : ''}>중식</option>
+						       <option value="JAPANESE"${mode eq 'modify' and recipe.category eq 'JAPANESE'? 'selected' : ''}>일식</option>
+						       <option value="WESTERN" ${mode eq 'modify' and recipe.category eq 'WESTERN' ? 'selected' : ''}>양식</option>
+						       <option value="DESSERT" ${mode eq 'modify' and recipe.category eq 'DESSERT' ? 'selected' : ''}>디저트</option>
 				           </select>
 				       </div>
                     </div>
@@ -148,21 +201,62 @@
                     <div class="mf_section_desc">재료명을 입력하고, 필요하면 양/단위를 적어주세요. (예: "양파" / "1/2개")</div>
 
                     <div class="mf_list" id="ingredient_list">
-                        <div class="mf_list_row ingredient_row" data_row="1">
-                            <div class="mf_field">
-                                <label class="mf_label mf_label_inline">재료명</label>
-                                <input type="text" name="ingredient_name[]" class="mf_input" placeholder="예) 양파" required>
-                            </div>
-                            <div class="mf_field">
-                                <label class="mf_label mf_label_inline">양</label>
-                                <input type="text" name="ingredient_amount[]" class="mf_input" placeholder="예) 1/2개">
-                            </div>
-                            <div class="mf_row_actions">
-                                <button type="button" class="mf_btn mf_btn_icon mf_btn_danger ingredient_remove_btn" title="삭제">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </div>
-                        </div>
+<!--						수정 모드-->
+						<c:if test="${mode eq 'modify'}">
+				            <c:forEach var="i" items="${ingredient_list}" varStatus="st">
+				                <div class="mf_list_row ingredient_row" data_row="${st.index + 1}">
+				                    <div class="mf_field">
+				                        <label class="mf_label mf_label_inline">재료명</label>
+				                        <input type="text"
+				                               name="ingredient_name[]"
+				                               class="mf_input"
+				                               value="${i.ingredient_name}"
+				                               required>
+				                    </div>
+				                    <div class="mf_field">
+				                        <label class="mf_label mf_label_inline">양</label>
+				                        <input type="text"
+				                               name="ingredient_amount[]"
+				                               class="mf_input"
+				                               value="${i.ingredient_amount}">
+				                    </div>
+				                    <div class="mf_row_actions">
+				                        <button type="button"
+				                                class="mf_btn mf_btn_icon mf_btn_danger ingredient_remove_btn"
+				                                title="삭제">
+				                            <i class="fa-solid fa-xmark"></i>
+				                        </button>
+				                    </div>
+				                </div>
+				            </c:forEach>
+				        </c:if>
+<!--						작성 모드-->
+						<c:if test="${mode eq 'write'}">
+				            <div class="mf_list_row ingredient_row" data_row="1">
+				                <div class="mf_field">
+				                    <label class="mf_label mf_label_inline">재료명</label>
+				                    <input type="text"
+				                           name="ingredient_name[]"
+				                           class="mf_input"
+				                           placeholder="예) 양파"
+				                           required>
+				                </div>
+				                <div class="mf_field">
+				                    <label class="mf_label mf_label_inline">양</label>
+				                    <input type="text"
+				                           name="ingredient_amount[]"
+				                           class="mf_input"
+				                           placeholder="예) 1/2개">
+				                </div>
+				                <div class="mf_row_actions">
+				                    <button type="button"
+				                            class="mf_btn mf_btn_icon mf_btn_danger ingredient_remove_btn"
+				                            title="삭제">
+				                        <i class="fa-solid fa-xmark"></i>
+				                    </button>
+				                </div>
+				            </div>
+				        </c:if>
                     </div>
 
                     <div class="mf_actions_inline">
@@ -182,49 +276,57 @@
                     <div class="mf_section_desc">순서대로 적어주세요. 각 과정에 이미지를 추가할 수 있어요.</div>
 
                     <div class="mf_steps" id="step_list">
-                        <div class="mf_step" data_step="1">
-                            <div class="mf_step_left">
-                                <div class="mf_step_no">1</div>
-                            </div>
-
-                            <div class="mf_step_body">
-                                <div class="mf_step_text">
-									<input type="hidden" name="step_no[]" value="1" class="step_order_input">
-                                    <label class="mf_label mf_label_inline">설명</label>
-                                    <textarea name="step_content[]" class="mf_textarea" placeholder="예) 양파를 잘게 다져 중불에 2분 볶아주세요" required></textarea>
-                                </div>
-
-                                <div class="mf_step_media">
-                                    <div class="mf_step_image">
-                                        <div class="mf_step_preview" data_preview="1">
-                                            <div class="mf_image_placeholder">
-                                                <i class="fa-regular fa-images"></i>
-                                                <div class="mf_image_placeholder_text">과정 이미지(선택)</div>
-                                                <div class="mf_image_placeholder_hint">있으면 더 좋아요</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mf_step_controls">
-                                            <label class="mf_btn mf_btn_outline" for="step_file_1">
-                                                <i class="fa-solid fa-upload"></i> 이미지 선택
-                                            </label>
-                                            <input type="hidden" name="image_type[]" value="STEP">
-                                            <input type="file" id="step_file_1" name="image_path[]" accept="image/*" class="mf_file_input mf_step_file" data_step="1">
-
-                                            <button type="button" class="mf_btn mf_btn_ghost step_clear_btn" data_step="1">
-                                                <i class="fa-solid fa-rotate-left"></i> 해제
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="mf_step_actions">
-                                        <button type="button" class="mf_btn mf_btn_icon mf_btn_danger step_remove_btn" title="삭제">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<!--				        작성 모드-->
+			            <div class="mf_step" data_step="1">
+			                <div class="mf_step_left">
+			                    <div class="mf_step_no">1</div>
+			                </div>
+			                <div class="mf_step_body">
+			                    <div class="mf_step_text">
+			                        <input type="hidden" name="step_no[]" value="1" class="step_order_input">
+			                        <label class="mf_label mf_label_inline">설명</label>
+			                        <textarea name="step_content[]"
+			                                  class="mf_textarea"
+			                                  placeholder="예) 양파를 잘게 다져 중불에 2분 볶아주세요"
+			                                  required></textarea>
+			                    </div>
+			                    <div class="mf_step_media">
+			                        <div class="mf_step_image">
+			                            <div class="mf_step_preview" data_preview="1">
+			                                <div class="mf_image_placeholder">
+			                                    <i class="fa-regular fa-images"></i>
+			                                    <div class="mf_image_placeholder_text">과정 이미지(선택)</div>
+			                                    <div class="mf_image_placeholder_hint">있으면 더 좋아요</div>
+			                                </div>
+			                            </div>
+			                            <div class="mf_step_controls">
+			                                <label class="mf_btn mf_btn_outline" for="step_file_1">
+			                                    <i class="fa-solid fa-upload"></i> 이미지 선택
+			                                </label>
+			                                <input type="hidden" name="image_type[]" value="STEP">
+			                                <input type="file"
+			                                       id="step_file_1"
+			                                       name="image_path[]"
+			                                       accept="image/*"
+			                                       class="mf_file_input mf_step_file"
+			                                       data_step="1">
+			                                <button type="button"
+			                                        class="mf_btn mf_btn_ghost step_clear_btn"
+			                                        data_step="1">
+			                                    <i class="fa-solid fa-rotate-left"></i> 해제
+			                                </button>
+			                            </div>
+			                        </div>
+			                        <div class="mf_step_actions">
+			                            <button type="button"
+			                                    class="mf_btn mf_btn_icon mf_btn_danger step_remove_btn"
+			                                    title="삭제">
+			                                <i class="fa-solid fa-xmark"></i>
+			                            </button>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
                     </div>
 
                     <div class="mf_actions_inline">
@@ -334,17 +436,17 @@
         preview_el.classList.remove("mf_has_image");
     }
 
-    function clear_final_preview(preview_el) {
-        if (!preview_el) {
-            return;
-        }
-        preview_el.innerHTML = "<div class='mf_image_placeholder'>" +
-            "<i class='fa-solid fa-camera-retro'></i>" +
-            "<div class='mf_image_placeholder_text'>완성 사진을 업로드해주세요</div>" +
-            "<div class='mf_image_placeholder_hint'>대표 이미지와 같아도 OK</div>" +
-        "</div>";
-        preview_el.classList.remove("mf_has_image");
-    }
+    //function clear_final_preview(preview_el) {
+    //    if (!preview_el) {
+    //        return;
+    //    }
+    //    preview_el.innerHTML = "<div class='mf_image_placeholder'>" +
+    //        "<i class='fa-solid fa-camera-retro'></i>" +
+    //        "<div class='mf_image_placeholder_text'>완성 사진을 업로드해주세요</div>" +
+    //        "<div class='mf_image_placeholder_hint'>대표 이미지와 같아도 OK</div>" +
+    //    "</div>";
+    //    preview_el.classList.remove("mf_has_image");
+    //}
 
     function clear_step_preview(preview_el) {
         if (!preview_el) {
@@ -397,22 +499,6 @@
         thumbnail_file.value = "";
         clear_image_preview(thumbnail_preview);
     });
-
-    // 완성 사진
-    //var final_file = document.getElementById("final_file");
-    //var final_preview = document.getElementById("final_preview");
-    //var final_clear_btn = document.getElementById("final_clear_btn");
-
-    //final_file.addEventListener("change", function() {
-    //    if (final_file.files && final_file.files[0]) {
-    //        render_image_preview(final_file.files[0], final_preview);
-    //    }
-    //});
-
-    //final_clear_btn.addEventListener("click", function() {
-    //    final_file.value = "";
-    //    clear_final_preview(final_preview);
-    //});
 
     // 재료 추가/삭제
     var ingredient_list = document.getElementById("ingredient_list");
@@ -714,12 +800,6 @@
             e.preventDefault();
             alert("대표 이미지를 업로드해주세요.");
             window.scrollTo({ top: document.getElementById("section_thumbnail").offsetTop - 80, behavior: "smooth" });
-            return;
-        }
-        if (!final_file.files || !final_file.files[0]) {
-            e.preventDefault();
-            alert("완성 사진을 업로드해주세요.");
-            window.scrollTo({ top: document.getElementById("section_final").offsetTop - 80, behavior: "smooth" });
             return;
         }
 

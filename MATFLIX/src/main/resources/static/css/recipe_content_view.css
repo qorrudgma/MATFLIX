@@ -48,6 +48,37 @@
 	font-weight: bold;
 }
 
+/* 팔로우 버튼 */
+.follow-btn {
+	width: 15%;
+    display: inline-flex; 
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+	margin-top: 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+	justify-content: center;
+}
+
+.follow-btn:hover {
+    background-color: #d44637;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.follow-btn.following {
+    background-color: #6c757d;
+}
+
+.follow-btn.following:hover {
+    background-color: #dc3545;
+}
+
 /* Intro */
 .recipe_intro_section {
     font-size: 18px;

@@ -2,6 +2,8 @@ package com.boot.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.boot.dto.RecipeReviewDTO;
 import com.boot.dto.RecipeReviewSummaryDTO;
 import com.boot.dto.RecipeReviewWriteDTO;
@@ -23,7 +25,7 @@ public interface RecipeReviewDAO {
 //	이미지
 	public void insert_review_image(ReviewImageDTO imageDTO);
 
-	public List<ReviewImageDTO> review_image_list(int review_id);
+	public List<ReviewImageDTO> review_image_list(@Param("recipe_id") int recipe_id, @Param("sort") String sort);
 
 	// 리뷰 별점
 	public void insert_review_summary(RecipeReviewSummaryDTO dto);

@@ -382,9 +382,4 @@ public class TeamController {
 		notifSettingService.update_notif_setting(mf_no, notif_type, yn);
 	}
 
-	// 로그인
-	@RequestMapping("/recipe_write_new")
-	public String recipe_write_new() {
-		return "recipe_write_new";
-	}
 }

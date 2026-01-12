@@ -92,10 +92,10 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	}
 
 	@Override
-	public List<ReviewImageDTO> review_image_list(int review_id) {
+	public List<ReviewImageDTO> review_image_list(int recipe_id, String sort) {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		List<ReviewImageDTO> review_image_list = new ArrayList<>();
-		review_image_list = dao.review_image_list(review_id);
+		review_image_list = dao.review_image_list(recipe_id, sort);
 		return review_image_list;
 	}
 

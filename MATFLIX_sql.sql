@@ -24,8 +24,9 @@ CREATE TABLE follow (
     follow_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uniq_follow (follower_id, following_id) -- 중복 방지
 );
-
+select * from follow;
 select * from follow where follower_id = 61;
+TRUNCATE TABLE follow;
 delete f
   from follow f
   join (

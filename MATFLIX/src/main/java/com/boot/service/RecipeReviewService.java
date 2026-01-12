@@ -23,7 +23,7 @@ public interface RecipeReviewService {
 //	이미지
 	public void insert_review_image(ReviewImageDTO imageDTO);
 
-	public List<ReviewImageDTO> review_image_list(int review_id);
+	public List<ReviewImageDTO> review_image_list(int recipe_id, String sort);
 
 	// 리뷰 별점
 	public void insert_review_summary(RecipeReviewSummaryDTO dto);

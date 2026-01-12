@@ -51,16 +51,16 @@ public class FollowController {
 	}
 
 	// 팔로우 체크
-	@RequestMapping("/follow_unfollow")
+	@RequestMapping("/check_follow")
 	@ResponseBody
-	public boolean follow_unfollow(@RequestParam("following_id") int following_id,
+	public boolean check_follow(@RequestParam("following_id") int following_id,
 			@RequestParam("follower_id") int follower_id) {
 		log.info("follow_unfollow()");
 		log.info("following_id => " + following_id);
 		log.info("follower_id => " + follower_id);
 
-		int follow_unfollow = followService.follow_unfollow(following_id, follower_id);
-		if (follow_unfollow == 1) {
+		int check_follow = followService.check_follow(following_id, follower_id);
+		if (check_follow == 1) {
 			log.info("팔로우 중임");
 			return true;
 		} else {

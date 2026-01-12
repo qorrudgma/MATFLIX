@@ -179,7 +179,7 @@
 		// 팔로우 상태
 		$.ajax({
 			type: "get",
-			url: "/follow_unfollow",
+			url: "/check_follow",
 			data: {follower_id: sessionUserNo, following_id: w_user},
 			success: function(res){
 				if(res){

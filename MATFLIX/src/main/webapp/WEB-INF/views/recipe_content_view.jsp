@@ -22,14 +22,29 @@
         <div class="hero_overlay">
             <span class="hero_category">${recipe.category}</span>
             <h1>${recipe.title}</h1>
-            <p>${recipe.mf_nickname} · ${recipe.updated_at}</p>
+            <p>${recipe.mf_nickname} · ${recipe.display_updated_at}</p>
             <p class="recommend">추천 · <span id="recommend_count">${recipe.recommend}</span></p>
+			<c:choose>
+				<c:when test="${follow}">
+					<button type="button" id="follow_btn" class="follow-btn delete_follow">
+                        <i class="fas fa-user-minus"></i> 팔로우 취소
+                    </button>
+				</c:when>
+				<c:otherwise>
+					<button type="button" id="follow_btn" class="follow-btn add_follow">
+                        <i class="fas fa-user-plus"></i> 팔로우
+                    </button>
+				</c:otherwise>
+			</c:choose>
         </div>
     </section>
 
     <!-- 레시피 소개 -->
     <section class="recipe_intro_section">
         <p>${recipe.intro}</p>
+		<c:if test="${not empty user and recipe.mf_no == user.mf_no}">
+			<a href="/recipe_write_new?recipe_id=${recipe.recipe_id}" class="edit-btn">수정</a>
+		</c:if>
     </section>
 
     <!-- 재료 -->
@@ -60,7 +75,7 @@
                 <div class="step_image">
                     <c:forEach var="img" items="${image_list}">
                         <c:if test="${img.step_no == s.step_no}">
-						<img src="${pageContext.request.contextPath}${img.image_path}" alt="이미지">
+							<img src="${pageContext.request.contextPath}${img.image_path}" alt="이미지">
                         </c:if>
                     </c:forEach>
                 </div>
@@ -75,7 +90,7 @@
         </c:forEach>
     </section>
 	
-	<!-- 사진 리뷰 test -->
+	<!-- 사진 리뷰 -->
 	<section class="photo_review_section">
 	    <div class="photo_review_header">
 	        <h2>사진 리뷰</h2>
@@ -92,71 +107,78 @@
 				</c:otherwise>
 			</c:choose>
 	    </div>
+		<c:choose>
+		    <c:when test="${not empty review_summary_list}">
+				<div class="review_summary">
+				    <!-- 평균 -->
+				    <div class="review_avg">
+				        <div class="avg_score">
+							${rating_avg}
+						</div>
+				        <div class="avg_star">
+							<c:forEach begin="1" end="${star}">★</c:forEach>
+							<c:forEach begin="${star + 1}" end="5">☆</c:forEach>
+				        </div>
+				        <div class="avg_text">총 ${review_summary_list.review_count}개의 리뷰</div>
+				    </div>
 		
-		<div class="review_summary">
-		    <!-- 평균 -->
-		    <div class="review_avg">
-		        <div class="avg_score">
-					${rating_avg}
+				    <!-- 분포 -->
+				    <div class="review_distribution">
+				        <div class="dist_row">
+				            <span>5점</span>
+				            <div class="dist_bar">
+				                <div class="dist_fill" style="width:${p_5}%"></div>
+				            </div>
+				            <span class="dist_count">${review_summary_list.rating_5}</span>
+				        </div>
+		
+				        <div class="dist_row">
+				            <span>4점</span>
+				            <div class="dist_bar">
+				                <div class="dist_fill" style="width:${p_4}%"></div>
+				            </div>
+				            <span class="dist_count">${review_summary_list.rating_4}</span>
+				        </div>
+		
+				        <div class="dist_row">
+				            <span>3점</span>
+				            <div class="dist_bar">
+				                <div class="dist_fill" style="width:${p_3}%"></div>
+				            </div>
+				            <span class="dist_count">${review_summary_list.rating_3}</span>
+				        </div>
+		
+				        <div class="dist_row">
+				            <span>2점</span>
+				            <div class="dist_bar">
+				                <div class="dist_fill" style="width:${p_2}%"></div>
+				            </div>
+				            <span class="dist_count">${review_summary_list.rating_2}</span>
+				        </div>
+		
+				        <div class="dist_row">
+				            <span>1점</span>
+				            <div class="dist_bar">
+				                <div class="dist_fill" style="width:${p_1}%"></div>
+				            </div>
+				            <span class="dist_count">${review_summary_list.rating_1}</span>
+				        </div>
+				    </div>
 				</div>
-		        <div class="avg_star">
-					<c:forEach begin="1" end="${star}">★</c:forEach>
-					<c:forEach begin="${star + 1}" end="5">☆</c:forEach>
+				<!-- 리뷰 정렬 -->
+				<div class="review_sort_simple">
+				    <span class="review_sort_btn active" data_sort="latest">최신순</span>
+				    <span class="review_sort_btn" data_sort="rating_desc">별점 높은순</span>
+				    <span class="review_sort_btn" data_sort="rating_asc">별점 낮은순</span>
+				    <input type="hidden" id="review_sort_value" value="latest">
+				</div>
+			</c:when>
+		    <c:otherwise>
+		        <div class="no_review">
+		            아직 등록된 리뷰가 없습니다.
 		        </div>
-		        <div class="avg_text">총 ${review_summary_list.review_count}개의 리뷰</div>
-		    </div>
-
-		    <!-- 분포 -->
-		    <div class="review_distribution">
-		        <div class="dist_row">
-		            <span>5점</span>
-		            <div class="dist_bar">
-		                <div class="dist_fill" style="width:${p_5}%"></div>
-		            </div>
-		            <span class="dist_count">${review_summary_list.rating_5}</span>
-		        </div>
-
-		        <div class="dist_row">
-		            <span>4점</span>
-		            <div class="dist_bar">
-		                <div class="dist_fill" style="width:${p_4}%"></div>
-		            </div>
-		            <span class="dist_count">${review_summary_list.rating_4}</span>
-		        </div>
-
-		        <div class="dist_row">
-		            <span>3점</span>
-		            <div class="dist_bar">
-		                <div class="dist_fill" style="width:${p_3}%"></div>
-		            </div>
-		            <span class="dist_count">${review_summary_list.rating_3}</span>
-		        </div>
-
-		        <div class="dist_row">
-		            <span>2점</span>
-		            <div class="dist_bar">
-		                <div class="dist_fill" style="width:${p_2}%"></div>
-		            </div>
-		            <span class="dist_count">${review_summary_list.rating_2}</span>
-		        </div>
-
-		        <div class="dist_row">
-		            <span>1점</span>
-		            <div class="dist_bar">
-		                <div class="dist_fill" style="width:${p_1}%"></div>
-		            </div>
-		            <span class="dist_count">${review_summary_list.rating_1}</span>
-		        </div>
-		    </div>
-		</div>
-		
-		<!-- 리뷰 정렬 -->
-		<div class="review_sort_simple">
-		    <span class="review_sort_btn active" data_sort="latest">최신순</span>
-		    <span class="review_sort_btn" data_sort="rating_desc">별점 높은순</span>
-		    <span class="review_sort_btn" data_sort="rating_asc">별점 낮은순</span>
-		    <input type="hidden" id="review_sort_value" value="latest">
-		</div>
+		    </c:otherwise>
+		</c:choose>
 
 	    <div class="photo_review_list">
 	        <c:forEach var="img" items="${review_image_list}">
@@ -237,8 +259,11 @@
 <script>
 	// 변수
 	var sessionUserNo = "${not empty user ? user.mf_no : '' }";
+	var sessionUserEmail = "${user.mf_email}";
     var recipe_id = "${recipe.recipe_id}";
+    var recipe_user = "${recipe.mf_no}";
 	var parentCommentNo = 0;
+	const contextPath = "${pageContext.request.contextPath}";
 	
 	// 추천 수 확인
 	function updateLike(el, recommend) {
@@ -252,6 +277,56 @@
 	        $countEl.text(Math.max(0, count - 1));
 	    }
 	}
+	
+	// 팔로우 추가 버튼
+    $(document).on("click", ".add_follow", function (e) {
+        e.preventDefault();
+
+        if (sessionUserNo == '') {
+            alert("로그인 후 이용 가능합니다.");
+            return;
+        }
+
+        $.ajax({
+             type: "POST"
+            ,data: {following_id: recipe_user, follower_id:sessionUserNo, follower_email:sessionUserEmail}
+            ,url: "/add_follow"
+            ,success: function (result) {
+                console.log("팔로우 성공");
+                $("#follow_btn").removeClass("add_follow")
+                    .html('<i class="fas fa-user-minus"></i> 팔로우 취소')
+                    .addClass("delete_follow");
+            }
+            ,error: function () {
+                console.log("팔로우 성공");
+            }
+        });
+    });
+	
+    // 팔로우 삭제 버튼
+    $(document).on("click", ".delete_follow", function (e) {
+        e.preventDefault();
+
+        if (sessionUserNo == '') {
+            alert("로그인 후 이용 가능합니다.");
+            return;
+        }
+
+        $.ajax({
+             type: "POST"
+            ,data: {following_id: recipe_user, follower_id:sessionUserNo}
+            ,url: "/delete_follow"
+            ,success: function (result) {
+                console.log("팔로우 삭제 성공");
+                $("#follow_btn").removeClass("delete_follow")
+                    .html('<i class="fas fa-user-plus"></i> 팔로우')
+                    .addClass("add_follow");
+            }
+            ,error: function () {
+                console.log("팔로우 실패");
+            }
+        });
+    });
 
 	// 리뷰 부분================
 	document.addEventListener("DOMContentLoaded", function () {
@@ -312,20 +387,60 @@
 	
 	// 리뷰 정렬
 	$(document).on("click", ".review_sort_btn", function () {
+		$(".review_form_wrapper").fadeOut();
+		$("#photo_review_detail").fadeOut();
 	    $(".review_sort_btn").removeClass("active");
 	    $(this).addClass("active");
 
-	    const sortValue = $(this).data("sort");
-	    $("#review_sort_value").val(sortValue);
+	    const sort = $(this).data("sort");
+	    $("#review_sort_value").val(sort);
 
-	    console.log("리뷰 정렬:", sortValue);
+	    console.log("리뷰 정렬:", sort);
 
 	    // 여기서 정렬 로직 연결
-	    // loadReviewImages(sortValue);
+	    loadReviewImages(sort);
 	});
 	
+	function loadReviewImages(sort){
+		$.ajax({
+			type: "GET"
+			,url: "/review/sort"
+			,data: {sort:sort, recipe_id:recipe_id}
+			,success: function(review_sort){
+				renderReviewImages(review_sort);
+				// console.log(review_sort);
+			}
+			,error: function(){
+				alert("실패");
+			}
+		});
+	}
+	
+	// 리뷰 새로 정렬하기
+	function renderReviewImages(review_sort) {
+	    let html = "";
+
+		review_sort.forEach(img => {
+		  const rating = Number(img.rating);
+		  html += `
+		    <div class="img_div" data-review_id="` + img.review_id + `" data-img="` + img.image_path + `">
+		      <div class="photo_review_item">
+		        <img src="` + contextPath + img.image_path + `" alt="리뷰 사진">
+		      </div>
+		      <div class="avg_star">
+		        ` + "★".repeat(rating) + "☆".repeat(5 - rating) + `
+		      </div>
+		    </div>
+		  `;
+		});
+
+	    $(".photo_review_list").html(html);
+	}
+
+	
 	// 리뷰 이미지 클릭
-	$('.img_div').click(function () {
+	$(document).on("click", ".img_div", function () {
+		$(".review_form_wrapper").fadeOut();
 		$("#photo_review_detail").fadeOut();
 		const review_id = this.dataset.review_id;
 		const review_img = this.dataset.img;
@@ -362,6 +477,7 @@
 		    alert("로그인 후 이용 가능합니다.");
 		    return;
 		}
+		$("#photo_review_detail").fadeOut();
 	    $(".review_form_wrapper").slideToggle();
 	});
 

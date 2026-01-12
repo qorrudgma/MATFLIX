@@ -48,14 +48,14 @@
 
 	<!-- 레시피 리스트 -->	
 	<select id="recipe_list" resultType="com.boot.dto.RecipeDTO">
-		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.updated_at, m.mf_nickname, ri.image_path
+		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.created_at, r.updated_at, m.mf_nickname, ri.image_path
 		  FROM recipe r
 		  JOIN matflix m
 			ON r.mf_no = m.mf_no
 		  LEFT JOIN recipe_image ri
 		    ON r.recipe_id = ri.recipe_id
 		   AND ri.image_type ="THUMBNAIL"
-		 ORDER BY r.updated_at DESC
+		 ORDER BY r.created_at DESC
 	</select>
 
 	<!-- 마이 레시피 리스트 -->	
@@ -73,7 +73,7 @@
 
 	<!-- 레시피 -->	
 	<select id="recipe" resultType="com.boot.dto.RecipeDTO">
-		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.recommend, r.updated_at, m.mf_nickname, ri.image_path
+		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.created_at, r.recommend, r.updated_at, m.mf_nickname, ri.image_path
 		  FROM recipe r
 		  JOIN matflix m
 			ON r.mf_no = m.mf_no
