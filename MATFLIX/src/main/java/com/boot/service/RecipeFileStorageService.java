@@ -7,4 +7,6 @@ public interface RecipeFileStorageService {
 	public void save_image(int recipe_id, RecipeWriteDTO dto);
 
 	public String save_review_image(ReviewImageDTO dto);
+
+	public void modify_recipe_image(int recipe_id, RecipeWriteDTO dto);
 }

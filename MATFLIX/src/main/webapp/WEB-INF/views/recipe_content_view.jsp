@@ -43,7 +43,7 @@
     <section class="recipe_intro_section">
         <p>${recipe.intro}</p>
 		<c:if test="${not empty user and recipe.mf_no == user.mf_no}">
-			<a href="/recipe_write_new?recipe_id=${recipe.recipe_id}" class="edit-btn">수정</a>
+			<a href="/recipe_modify_page?recipe_id=${recipe.recipe_id}" class="edit-btn">수정</a>
 		</c:if>
     </section>
 

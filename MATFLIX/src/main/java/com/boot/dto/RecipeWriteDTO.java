@@ -44,6 +44,10 @@ public class RecipeWriteDTO {
 	// 이미지
 	private int[] image_id;
 	private String[] image_type;
-	private MultipartFile[] image_path;
+	private String[] image_path;
+	private MultipartFile[] image_file;
 
+	// 수정
+	private String[] delete_image_path;
+	private int[] image_step_no;
 }

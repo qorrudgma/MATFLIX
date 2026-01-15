@@ -2,9 +2,11 @@ package com.boot.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.boot.dao.RecipeDAO;
 import com.boot.dto.RecipeDTO;
@@ -14,6 +16,9 @@ import com.boot.dto.RecipeStepDTO;
 import com.boot.dto.RecipeTagDTO;
 import com.boot.dto.RecipeWriteDTO;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
@@ -24,6 +29,7 @@ public class RecipeServiceImpl implements RecipeService {
 	private RecipeFileStorageService fileStorageService;
 
 	@Override
+	@Transactional
 	public void process_recipe_write(RecipeWriteDTO dto) {
 		// 여기부터 레시피 테이블
 		RecipeDTO RDTO = new RecipeDTO();
@@ -48,13 +54,51 @@ public class RecipeServiceImpl implements RecipeService {
 		insert_recipe_tag(recipe_id, dto);
 		// 이미지 저장
 		fileStorageService.save_image(recipe_id, dto);
-		// 이미지 테이블
+	}
+
+	@Override
+	@Transactional
+	public void process_recipe_modify(RecipeWriteDTO dto) {
+		// 여기부터 레시피 테이블
+		RecipeDTO RDTO = new RecipeDTO();
+		int recipe_id = dto.getRecipe_id();
+		RDTO.setRecipe_id(recipe_id);
+		RDTO.setMf_no(dto.getMf_no());
+		RDTO.setTitle(dto.getTitle());
+		RDTO.setIntro(dto.getIntro());
+		RDTO.setServings(dto.getServings());
+		RDTO.setCook_time(dto.getCook_time());
+		RDTO.setDifficulty(dto.getDifficulty());
+		RDTO.setCategory(dto.getCategory());
+		RDTO.setTip(dto.getTip());
+
+		log.info("RDTO => " + RDTO);
+		modify_recipe(RDTO);
+
+		// 재료 테이블
+		delete_recipe_ingredient(recipe_id);
+		insert_recipe_ingredient(recipe_id, dto);
+		// 순서 테이블
+		delete_recipe_step(recipe_id);
+		insert_recipe_step(recipe_id, dto);
+		// 태그 테이블
+		delete_recipe_tag(recipe_id);
+		insert_recipe_tag(recipe_id, dto);
+//		// 이미지
+		delete_recipe_image(recipe_id);
+		fileStorageService.modify_recipe_image(recipe_id, dto);
 	}
 
 	@Override
 	public void insert_recipe(RecipeDTO dto) {
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
 		dao.insert_recipe(dto);
+	}
+
+	@Override
+	public void modify_recipe(RecipeDTO dto) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		dao.modify_recipe(dto);
 	}
 
 	@Override
@@ -75,6 +119,12 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
+	public void delete_recipe_ingredient(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		dao.delete_recipe_ingredient(recipe_id);
+	}
+
+	@Override
 	public void insert_recipe_step(int recipe_id, RecipeWriteDTO dto) {
 		int[] nums = dto.getStep_no();
 		String[] contents = dto.getStep_content();
@@ -89,6 +139,12 @@ public class RecipeServiceImpl implements RecipeService {
 			RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
 			dao.insert_recipe_step(RSDTO);
 		}
+	}
+
+	@Override
+	public void delete_recipe_step(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		dao.delete_recipe_step(recipe_id);
 	}
 
 	@Override
@@ -107,9 +163,28 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
+	public void delete_recipe_tag(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		dao.delete_recipe_tag(recipe_id);
+	}
+
+	@Override
 	public void insert_recipe_image(RecipeImageDTO dto) {
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
 		dao.insert_recipe_image(dto);
+	}
+
+	@Override
+	public String find_recipe_image_path(@Param("recipe_id") int recipe_id, @Param("step_no") int step_no) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		String image_path = dao.find_recipe_image_path(recipe_id, step_no);
+		return image_path;
+	}
+
+	@Override
+	public void delete_recipe_image(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		dao.delete_recipe_image(recipe_id);
 	}
 
 	@Override

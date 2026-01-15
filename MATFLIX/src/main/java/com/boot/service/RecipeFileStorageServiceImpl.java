@@ -28,11 +28,11 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 		log.info("save_image 옴");
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
 
-		MultipartFile[] files = dto.getImage_path();
+		MultipartFile[] files = dto.getImage_file();
 		String[] types = dto.getImage_type();
 		int[] step_no = dto.getStep_no();
 
-		String baseDir = "C:/matflix_upload/recipe";
+		String base_dir = "C:/matflix_upload/recipe";
 		for (int i = 0; i < files.length; i++) {
 
 			MultipartFile file = files[i];
@@ -56,7 +56,7 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 				String type = types[i];
 				String type_dir = type.toLowerCase();
 
-				File save_dir = new File(baseDir + "/" + type_dir);
+				File save_dir = new File(base_dir + "/" + type_dir);
 				if (!save_dir.exists()) {
 					save_dir.mkdirs();
 				}
@@ -79,6 +79,107 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 			} catch (Exception e) {
 				log.error("이미지 저장 실패", e);
 				throw new RuntimeException("이미지 저장 중 오류 발생");
+			}
+		}
+	}
+
+	@Override
+	public void modify_recipe_image(int recipe_id, RecipeWriteDTO dto) {
+		log.info("save_image 옴");
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+
+		MultipartFile[] files = dto.getImage_file();
+		String[] types = dto.getImage_type();
+		String[] image_path = dto.getImage_path();
+		int[] step_no = dto.getStep_no();
+		log.info("step_no.length => {}\nimage_path.length => {}\nfiles.length => {}", step_no.length, image_path.length,
+				files.length);
+		log.info("!@#$!@$# => " + image_path);
+
+		String base_dir = "C:/matflix_upload/recipe";
+		for (int i = 0; i < step_no.length; i++) {
+			MultipartFile file = files[i];
+			if (image_path[i].isEmpty()) {
+				if (file == null || file.isEmpty()) {
+					log.info("이미지가 반드시 필요합니다. step => " + step_no[i]);
+					throw new IllegalStateException("이미지가 반드시 필요합니다. step=" + step_no[i]);
+				}
+				try {
+					// 파일명 생성
+					String originalName = file.getOriginalFilename();
+					String ext = "";
+					log.info("originalName => " + originalName);
+
+					if (originalName != null && originalName.lastIndexOf(".") != -1) {
+						ext = originalName.substring(originalName.lastIndexOf("."));
+					}
+
+					String save_file_name = UUID.randomUUID().toString() + ext;
+
+					// 타입별 폴더 분리
+					String type = types[i];
+					String type_dir = type.toLowerCase();
+
+					File save_dir = new File(base_dir + "/" + type_dir);
+					if (!save_dir.exists()) {
+						save_dir.mkdirs();
+					}
+
+					File saveFile = new File(save_dir, save_file_name);
+
+					// 파일 저장
+					file.transferTo(saveFile);
+					log.error("이미지 저장");
+
+					// DB 저장
+					RecipeImageDTO img = new RecipeImageDTO();
+					img.setRecipe_id(recipe_id);
+					img.setImage_type(type);
+					img.setStep_no(step_no[i]);
+					img.setImage_path("/recipe/" + type_dir + "/" + save_file_name);
+
+					dao.insert_recipe_image(img);
+
+				} catch (Exception e) {
+					log.error("이미지 저장 실패", e);
+					throw new RuntimeException("이미지 저장 중 오류 발생");
+				}
+			} else {
+				RecipeImageDTO img = new RecipeImageDTO();
+				String type = types[i];
+				img.setRecipe_id(recipe_id);
+				img.setImage_type(type);
+				img.setStep_no(step_no[i]);
+				img.setImage_path(image_path[i]);
+
+				dao.insert_recipe_image(img);
+			}
+		}
+
+		// 파일 삭제
+		String delete_base_dir = "C:/matflix_upload";
+		String[] delete_image_path = dto.getDelete_image_path();
+
+		if (delete_image_path != null && delete_image_path.length > 0) {
+			for (String path : delete_image_path) {
+				if (path == null || path.trim().isEmpty()) {
+					continue;
+				}
+
+				path = path.replace("\\", "/");
+
+				File file = new File(delete_base_dir + path);
+
+				if (file.exists() && file.isFile()) {
+					boolean deleted = file.delete();
+					if (!deleted) {
+						log.warn("이미지 파일 삭제 실패: " + file.getAbsolutePath());
+					} else {
+						log.info("이미지 파일 삭제 완료: " + file.getAbsolutePath());
+					}
+				} else {
+					log.warn("삭제 대상 파일 없음: " + file.getAbsolutePath());
+				}
 			}
 		}
 	}

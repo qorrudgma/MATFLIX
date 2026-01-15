@@ -69,28 +69,42 @@ public class RecipeController {
 		log.info("recipe_write 컨트롤러에 왔음");
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		dto.setMf_no(user.getMf_no());
+		log.info("dto => " + dto);
+
 		recipeService.process_recipe_write(dto);
+
 		return "redirect:/recipe_list";
 	}
 
 	// 레시피 작성
 	@RequestMapping("/recipe_write_new")
-	public String recipe_write_new(@RequestParam(value = "recipe_id", required = false) Integer recipe_id,
-			HttpSession session, Model model) {
-		if (recipe_id != null) {
-			RecipeDTO recipe = recipeService.recipe(recipe_id);
-			model.addAttribute("recipe", recipe);
-			model.addAttribute("ingredient_list", recipeService.recipe_ingredient(recipe_id));
-			model.addAttribute("step_list", recipeService.recipe_step(recipe_id));
-			model.addAttribute("image_list", recipeService.recipe_image(recipe_id));
-			model.addAttribute("tag_list", recipeService.recipe_tag(recipe_id));
-			model.addAttribute("mode", "modify");
-			log.info("#@$@!# model => " + model);
-		} else {
-			model.addAttribute("mode", "write");
-		}
-
+	public String recipe_write_new() {
 		return "recipe_write_new";
+	}
+
+	// 레시피 작성
+	@RequestMapping("/recipe_modify_page")
+	public String recipe_modify_page(int recipe_id, HttpSession session, Model model) {
+		RecipeDTO recipe = recipeService.recipe(recipe_id);
+		recipe.setRecipe_id(recipe_id);
+		model.addAttribute("recipe", recipe);
+		model.addAttribute("ingredient_list", recipeService.recipe_ingredient(recipe_id));
+		model.addAttribute("step_list", recipeService.recipe_step(recipe_id));
+		model.addAttribute("image_list", recipeService.recipe_image(recipe_id));
+		model.addAttribute("tag_list", recipeService.recipe_tag(recipe_id));
+		log.info("#@$@!# model => " + model);
+
+		return "recipe_modify";
+	}
+
+	// 레시피 작성
+	@RequestMapping("/recipe_modify")
+	public String recipe_modify(RecipeWriteDTO dto, HttpSession session) {
+		log.info("#@$@!# recipe_modify");
+		log.info("#@$@!# RecipeWriteDTO => " + dto);
+		recipeService.process_recipe_modify(dto);
+
+		return "redirect:/recipe_content_view?recipe_id=" + dto.getRecipe_id();
 	}
 
 	@RequestMapping("/delete_recipe")
