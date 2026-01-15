@@ -165,17 +165,43 @@
 /* Tags */
 .recipe_tag_section {
     margin: 40px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 
 .recipe_tag {
     display: inline-block;
-    background:rgba(229, 9, 20, 0.14);
+    background: rgba(229, 9, 20, 0.14);
     padding: 8px 14px;
     border-radius: 20px;
     margin-right: 8px;
     font-size: 15px;
     font-weight: bold;
-	color: #e50914;
+    color: #e50914;
+    white-space: nowrap;
+}
+
+/* 삭제 버튼 영역을 오른쪽 끝으로 밀기 */
+.delete_recipe_form {
+    margin-left: auto;
+}
+
+/* 삭제 버튼 스타일 */
+.delete_recipe {
+    background: #e50914;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+	gap: 6px;
+}
+
+.delete_recipe:hover {
+    background: #b20710;
 }
 
 /* 사진 리뷰 섹션 */

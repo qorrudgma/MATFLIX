@@ -88,6 +88,12 @@
         <c:forEach var="t" items="${tag_list}">
             <span class="recipe_tag">#${t.tag}</span>
         </c:forEach>
+		<c:if test="${recipe.mf_no == user.mf_no}">
+			<form action="/delete_recipe" method="post" class="delete_recipe_form" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+		        <input type="hidden" name="recipe_id" value="${recipe.recipe_id}">
+		        <button type="submit" class="delete_recipe"><i class="fa-solid fa-trash"></i> 레시피 삭제하기</button>
+		    </form>
+		</c:if>
     </section>
 	
 	<!-- 사진 리뷰 -->

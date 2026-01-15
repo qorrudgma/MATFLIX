@@ -107,11 +107,11 @@ public class RecipeController {
 		return "redirect:/recipe_content_view?recipe_id=" + dto.getRecipe_id();
 	}
 
-	@RequestMapping("/delete_recipe")
-	public String delete_recipe(int recipe_id) {
+	@PostMapping("/delete_recipe")
+	public String delete_recipe(@RequestParam("recipe_id") int recipe_id) {
 		recipeService.delete_recipe(recipe_id);
 		// 레시피 메인으로 가는걸로 바꾸기
-		return "insert_recipe";
+		return "redirect:/recipe_list";
 	}
 
 	@GetMapping("/recipe_list")
