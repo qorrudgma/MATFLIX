@@ -448,7 +448,7 @@
 /* =========================
    리뷰 작성 폼
 ========================= */
-.review_form_wrapper {
+.review_form_wrapper, .review_modify_form {
     margin: 20px 0 30px;
     padding: 24px;
     background: #fafafa;
@@ -475,7 +475,7 @@
 }
 
 /* 리뷰 내용 */
-.review_form_wrapper textarea {
+.review_form_wrapper textarea, .review_modify_form textarea {
     width: 100%;
     min-height: 110px;
     padding: 14px;
@@ -488,13 +488,41 @@
 }
 
 /* 이미지 업로드 */
-.review_form_wrapper input[type="file"] {
+.review_form_wrapper input[type="file"], .review_modify_form input[type="file"] {
     margin-bottom: 18px;
     font-size: 14px;
 }
 
+.review_image_preview {
+    position: relative;
+    width: 160px;
+    margin-top: 10px;
+}
+
+.review_image_preview img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.preview_remove_btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #e50914;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 /* 폼 버튼 */
 .review_form_actions {
+	padding-top: 10px;
     display: flex;
     gap: 10px;
 }

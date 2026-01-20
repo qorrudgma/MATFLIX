@@ -289,9 +289,8 @@ CREATE TABLE recipe_image (
         REFERENCES recipe(recipe_id)
         ON DELETE CASCADE
 );
-select * from recipe_image;
-DELETE FROM recipe_image
-WHERE recipe_id = 1;
+select * from recipe_image
+WHERE recipe_id = 3;
 
 -- 레시피 추천 테이블
 CREATE TABLE recipe_recommend (
@@ -417,6 +416,10 @@ CREATE TABLE recipe_review_summary (
 select * from recipe_review_summary;
 SELECT * 
   FROM recipe_review_summary
+ WHERE recipe_id = 6;
+
+update recipe_review_summary
+   set rating_sum = rating_sum - 1, rating_5 = rating_5-1 and rating_4 = rating_4+1
  WHERE recipe_id = 6;
 
 

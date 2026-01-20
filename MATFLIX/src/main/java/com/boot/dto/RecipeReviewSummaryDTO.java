@@ -16,4 +16,8 @@ public class RecipeReviewSummaryDTO {
 	private int rating_3;
 	private int rating_2;
 	private int rating_1;
+
+	// 수정
+	private int old_rating;
+	private int new_rating;
 }

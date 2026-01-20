@@ -199,6 +199,7 @@ public class RecipeController {
 		return result;
 	}
 
+	// 리뷰 =====================
 	@PostMapping("/review/write")
 	public String review_write(RecipeReviewWriteDTO recipeReviewWriteDTO, HttpSession session) {
 		log.info("review_write()");
@@ -206,7 +207,7 @@ public class RecipeController {
 		int mf_no = user.getMf_no();
 		recipeReviewWriteDTO.setMf_no(mf_no);
 		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
-		recipeReviewService.process_recipe_write(recipeReviewWriteDTO);
+		recipeReviewService.process_review_write(recipeReviewWriteDTO);
 		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
 	}
 
@@ -228,5 +229,16 @@ public class RecipeController {
 		log.info("review_sort()");
 		List<ReviewImageDTO> review_sort = recipeReviewService.review_image_list(recipe_id, sort);
 		return review_sort;
+	}
+
+	@PostMapping("/review/modify")
+	public String review_modify(RecipeReviewWriteDTO recipeReviewWriteDTO, HttpSession session) {
+		log.info("review_modify()");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		recipeReviewWriteDTO.setMf_no(mf_no);
+		recipeReviewService.modify_review(recipeReviewWriteDTO);
+		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
+		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
 	}
 }

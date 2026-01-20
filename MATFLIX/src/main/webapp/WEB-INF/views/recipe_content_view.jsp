@@ -122,8 +122,7 @@
 							${rating_avg}
 						</div>
 				        <div class="avg_star">
-							<c:forEach begin="1" end="${star}">★</c:forEach>
-							<c:forEach begin="${star + 1}" end="5">☆</c:forEach>
+							<c:forEach begin="1" end="${star}">★</c:forEach><c:forEach begin="${star + 1}" end="5">☆</c:forEach>
 				        </div>
 				        <div class="avg_text">총 ${review_summary_list.review_count}개의 리뷰</div>
 				    </div>
@@ -193,8 +192,7 @@
 	                    <img src="${pageContext.request.contextPath}${img.image_path}" alt="리뷰 사진">
 	                </div>
 			        <div class="avg_star">
-						<c:forEach begin="1" end="${img.rating}">★</c:forEach>
-						<c:forEach begin="${img.rating + 1}" end="5">☆</c:forEach>
+						<c:forEach begin="1" end="${img.rating}">★</c:forEach><c:forEach begin="${img.rating + 1}" end="5">☆</c:forEach>
 					</div>
 				</div>
 	        </c:forEach>
@@ -212,15 +210,50 @@
 		            <span data_value=3>★</span>
 		            <span data_value=4>★</span>
 		            <span data_value=5>★</span>
-		            <input type="hidden" name="rating" id="rating_value">
+		            <input type="hidden" name="rating" id="rating_value_write">
 		        </div>
 		        <!-- 내용 -->
 		        <textarea name="content" placeholder="리뷰를 작성해주세요"></textarea>
 		        <!-- 이미지 -->
-		        <input type="file" name="image_file" accept="image/*">
+		        <input type="file" name="image_file" id="review_image_input" accept="image/*">
+				<div class="review_image_preview" style="display:none;">
+				    <img id="review_preview_img" src="" alt="미리보기">
+				    <button type="button" class="preview_remove_btn">×</button>
+				</div>
 		        <div class="review_form_actions">
 		            <button type="submit">등록</button>
 		            <button type="button" class="review_form_cancel">취소</button>
+		        </div>
+		    </form>
+		</div>
+		
+<!--		리뷰 수정하는곳-->
+		<div class="review_modify_form" style="display:none;">
+		    <form id="review_modify_form" method="post" action="review/modify" enctype="multipart/form-data">
+	            <input type="hidden" name="recipe_id" value="${recipe.recipe_id}">
+				<input type="hidden" name="review_id" id="review_modify_review_id">
+				<input type="hidden" name="old_rating" id="old_rating">
+		        <!-- 별점 -->
+		        <div class="review_star">
+		            <span data_value=1>★</span>
+		            <span data_value=2>★</span>
+		            <span data_value=3>★</span>
+		            <span data_value=4>★</span>
+		            <span data_value=5>★</span>
+		            <input type="hidden" name="rating" id="rating_value_modify">
+		        </div>
+		        <!-- 내용 -->
+		        <textarea name="content" placeholder="리뷰를 작성해주세요"></textarea>
+		        <!-- 이미지 -->
+		        <input type="file" name="image_file" id="review_modify_image_input" accept="image/*">
+		        <input type="hidden" name="image_path" id="review_image_path" value="">
+				<div class="review_image_preview" style="display:none;">
+				    <img id="review_modify_preview_img" src="" alt="미리보기">
+				    <button type="button" class="modify_preview_remove_btn">×</button>
+				</div>
+		        <div class="review_form_actions">
+		            <button type="submit">수정하기</button>
+		            <button type="button" class="review_modify_form_cancel">취소</button>
 		        </div>
 		    </form>
 		</div>
@@ -237,6 +270,16 @@
 	            <div class="photo_review_detail_content">
 	                <p class="photo_review_writer" id="detail_writer"></p>
 	                <p class="photo_review_text" id="detail_text"></p>
+                	<span class="photo_modify" id="review_modify"
+						  data-review_id=""
+						  data-rating=""
+						  data-content=""
+						  data-image_path="">리뷰 수정하기</span>
+					<form id="review_delete_form" method="post" action="review/delete">
+						<input type="hidden" name="review_id" id="delete_review_id" value="">
+						<input type="hidden" name="mf_no" id="delete_mf_no" value="">
+                		<span class="review_delete">리뷰 삭제하기</span>
+					</form>
 	            </div>
 	        </div>
 	    </div>
@@ -442,12 +485,12 @@
 
 	    $(".photo_review_list").html(html);
 	}
-
 	
 	// 리뷰 이미지 클릭
 	$(document).on("click", ".img_div", function () {
 		$(".review_form_wrapper").fadeOut();
 		$("#photo_review_detail").fadeOut();
+		$(".review_modify_form").fadeOut();
 		const review_id = this.dataset.review_id;
 		const review_img = this.dataset.img;
 		
@@ -456,13 +499,28 @@
 		    type: "GET",
 		    data: { review_id: review_id },
 		    success: function (review_detail) {
-
 			    // 이미지
 			    $("#detail_review_image").attr("src", "${pageContext.request.contextPath}" + review_img);
 			    // 작성자
 			    $("#detail_writer").text(review_detail.mf_nickname + " · " + review_detail.display_updated_at);
 			    // 내용
 			    $("#detail_text").text(review_detail.content);
+				// 리뷰 수정
+				if (review_detail.mf_no == sessionUserNo) {
+					console.log("수정 가능");
+			        $("#review_modify").data("review", review_detail).show();
+					$("#review_modify").attr("data-review_id", review_detail.review_id)
+									   .attr("data-rating", review_detail.rating)
+									   .attr("data-content", review_detail.content)
+									   .attr("data-image_path", review_img);
+					$("#delete_review_id").val(review_detail.review_id);
+					$("#delete_mf_no").val(review_detail.mf_no);
+					$("#review_modify_review_id").val(review_detail.review_id);
+					$("#old_rating").val(review_detail.rating);
+			    } else {
+					console.log("수정 불가능");
+			        $("#review_modify").hide();
+			    }
 			    // 모달 열기
 			    $("#photo_review_detail").fadeIn();
 			},
@@ -470,6 +528,36 @@
 			    alert("리뷰 상세 불러오기 실패");
 			}
 		});
+	});
+	
+	// 리뷰 수정하기
+	$(document).on("click", "#review_modify", function () {
+		const rating = $(this).data("rating");
+        const content = $(this).data("content");
+        const imagePath = $(this).data("image_path");
+		$("#photo_review_detail").fadeOut();
+		$(".review_modify_form").fadeIn();
+		
+		// 내용 채우기
+        $("#review_modify_form textarea[name='content']").val(content);
+
+        // 별점 세팅
+        $("#rating_value_modify").val(rating);
+		$("#review_modify_form .review_star span").each(function () {
+		    const v = $(this).attr("data_value");
+		    $(this).toggleClass("active", v <= rating);
+		});
+
+        // 이미지 URL 미리보기
+        if (imagePath) {
+            $("#review_modify_preview_img").attr("src", imagePath);
+            $(".review_image_preview").show();
+            $("#review_modify_delete_image").val("0");
+            $("#review_image_path").val(imagePath);
+        } else {
+            $(".review_image_preview").hide();
+        }
+		
 	});
 	
 	// 리뷰 닫기
@@ -484,16 +572,24 @@
 		    return;
 		}
 		$("#photo_review_detail").fadeOut();
+	    $(".review_modify_form").fadeOut();
+		$("#review_form")[0].reset();
+		$("#review_image_input").val("");
+	    $("#review_preview_img").attr("src", "");
+	    $(".review_form_wrapper .review_image_preview").hide();
 	    $(".review_form_wrapper").slideToggle();
 	});
 
 	$(".review_form_cancel").click(function () {
 	    $(".review_form_wrapper").slideUp();
 	});
+	$(".review_modify_form_cancel").click(function () {
+	    $(".review_modify_form").slideUp();
+	});
 
 	// 폼 전송 부분
 	$("#review_form").on("submit", function (e) {
-	    const rating = $("#rating_value").val();
+	    const rating = $("#rating_value_write").val();
 
 	    if (!rating) {
 	        alert("별점을 선택해주세요.");
@@ -501,14 +597,92 @@
 	        return false;
 	    }
 	});
+	
+	$("#review_modify_form").on("submit", function (e) {
+	    const rating = $("#rating_value_modify").val();
+
+	    if (!rating) {
+	        alert("별점을 선택해주세요.");
+	        e.preventDefault();
+	        return false;
+	    }
+	});
+	
+	// 리뷰 이미지 미리보기
+	$("#review_image_input").on("change", function () {
+	    const file = this.files[0];
+
+	    if (!file) return;
+
+	    // 이미지 타입 체크
+	    if (!file.type.startsWith("image/")) {
+	        alert("이미지 파일만 업로드 가능합니다.");
+	        this.value = "";
+	        return;
+	    }
+
+	    const reader = new FileReader();
+
+	    reader.onload = function (e) {
+	        $("#review_preview_img").attr("src", e.target.result);
+	        $(".review_image_preview").show();
+	    };
+
+	    reader.readAsDataURL(file);
+	});
+	
+	// 미리보기 제거
+	$(document).on("click", ".preview_remove_btn", function () {
+	    $("#review_image_input").val("");
+	    $("#review_preview_img").attr("src", "");
+	    $(".review_image_preview").hide();
+	});
+
+	/* 새 이미지 선택 */
+   $("#review_modify_image_input").on("change", function () {
+       const file = this.files[0];
+       if (!file) return;
+
+       const reader = new FileReader();
+       reader.onload = function (e) {
+           $("#review_modify_preview_img").attr("src", e.target.result);
+           $(".review_image_preview").show();
+           $("#review_modify_delete_image").val("1");
+       };
+       reader.readAsDataURL(file);
+   });
+
+   /* 이미지 제거 */
+   $(".modify_preview_remove_btn").on("click", function () {
+       $("#review_modify_image_input").val(""); // 파일 초기화
+       $("#review_modify_preview_img").attr("src", "");
+       $(".review_image_preview").hide();       // 즉시 제거
+       $("#review_modify_delete_image").val("1"); // 서버에 삭제 신호
+   });
+
+   /* 취소 버튼 */
+   $(".review_modify_form_cancel").on("click", function () {
+       $("#review_modify_form")[0].reset();
+       $(".review_image_preview").hide();
+       $("#review_modify_delete_image").val("0");
+       $(".review_modify_form").hide();
+   });
 
 	// 별점
-	$(".review_star span").on("click",function () {
+	$(document).on("click", ".review_star span", function () {
 	    const val = $(this).attr("data_value");
-	    $("#rating_value").val(val);
+
+	    if ($(this).closest("form").attr("id") === "review_form") {
+	        $("#rating_value_write").val(val);
+	    } else if ($(this).closest("form").attr("id") === "review_modify_form") {
+	        $("#rating_value_modify").val(val);
+	    }
+
+	    // 해당 폼 안에서만 별점 표시
+	    $(this).closest("form").find(".review_star span").removeClass("active");
 	    $(this).addClass("active").prevAll().addClass("active");
-	    $(this).nextAll().removeClass("active");
 	});
+
 	
 	// 댓글===============================================
 	// 페이지 로드 시 댓글 목록 초기화

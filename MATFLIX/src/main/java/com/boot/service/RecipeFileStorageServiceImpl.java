@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dao.RecipeDAO;
+import com.boot.dao.RecipeReviewDAO;
 import com.boot.dto.RecipeImageDTO;
+import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
 import com.boot.dto.ReviewImageDTO;
 
@@ -216,4 +218,49 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 		}
 	}
 
+	@Override
+	public void modify_revoiw_image(RecipeReviewWriteDTO dto) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		MultipartFile file = dto.getImage_file();
+
+		String base_dir = "C:/matflix_upload/review";
+
+		if (file != null && !file.isEmpty()) {
+			try {
+				String old_image_path = "C:/matflix_upload" + dto.getImage_path();
+				File old_file = new File(old_image_path);
+
+				if (old_file.exists()) {
+					boolean deleted = old_file.delete();
+					log.info("기존 리뷰 이미지 삭제 => {} / 성공여부 = {}", old_file.getAbsolutePath(), deleted);
+				}
+
+				String original_name = file.getOriginalFilename();
+				String ext = "";
+
+				if (original_name != null && original_name.lastIndexOf(".") != -1) {
+					ext = original_name.substring(original_name.lastIndexOf("."));
+				}
+
+				String save_file_name = UUID.randomUUID() + ext;
+
+				File dir = new File(base_dir);
+				if (!dir.exists()) {
+					dir.mkdirs();
+				}
+
+				File save_file = new File(dir, save_file_name);
+				file.transferTo(save_file);
+
+				ReviewImageDTO RIDTO = new ReviewImageDTO();
+				RIDTO.setReview_id(dto.getReview_id());
+				RIDTO.setImage_path("/review/" + save_file_name);
+				dao.update_review_image(RIDTO);
+				log.info("리뷰 이미지 수정 완료: {}", save_file.getAbsolutePath());
+			} catch (Exception e) {
+				log.error("리뷰 이미지 수정 실패", e);
+				throw new RuntimeException("리뷰 이미지 수정 중 오류 발생");
+			}
+		}
+	}
 }

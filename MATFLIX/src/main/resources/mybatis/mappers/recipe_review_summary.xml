@@ -41,5 +41,34 @@
 		  FROM recipe_review_summary
 		 WHERE recipe_id = #{recipe_id}
 	</select>
+	
+	<update id="update_review_summary" parameterType="com.boot.dto.RecipeReviewSummaryDTO">
+	    UPDATE recipe_review_summary
+	    SET
+	        rating_sum = rating_sum - #{old_rating} + #{new_rating},
+	
+	        rating_5 = rating_5
+	            - CASE WHEN #{old_rating} = 5 THEN 1 ELSE 0 END
+	            + CASE WHEN #{new_rating} = 5 THEN 1 ELSE 0 END,
+	
+	        rating_4 = rating_4
+	            - CASE WHEN #{old_rating} = 4 THEN 1 ELSE 0 END
+	            + CASE WHEN #{new_rating} = 4 THEN 1 ELSE 0 END,
+	
+	        rating_3 = rating_3
+	            - CASE WHEN #{old_rating} = 3 THEN 1 ELSE 0 END
+	            + CASE WHEN #{new_rating} = 3 THEN 1 ELSE 0 END,
+	
+	        rating_2 = rating_2
+	            - CASE WHEN #{old_rating} = 2 THEN 1 ELSE 0 END
+	            + CASE WHEN #{new_rating} = 2 THEN 1 ELSE 0 END,
+	
+	        rating_1 = rating_1
+	            - CASE WHEN #{old_rating} = 1 THEN 1 ELSE 0 END
+	            + CASE WHEN #{new_rating} = 1 THEN 1 ELSE 0 END
+	
+	    WHERE recipe_id = #{recipe_id}
+	
+	</update>
 
 </mapper>

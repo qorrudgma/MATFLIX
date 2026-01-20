@@ -10,9 +10,15 @@
 				) VALUES (#{recipe_id}, #{mf_no}, #{rating}, #{content})
 	</insert>
 
+	<!-- 리뷰 수정 -->	
+	<update id="modify_review">
+		UPDATE recipe_review SET rating = #{rating}, content = #{content}
+		 WHERE review_id = #{review_id}
+	</update>
+
 	<!-- 리뷰 삭제 -->	
 	<update id="delete_review">
-		UPDATE recipe_review SET deleted = 1 WHERE review_id = #{review_id}>
+		UPDATE recipe_review SET deleted = 1 WHERE review_id = #{review_id}
 	</update>
 
 	<!-- 리뷰 리스트 -->	
@@ -20,6 +26,7 @@
 		SELECT *
 		  FROM recipe_review
 		 WHERE recipe_id = #{recipe_id}
+		   AND deleted = 0
 		 ORDER BY created_at DESC
 	</select>
 
@@ -92,4 +99,16 @@
 <!--		  AND r.deleted = 0-->
 <!--		ORDER BY r.created_at DESC-->
 	</select>
+	
+	<!-- 이미지 삭제 -->	
+	<delete id="delete_review_image">
+		DELETE FROM review_image
+		 WHERE review_id = #{review_id}
+	</delete>
+	
+	<!-- 이미지 삭제 -->	
+	<delete id="update_review_image">
+		UPDATE review_image SET image_path = #{image_path}
+		 WHERE review_id = #{review_id}
+	</delete>
 </mapper>

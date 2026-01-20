@@ -28,4 +28,5 @@ public class RecipeReviewWriteDTO {
 	private int image_id;
 	private String image_path;
 	private MultipartFile image_file;
+	private Integer old_rating;
 }

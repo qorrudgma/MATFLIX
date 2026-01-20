@@ -25,8 +25,8 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	private RecipeFileStorageService recipeFileStorageService;
 
 	@Override
-	public void process_recipe_write(RecipeReviewWriteDTO dto) {
-		log.info("process_recipe_write()");
+	public void process_review_write(RecipeReviewWriteDTO dto) {
+		log.info("process_review_write()");
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		RecipeReviewDTO RRDTO = new RecipeReviewDTO();
 		RRDTO.setRecipe_id(dto.getRecipe_id());
@@ -59,9 +59,15 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	}
 
 	@Override
-	public void modify_review(RecipeReviewDTO dto) {
+	public void modify_review(RecipeReviewWriteDTO dto) {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		dao.modify_review(dto);
+		recipeFileStorageService.modify_revoiw_image(dto);
+		RecipeReviewSummaryDTO RRSDTO = new RecipeReviewSummaryDTO();
+		RRSDTO.setRecipe_id(dto.getRecipe_id());
+		RRSDTO.setOld_rating(dto.getOld_rating());
+		RRSDTO.setNew_rating(dto.getRating());
+		dao.update_review_summary(RRSDTO);
 	}
 
 	@Override
@@ -112,5 +118,23 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 		review_summary_list = dao.review_summary_list(review_id);
 		log.info("review_summary_list => " + review_summary_list);
 		return review_summary_list;
+	}
+
+	@Override
+	public void delete_review_image(int recipe_id) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		dao.delete_review_image(recipe_id);
+	}
+
+	@Override
+	public void update_review_image(ReviewImageDTO dto) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		dao.update_review_image(dto);
+	}
+
+	@Override
+	public void update_review_summary(RecipeReviewSummaryDTO dto) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		dao.update_review_summary(dto);
 	}
 }
