@@ -1,17 +1,3 @@
-/*==========================================================
-* 파일명     : RecipeCommentController.java
-* 작성자     : 임진우
-* 작성일자   : 2025-05-07
-* 설명       : recipe 뷰의 댓글기능에 관한 클래스 파일입니다.
-
-* 수정 이력 :
-* 날짜         수정자       내용
-* --------   ----------   ------------------------- 
-* 2025-05-08   임진우       최초생성
-* 2025-05-08   임진우       댓글 기능 완
-* 2025-05-12   임진우       댓글 작성자 별점기능 추가
-============================================================*/
-
 package com.boot.controller;
 
 import java.util.ArrayList;
@@ -72,7 +58,7 @@ public class RecipeCommentController {
 				c.setDisplay_time(TimeUtil.timeAgo(c.getCreated_at()));
 			}
 		}
-		log.info("recipeCommentList => " + recipeCommentList);
+//		log.info("recipeCommentList => " + recipeCommentList);
 
 		return recipeCommentList;
 	}

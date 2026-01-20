@@ -37,7 +37,7 @@ public class NotificationController {
 	@ResponseBody
 	public List<NotificationDTO> notification_list_n(@RequestParam("follower_id") int follower_id) {
 		List<NotificationDTO> notification_list_n = notificationService.notification_list_n(follower_id);
-		log.info("notification_list_n => " + notification_list_n);
+//		log.info("notification_list_n => " + notification_list_n);
 		return notification_list_n;
 	}
 

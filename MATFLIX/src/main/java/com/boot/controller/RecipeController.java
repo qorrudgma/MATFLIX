@@ -128,6 +128,7 @@ public class RecipeController {
 
 	@GetMapping("/recipe_content_view")
 	public String recipe_content_view(@RequestParam("recipe_id") int recipe_id, Model model, HttpSession session) {
+		log.info("recipe_id=>" + recipe_id);
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		RecipeDTO recipe = recipeService.recipe(recipe_id);
 		String time = TimeUtil.timeAgo(recipe.getCreated_at());

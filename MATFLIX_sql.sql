@@ -218,7 +218,8 @@ CREATE TABLE recipe (
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-select recommend from recipe where recipe_id =6;
+select * from recipe where recipe_id =9;
+select * from recipe;
 update recipe
 		   set recommend = recommend + 1
 		 where recipe_id = 6;
@@ -419,7 +420,7 @@ SELECT *
  WHERE recipe_id = 6;
 
 update recipe_review_summary
-   set rating_sum = rating_sum - 1, rating_5 = rating_5-1 and rating_4 = rating_4+1
+   set rating_4 = 1
  WHERE recipe_id = 6;
 
 

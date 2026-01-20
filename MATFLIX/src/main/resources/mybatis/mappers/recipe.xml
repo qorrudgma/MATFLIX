@@ -13,7 +13,7 @@
 	<!-- 레시피 수정 -->
 	<update id="modify_recipe" parameterType="com.boot.dto.RecipeDTO" useGeneratedKeys="true" keyProperty="recipe_id">
 		UPDATE recipe
-		   SET mf_no = #{mf_no}, title = #{title}, intro = #{intro}, servings =  #{servings}, cook_time = #{cook_time}, difficulty = #{difficulty}, category = #{category}, tip = #{tip}
+		   SET title = #{title}, intro = #{intro}, servings =  #{servings}, cook_time = #{cook_time}, difficulty = #{difficulty}, category = #{category}, tip = #{tip}
 		 WHERE recipe_id = #{recipe_id}
 	</update>
 

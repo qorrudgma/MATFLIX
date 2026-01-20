@@ -190,6 +190,8 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	public void delete_recipe(int recipe_id) {
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeImageDTO> dto = dao.recipe_image(recipe_id);
+		fileStorageService.delete_image(dto);
 		dao.delete_recipe(recipe_id);
 	}
 

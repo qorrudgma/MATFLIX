@@ -338,7 +338,7 @@
                         <i class="fa-solid fa-arrow-left"></i> 취소
                     </button>
                     <button type="submit" class="mf_btn mf_btn_primary" id="submit_btn">
-                        <i class="fa-solid fa-check"></i> 등록
+                        <i class="fa-solid fa-check"></i> 수정하기
                     </button>
                 </div>
 
@@ -377,9 +377,26 @@
         if (!file || !preview_el) {
             return;
         }
+	    const old_path_input = preview_el.querySelector("input[name='image_path[]']");
+	    const old_path = old_path_input ? old_path_input.value : "";
+
+	    if (old_path) {
+	       const form = document.getElementById("recipe_write_form");
+
+	       if (!form.querySelector(
+	           "input[name='delete_image_path[]'][value=\"" + old_path + "\"]"
+	       )) {
+	           const hidden = document.createElement("input");
+	           hidden.type = "hidden";
+	           hidden.name = "delete_image_path[]";
+	           hidden.value = old_path;
+	           form.appendChild(hidden);
+	       }
+	    }
         var reader = new FileReader();
         reader.onload = function(e) {
-            preview_el.innerHTML = "<img src=\"" + e.target.result + "\" alt=\"preview\">";
+            preview_el.innerHTML = "<input type='hidden' name='image_path[]' value=''>" +
+									"<img src=\"" + e.target.result + "\" alt=\"preview\">";
             preview_el.classList.add("mf_has_image");
         };
         reader.readAsDataURL(file);
@@ -391,6 +408,7 @@
         }
         preview_el.innerHTML = "<div class='mf_image_placeholder'>" +
             "<i class='fa-solid fa-camera'></i>" +
+			"<input type='hidden' name='image_path[]' value=''>" +
             "<div class='mf_image_placeholder_text'>이미지를 업로드해주세요</div>" +
             "<div class='mf_image_placeholder_hint'>JPG / PNG 권장 (최대 5MB)</div>" +
         "</div>";
@@ -543,30 +561,45 @@
         });
     }
 
-    function bind_step_remove(btn) {
-        btn.addEventListener("click", function() {
-            var steps = step_list.querySelectorAll(".mf_step");
-            if (steps.length <= 1) {
-                var first = steps[0];
-                first.querySelector("textarea[name='step_content[]']").value = "";
-                var file_el = first.querySelector(".mf_step_file");
-                var preview_el = first.querySelector(".mf_step_preview");
-                if (file_el) {
-                    file_el.value = "";
-                }
-                if (preview_el) {
-                    clear_step_preview(preview_el);
-                }
-                return;
-            }
+	function bind_step_remove(btn) {
+	    btn.addEventListener("click", function() {
 
-            var step = btn.closest(".mf_step");
-            if (step) {
-                step.remove();
-                reindex_steps();
-            }
-        });
-    }
+	        const step = btn.closest(".mf_step");
+	        if (!step) return;
+
+	        const path_input = step.querySelector("input[name='image_path[]']");
+	        const image_path = path_input ? path_input.value : "";
+
+	        if (image_path) {
+	            const form = document.getElementById("recipe_write_form");
+
+	            if (!form.querySelector(
+	                "input[name='delete_image_path[]'][value=\"" + image_path + "\"]"
+	            )) {
+	                const hidden = document.createElement("input");
+	                hidden.type = "hidden";
+	                hidden.name = "delete_image_path[]";
+	                hidden.value = image_path;
+	                form.appendChild(hidden);
+	            }
+	        }
+
+	        var steps = step_list.querySelectorAll(".mf_step");
+	        if (steps.length <= 1) {
+	            var first = steps[0];
+	            first.querySelector("textarea[name='step_content[]']").value = "";
+	            var file_el = first.querySelector(".mf_step_file");
+	            var preview_el = first.querySelector(".mf_step_preview");
+	            if (file_el) file_el.value = "";
+	            if (preview_el) clear_step_preview(preview_el);
+	            return;
+	        }
+
+	        step.remove();
+	        reindex_steps();
+	    });
+	}
+
 
     function bind_step_file(file_el) {
         file_el.addEventListener("change", function() {

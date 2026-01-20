@@ -1,6 +1,7 @@
 package com.boot.service;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSession;
@@ -86,6 +87,32 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 	}
 
 	@Override
+	public void delete_image(List<RecipeImageDTO> dto) {
+		String delete_base_dir = "C:/matflix_upload";
+		List<RecipeImageDTO> image_list = dto;
+
+		if (image_list != null && !image_list.isEmpty()) {
+			for (RecipeImageDTO image_dto : image_list) {
+				String image_path = image_dto.getImage_path();
+				if (image_path == null || image_path.trim().isEmpty()) {
+					continue;
+				}
+				File file = new File(delete_base_dir + image_path);
+				if (file.exists() && file.isFile()) {
+					boolean deleted = file.delete();
+					if (deleted) {
+						log.info("이미지 파일 삭제 완료: {}", file.getAbsolutePath());
+					} else {
+						log.warn("이미지 파일 삭제 실패: {}", file.getAbsolutePath());
+					}
+				} else {
+					log.warn("삭제 대상 파일 없음: {}", file.getAbsolutePath());
+				}
+			}
+		}
+	}
+
+	@Override
 	public void modify_recipe_image(int recipe_id, RecipeWriteDTO dto) {
 		log.info("save_image 옴");
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
@@ -161,15 +188,14 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 		// 파일 삭제
 		String delete_base_dir = "C:/matflix_upload";
 		String[] delete_image_path = dto.getDelete_image_path();
+		log.info("delete_image_path => " + delete_image_path);
 
 		if (delete_image_path != null && delete_image_path.length > 0) {
 			for (String path : delete_image_path) {
 				if (path == null || path.trim().isEmpty()) {
 					continue;
 				}
-
-				path = path.replace("\\", "/");
-
+				log.info(delete_base_dir + path);
 				File file = new File(delete_base_dir + path);
 
 				if (file.exists() && file.isFile()) {
