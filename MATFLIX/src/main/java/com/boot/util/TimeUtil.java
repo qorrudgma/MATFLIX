@@ -2,14 +2,13 @@ package com.boot.util;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TimeUtil {
 	private TimeUtil() {
 	}
 
-	/**
-	 * LocalDateTime → "방금 전 / n분 전 / n시간 전 / n일 전 / n개월 전 / n년 전"
-	 */
+	/* LocalDateTime → "방금 전 / n분 전 / n시간 전 / n일 전 / n개월 전 / n년 전" */
 	public static String timeAgo(LocalDateTime time) {
 
 		if (time == null) {
@@ -50,5 +49,25 @@ public class TimeUtil {
 
 		long years = months / 12;
 		return years + "년 전";
+	}
+
+	/* LocalDateTime => "yyyy-MM-dd" */
+	public static String formatDate(LocalDateTime time) {
+
+		if (time == null) {
+			return "";
+		}
+
+		return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	}
+
+	/* LocalDateTime => "yyyy-MM-dd HH:mm" */
+	public static String formatDateTime(LocalDateTime time) {
+
+		if (time == null) {
+			return "";
+		}
+
+		return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 	}
 }

@@ -45,8 +45,9 @@
 					
 					<!-- 프로필 정보 -->
 					<div class="user_container">
-						<div class="profile_image profile">
-							<img onclick="my_page()" alt="MATFLIX" src="${pageContext.request.contextPath}/image/MATFLIX.png">
+						<div class="profile_image profile user-avatar">
+<!--							<img onclick="location.href='${pageContext.request.contextPath}/profile'" alt="MATFLIX" src="${pageContext.request.contextPath}/image/MATFLIX.png">-->
+							<i onclick="location.href='${pageContext.request.contextPath}/profile'" class="fas fa-user"></i>
 						</div>
 						<div class="user_info">
 							<div class="profile_info">

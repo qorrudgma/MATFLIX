@@ -498,7 +498,7 @@
 					
 					if (!nicknameRegex.test(nickname)) {
 				        alert("특수문자는 사용 불가하며 최대 8글자까지 입력할 수 있습니다.");
-				        $("#nickname").focus();
+				        $("#mf_nickname").focus();
 				        return;
 				    }
 		            
@@ -507,8 +507,10 @@
 		                url: $(this).attr("action"),
 		                data: $(this).serialize(),
 		                success: function(response) {
-		                    alert("닉네임이 성공적으로 변경되었습니다.");
-		                    location.reload(); // 페이지 리로드
+							alert(response.message);
+					        if (response.success) {
+					            location.reload(); // 페이지 리로드
+					        }
 		                },
 		                error: function() {
 		                    alert("닉네임 변경 중 오류가 발생했습니다.");

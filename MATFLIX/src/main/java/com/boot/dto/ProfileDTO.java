@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeamDTO {
+public class ProfileDTO {
 	private int mf_no;
 	private String mf_id;
 	private String mf_pw;
@@ -25,4 +25,8 @@ public class TeamDTO {
 	private String mf_role;
 
 	private LocalDateTime mf_nickname_updatetime;
+
+	private int follower_count;
+	private int following_count;
+	private int recipe_count;
 }

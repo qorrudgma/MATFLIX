@@ -59,6 +59,27 @@
 		delete from matflix where mf_no=#{mf_no}
 	</delete>
 	
+	<!-- 닉네임 변경 일시 -->
+	<select id="nickname_updatetime_check" resultType="java.time.LocalDateTime">
+		select mf_nickname_updatetime
+		  from matflix
+		 where mf_no = #{mf_no}
+	</select>
+	
+	<!-- 닉네임 변경 일시 업데이트 -->
+	<update id="nickname_updatetime_update">
+		update matflix
+		   set mf_nickname_updatetime = NOW()
+		 where mf_no = #{mf_no}
+	</update>
+	
+	<!-- 닉네임 중복 확인 -->
+	<select id="nickname_check" resultType="int">
+		select count(*)
+		  from matflix
+		 where mf_nickname = #{mf_nickname}
+	</select>
+	
 	<!-- 닉네임 변경 -->
 	<update id="nickname">
 		update matflix set mf_nickname=#{mf_nickname}

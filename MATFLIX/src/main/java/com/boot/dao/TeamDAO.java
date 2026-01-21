@@ -1,5 +1,6 @@
 package com.boot.dao;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,12 @@ public interface TeamDAO {
 	public void update_ok(HashMap<String, String> param);
 
 	public void delete_ok(@Param("mf_no") int mf_no);
+
+	public LocalDateTime nickname_updatetime_check(int mf_no);
+
+	public void nickname_updatetime_update(int mf_no);
+
+	public int nickname_check(String mf_nickname);
 
 	public void nickname(@Param("mf_nickname") String mf_nickname, @Param("mf_id") String mf_id);
 

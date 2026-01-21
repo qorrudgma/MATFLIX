@@ -17,6 +17,7 @@
 
 package com.boot.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import com.boot.service.NotificationService;
 import com.boot.service.RecipeService;
 import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
+import com.boot.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -100,30 +102,9 @@ public class TeamController {
 
 		int mfNo = user.getMf_no();
 
-		// 즐겨찾기
-//		List<FavoriteDTO> originalFavoriteList = favoriteService.getUserFavoriteRecipes(mfNo);
-//
-//		List<Map<String, Object>> favoritesForView = new ArrayList<>();
-//
-//		for (FavoriteDTO f_dto : originalFavoriteList) {
-//			Map<String, Object> favoriteMap = new HashMap<>();
-//			favoriteMap.put("favoriteId", f_dto.getFavoriteId());
-//			favoriteMap.put("mfNo", f_dto.getMfNo());
-//			favoriteMap.put("recipeId", f_dto.getRecipeId());
-//
-//			if (f_dto.getCreatedAt() != null) {
-//				Date createdAtAsDate = Date.from(f_dto.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant());
-//				favoriteMap.put("createdAt", createdAtAsDate);
-//			} else {
-//				favoriteMap.put("createdAt", null);
-//			}
-//
-//			favoritesForView.add(favoriteMap);
-//		}
 		int user_follow_count = followService.user_follow_count(mfNo);
 		int user_follower_count = followService.user_follower_count(mfNo);
 
-//		model.addAttribute("favorites", favoritesForView);
 		model.addAttribute("my_recipe", my_recipe);
 		model.addAttribute("dto", dto);
 		model.addAttribute("profile_board", profile_board);
@@ -342,16 +323,42 @@ public class TeamController {
 //
 //      return "redirect:profile";
 //   }
-	@RequestMapping("/nickname")
-	public String nickname(@RequestParam("mf_nickname") String mf_nickname, @RequestParam("mf_id") String mf_id,
-			Model model, HttpSession session) {
-		service.nickname(mf_nickname, mf_id); // 닉네임 변경 처리
+	@PostMapping("/nickname")
+	@ResponseBody
+	public Map<String, Object> nickname(@RequestParam("mf_nickname") String mf_nickname,
+			@RequestParam("mf_id") String mf_id, HttpSession session) {
+		Map<String, Object> result = new HashMap<>();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		LocalDateTime lastUpdate = service.nickname_updatetime_check(mf_no);
 
-		// 변경된 사용자 정보 다시 가져와서 세션 갱신
+		if (lastUpdate != null && lastUpdate.plusMonths(1).isAfter(LocalDateTime.now())) {
+			String nextDate = TimeUtil.formatDateTime(lastUpdate.plusMonths(1));
+			result.put("success", false);
+			result.put("message", "다음 닉네임 변경 가능일: " + nextDate);
+			return result;
+		}
+
+		// 자기 자신 제외한 중복 체크가 이상적
+		boolean nickname_check = service.nickname_check(mf_nickname) > 0;
+
+		if (nickname_check) {
+			result.put("success", false);
+			result.put("message", "이미 사용 중인 닉네임입니다.");
+			return result;
+		}
+
+		service.nickname(mf_nickname, mf_id);
+
 		TeamDTO updatedUser = service.find_list(mf_id);
-		session.setAttribute("user", updatedUser); // 세션 갱신
+		session.setAttribute("user", updatedUser);
 
-		return "redirect:profile"; // 리디렉션
+		result.put("success", true);
+		result.put("message", "닉네임이 성공적으로 변경되었습니다.");
+
+		service.nickname_updatetime_update(mf_no);
+
+		return result;
 	}
 
 	// 계정 설정 클릭시

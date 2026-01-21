@@ -1,5 +1,6 @@
 package com.boot.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,6 +98,24 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
+	public LocalDateTime nickname_updatetime_check(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		return dao.nickname_updatetime_check(mf_no);
+	}
+
+	@Override
+	public void nickname_updatetime_update(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		dao.nickname_updatetime_update(mf_no);
+	}
+
+	@Override
+	public int nickname_check(String mf_nickname) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		return dao.nickname_check(mf_nickname);
+	}
+
+	@Override
 	public void nickname(@Param("mf_nickname") String mf_nickname, @Param("mf_id") String mf_id) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		dao.nickname(mf_nickname, mf_id);
@@ -115,5 +134,4 @@ public class TeamServiceImpl implements TeamService {
 		Map<String, Object> rank_user = dao.rank_user(mf_no);
 		return rank_user;
 	}
-
 }
