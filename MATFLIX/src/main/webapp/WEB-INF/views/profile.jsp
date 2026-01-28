@@ -20,10 +20,29 @@
         <!-- 프로필 섹션 - 가독성 향상 -->
         <section class="profile_section">
             <div class="profile_header">
-                <div class="profile_image_large">
-                    <img src="${pageContext.request.contextPath}/image/MATFLIX.png" alt="프로필 이미지">
-                    <button class="edit_profile_image"><i class="fas fa-camera"></i></button>
+                <div class="profile_image_div">
+	                <div class="profile_image_large" id="profile_image_preview">
+						<i class="fas fa-user"></i>
+	                </div>
+					<span class="modify_profile_image" id="open_profile_image_edit">이미지 수정</span>
+					<form id="profile_image_form" enctype="multipart/form-data">
+						<div class="profile_image_edit_panel" id="profile_image_edit_panel" style="display:none;">
+						    <input type="file"
+						           id="profile_image_file"
+								   name="profile_image_path"
+						           accept="image/*">
+						    <div class="profile_image_edit_actions">
+						        <button type="button" id="profile_image_confirm" class="mf_btn mf_btn_primary">
+						            확인
+						        </button>
+						        <button type="button" id="profile_image_cancel" class="mf_btn mf_btn_ghost">
+						            취소
+						        </button>
+						    </div>
+						</div>
+					</form>
                 </div>
+
                 <div class="profile_info_container">
 					<div class="profile_info">
                         <h2>
@@ -329,6 +348,84 @@
     <jsp:include page="footer.jsp" />
     
     <script>
+		let originalProfileImageHtml = null;
+		let selectedProfileImageFile = null;
+
+		// 이미지 수정 열기
+		$("#open_profile_image_edit").on("click", function () {
+		    const preview = $("#profile_image_preview");
+		    // 원본 상태 저장 (취소용)
+		    originalProfileImageHtml = preview.html();
+		    $("#profile_image_edit_panel").slideDown(200);
+		    $("#profile_image_file").val("");
+		    $("#profile_image_edit_preview").html("");
+		});
+
+		// 파일 선택 트리거
+		$("#profile_image_edit_panel").on("click", function () {
+		    $("#profile_image_file").click();
+		});
+
+		// 파일 선택 미리보기
+		$("#profile_image_file").on("change", function () {
+		    const file = this.files[0];
+		    if (!file) return;
+
+		    selectedProfileImageFile = file;
+
+		    const reader = new FileReader();
+		    reader.onload = function (e) {
+		        $("#profile_image_preview").html(
+		            '<img src="' + e.target.result + '" class="profile_image_img">'
+		        );
+		    };
+		    reader.readAsDataURL(file);
+		});
+
+		// 확인 버튼
+		$("#profile_image_confirm").on("click", function () {
+		    const fileInput = $("#profile_image_file")[0];
+
+		    if (!fileInput.files.length) {
+		        alert("이미지를 선택해주세요.");
+		        return;
+		    }
+
+		    const formData = new FormData();
+		    formData.append("profile_image_path", fileInput.files[0]);
+
+		    $.ajax({
+		        url: "/profile_image",
+		        type: "post",
+		        data: formData,
+		        processData: false,
+		        contentType: false,
+		        success: function () {
+		            alert("프로필 이미지가 변경되었습니다.");
+		            location.reload();
+		        },
+		        error: function () {
+		            alert("이미지 업로드 실패");
+		        }
+		    });
+		});
+
+
+		// 취소 버튼
+		$("#profile_image_cancel").on("click", function () {
+		    // 원래 이미지로 복구
+		    if (originalProfileImageHtml) {
+		        $("#profile_image_preview").html(originalProfileImageHtml);
+		    }
+		    $("#profile_image_edit_panel").slideUp(200);
+		    // 초기화
+		    selectedProfileImageFile = null;
+		    originalProfileImageHtml = null;
+		    $("#profile_image_file").val("");
+		});
+
+		
+				
         $(document).ready(function() {
             // 탭 전환 기능
             $('.tab_btn').click(function() {

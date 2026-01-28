@@ -120,6 +120,15 @@ public class TeamController {
 //      return "delete_member";
 //   }
 
+	// 프로필 이미지
+	@PostMapping("/profile_image")
+	@ResponseBody
+	public String profile_image(HttpSession session) {
+		log.info("profile_image()");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		return "";
+	}
+
 	// 탈퇴 페이지 이동
 	@RequestMapping("/delete_member")
 	public String delete_member(HttpSession session, Model model) {
