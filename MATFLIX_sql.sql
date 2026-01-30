@@ -105,16 +105,20 @@ CREATE TABLE tbl_board (
 );
 select * from tbl_board order by 1 desc;
 select b.boardNo
-     , b.boardName
-     , b.boardTitle
-     , b.boardContent
-     , b.boardDate
-     , b.boardHit
-     , b.mf_no
-from tbl_board b
-join follow f
-  on b.mf_no = f.following_id
-where f.follower_id = 61;
+		     , m.mf_nickname as boardName
+             , b.boardTitle
+             , b.boardContent
+             , b.boardDate
+             , b.boardHit
+             , b.mf_no
+             , b.recommend_count
+             , b.recommend_notify_step
+             , b.comment_count
+          from tbl_board b
+          LEFT JOIN user_image ui
+			ON ui.mf_no = b.mf_no
+          LEFT JOIN matflix m
+			ON m.mf_no = b.mf_no;
 
 
 -- 게시판 댓글 테이블
@@ -131,10 +135,23 @@ CREATE TABLE board_comment (
     recommend_count INT DEFAULT 0,
     recommend_notify_step INT DEFAULT 0
 );
-select commentNo, recommend_count FROM board_comment where boardNo = 332 order by 1 desc;
-update board_comment
-    	   set recommend_count = recommend_count - 1
- 		 where commentNo=281;
+select * FROM board_comment where boardNo = 332 order by 1 desc;
+SELECT c.commentNo
+	 , c.commentWriter
+	 , c.commentContent
+	 , c.userNo
+	 , c.commentCreatedTime
+	 , c.parentCommentNo
+	 , c.recommend_count
+	 , CASE WHEN cr.mf_no IS NULL THEN 0 ELSE 1 END AS recommended
+     , ui.profile_image_path AS profile_image_path
+  FROM board_comment c
+  LEFT JOIN comment_recommend cr
+	ON c.commentNo = cr.commentNo AND cr.mf_no = 61
+  LEFT JOIN user_image ui
+	ON ui.mf_no = c.userNo
+ WHERE c.boardNo = 332 AND c.deleted = 0
+ ORDER BY c.commentCreatedTime DESC;
 
 
 -- 게시판 추천 테이블
@@ -160,7 +177,7 @@ insert into comment_recommend(commentNo, mf_no)
 		values (308, 61);
    
 SELECT c.commentNo
-	 , c.commentWriter
+	 , m.mf_nickname as mf_nickname
 	 , c.commentContent
      , c.userNo
      , c.commentCreatedTime
@@ -170,7 +187,11 @@ SELECT c.commentNo
   FROM board_comment c
   LEFT JOIN comment_recommend cr
     ON c.commentNo = cr.commentNo AND cr.mf_no = 0
- WHERE c.boardNo = 331 AND c.deleted = 0
+		  LEFT JOIN user_image ui
+			ON ui.mf_no = c.userNo
+		  LEFT JOIN matflix m
+			ON m.mf_no = c.userNo
+ WHERE c.boardNo = 332 AND c.deleted = 0
  ORDER BY c.commentCreatedTime DESC;
 
 
@@ -232,6 +253,7 @@ CREATE TABLE recipe (
     tip           TEXT,
     star      	  INT DEFAULT NULL, 	 		  -- 리뷰
     recommend     INT DEFAULT 0, 	 		  -- 추천
+    recipe_favorite_count INT DEFAULT 0,
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -242,7 +264,7 @@ update recipe
 		 where recipe_id = 6;
 DELETE FROM recipe
 WHERE recipe_id = 1;
-alter table recipe add recommend INT DEFAULT 0;
+alter table recipe add COLUMN recipe_favorite_count INT DEFAULT 0;
 
 -- 재료
 CREATE TABLE recipe_ingredient (
@@ -332,6 +354,26 @@ select * from recipe_recommend order by 1 desc;
 delete from recipe_recommend
 		 where recipe_id=6
 		   and mf_no=62;
+           
+-- 레시피 즐겨찾기
+CREATE TABLE favorite_recipe (
+    favorite_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id BIGINT NOT NULL,
+    mf_no INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uk_recipe_user (recipe_id, mf_no),
+	-- 레시피 삭제 시 삭제
+    CONSTRAINT fk_favorite_recipe
+    FOREIGN KEY (recipe_id)
+    REFERENCES recipe(recipe_id)
+    ON DELETE CASCADE,
+	-- 유저 탈퇴 시 삭제
+    CONSTRAINT fk_favorite_user
+    FOREIGN KEY (mf_no)
+    REFERENCES matflix(mf_no)
+    ON DELETE CASCADE
+);
 
 -- 레시피 댓글 테이블
 CREATE TABLE recipe_comment (

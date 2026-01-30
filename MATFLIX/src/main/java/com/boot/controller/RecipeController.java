@@ -41,6 +41,7 @@ import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
 import com.boot.dto.ReviewImageDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.service.FavoriteRecipeService;
 import com.boot.service.FollowService;
 import com.boot.service.RecipeRecommendService;
 import com.boot.service.RecipeReviewService;
@@ -63,6 +64,9 @@ public class RecipeController {
 
 	@Autowired
 	private FollowService followService;
+
+	@Autowired
+	private FavoriteRecipeService favoriteRecipeService;
 
 	@RequestMapping("/recipe_write")
 	public String recipe_write(RecipeWriteDTO dto, HttpSession session) {
@@ -163,8 +167,9 @@ public class RecipeController {
 			}
 		}
 		if (user != null) {
-			model.addAttribute("recommended",
-					recipeRecommendService.check_recipe_recommend(recipe_id, user.getMf_no()));
+			int mf_no = user.getMf_no();
+			model.addAttribute("recommended", recipeRecommendService.check_recipe_recommend(recipe_id, mf_no));
+			model.addAttribute("favorite_check", favoriteRecipeService.check_favorite_recipe(recipe_id, mf_no));
 			if (followService.check_follow(user.getMf_no(), recipe.getMf_no()) == 1) {
 				model.addAttribute("follow", true);
 			} else {

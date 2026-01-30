@@ -1,0 +1,28 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.FavoriteRecipeDAO">
+    
+    <!-- 츨찾 추가 -->
+    <insert id="insert_favorite_recipe">
+		insert into favorite_recipe(recipe_id
+			 , mf_no
+		values(#{recipe_id},#{mf_no})
+    </insert>
+    
+    <!-- 츨찾 삭제 -->
+    <delete id="delete_favorite_recipe">
+    	delete from favorite_recipe
+		 where recipe_id = #{recipe_id}
+		   and mf_no = #{mf_no}
+    </delete>
+    
+    <!-- 츨찾 확인 -->
+    <select id="check_favorite_recipe" resultType="int">
+    	select count(*)
+    	  from favorite_recipe
+		 where recipe_id = #{recipe_id}
+		   and mf_no = #{mf_no}
+    </select>
+</mapper>

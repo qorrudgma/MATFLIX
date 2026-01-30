@@ -24,18 +24,20 @@
             <h1>${recipe.title}</h1>
             <p>${recipe.mf_nickname} · ${recipe.display_updated_at}</p>
             <p class="recommend">추천 · <span id="recommend_count">${recipe.recommend}</span></p>
-			<c:choose>
-				<c:when test="${follow}">
-					<button type="button" id="follow_btn" class="follow-btn delete_follow">
-                        <i class="fas fa-user-minus"></i> 팔로우 취소
-                    </button>
-				</c:when>
-				<c:otherwise>
-					<button type="button" id="follow_btn" class="follow-btn add_follow">
-                        <i class="fas fa-user-plus"></i> 팔로우
-                    </button>
-				</c:otherwise>
-			</c:choose>
+			<c:if test="${not empty user and recipe.mf_no != user.mf_no}">
+				<c:choose>
+					<c:when test="${follow}">
+						<button type="button" id="follow_btn" class="follow-btn delete_follow">
+	                        <i class="fas fa-user-minus"></i> 팔로우 취소
+	                    </button>
+					</c:when>
+					<c:otherwise>
+						<button type="button" id="follow_btn" class="follow-btn add_follow">
+	                        <i class="fas fa-user-plus"></i> 팔로우
+	                    </button>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
         </div>
     </section>
 
@@ -45,6 +47,18 @@
 		<c:if test="${not empty user and recipe.mf_no == user.mf_no}">
 			<a href="/recipe_modify_page?recipe_id=${recipe.recipe_id}" class="edit-btn">수정</a>
 		</c:if>
+		<c:choose>
+			<c:when test="${not empty user and favorite_check == 1}">
+				<button type="button" id="insert_favorite_recipe">
+                    <i class="fas fa-star"></i>즐찾 되어있음
+                </button>
+			</c:when>
+			<c:otherwise>
+				<button type="button" id="delete_favorite_recipe">
+                    <i class="fas fa-star"></i>즐찾 안 되어있음
+                </button>
+			</c:otherwise>
+		</c:choose>
     </section>
 
     <!-- 재료 -->
@@ -373,6 +387,57 @@
             }
             ,error: function () {
                 console.log("팔로우 실패");
+            }
+        });
+    });
+	
+    // 즐겨찾기 추가 버튼
+    $(document).on("click", "#insert_favorite_recipe", function (e) {
+        e.preventDefault();
+
+        if (sessionUserNo == '') {
+            alert("로그인 후 이용 가능합니다.");
+            return;
+        }
+
+        $.ajax({
+             type: "POST"
+            ,data: {recipe_id: recipe_id}
+            ,url: "/insert_favorite_recipe"
+            ,success: function (result) {
+                console.log("즐겨찾기 추가 성공");
+				// 버튼 교체
+				$("#insert_favorite_recipe").replaceWith(`<button type="button" id="delete_favorite_recipe">
+													        <i class="fas fa-star"></i>즐찾 되어있음
+													    </button>`);
+            }
+            ,error: function () {
+                console.log("즐겨찾기 추가 실패");
+            }
+        });
+    });
+	
+    // 즐겨찾기 취소 버튼
+    $(document).on("click", "#delete_favorite_recipe", function (e) {
+        e.preventDefault();
+
+        if (sessionUserNo == '') {
+            alert("로그인 후 이용 가능합니다.");
+            return;
+        }
+
+        $.ajax({
+             type: "POST"
+            ,data: {recipe_id: recipe_id}
+            ,url: "/delete_favorite_recipe"
+            ,success: function (result) {
+                console.log("즐겨찾기 취소 성공");
+				$("#delete_favorite_recipe").replaceWith(`<button type="button" id="insert_favorite_recipe">
+												            <i class="far fa-star"></i>즐찾 안 되어있음
+												        </button>`);
+            }
+            ,error: function () {
+                console.log("즐겨찾기 취소 실패");
             }
         });
     });

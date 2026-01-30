@@ -21,6 +21,7 @@ public class RecipeDTO {
 	private String tip;
 	private int star;
 	private int recommend;
+	private int recipe_favorite_count;
 	private LocalDateTime created_at;
 	private LocalDateTime updated_at;
 
