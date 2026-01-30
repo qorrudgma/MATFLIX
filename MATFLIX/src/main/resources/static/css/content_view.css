@@ -455,6 +455,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+/* 프로필 이미지 */
+.comment-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .comment-avatar i {
@@ -801,6 +809,13 @@
 
   .comment-item {
     padding: 6px 5px;
+  }
+  
+  /* 프로필 이미지 */
+  .comment-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
   }
 
   .comment-avatar {

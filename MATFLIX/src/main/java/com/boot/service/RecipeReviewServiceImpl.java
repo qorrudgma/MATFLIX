@@ -22,7 +22,7 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	private SqlSession sqlSession;
 
 	@Autowired
-	private RecipeFileStorageService recipeFileStorageService;
+	private FileStorageService recipeFileStorageService;
 
 	@Override
 	public void process_review_write(RecipeReviewWriteDTO dto) {

@@ -173,6 +173,7 @@
     // var endNo = 5; // 초기에 표시할 댓글 수
     var comment_count = ${count}; // 전체 댓글 수
     var parentCommentNo = 0;
+    var contextPath = "${pageContext.request.contextPath}";
     
     // 페이지 로드 시 애니메이션 효과
     $(document).ready(function() {
@@ -302,7 +303,8 @@
     // 댓글 작성
     function commentWrite(parentCommentNo) {
         console.log("유저 넘 => " + sessionUserNo);
-        const writer = document.getElementById("commentWriter").value;
+        const writer = sessionUserNo;
+        // const writer = document.getElementById("commentWriter").value;
 		let content = "";
 		if(parentCommentNo == 0){
         	content = document.getElementById("commentContent").value;
@@ -470,6 +472,8 @@
     // 댓글 목록 렌더링
     function renderCommentList11(commentList) {
         let output = "";
+			console.log(commentList[i].profile_image_path);
+			console.log(typeof commentList[i].profile_image_path);
 		
         for (let i = 0; i < commentList.length; i++) {
             const comment = commentList[i];
@@ -478,14 +482,22 @@
 	            output += `<div class="comment-item">
 							 <div class="comment-main">
 		                         <div class="comment-profile">
-		                             <div class="comment-avatar">
-		                                 <i class="fas fa-user"></i>
-		                             </div>
+		                             <div class="comment-avatar">`;
+										if (commentList[i].profile_image_path) {
+										    output += `
+										        <img src="${contextPath}${commentList[i].profile_image_path}">
+										    `;
+										} else {
+										    output += `
+										        <i class="fas fa-user"></i>
+										    `;
+										}
+                     	output += `</div>
 		                         </div>
 		                         <div class="comment-content">
 		                             <div class="comment-header">
 		                                 <span class="comment-author">`
-		                                    +commentList[i].commentWriter+ `<span class="commentNo">`+commentList[i].commentNo+`</span>`;
+		                                    +commentList[i].mf_nickname+ `<span class="commentNo">`+commentList[i].commentNo+`</span>`;
 	               if(commentList[i].userNo == w_user){
 	                     output += `<span class='author-tag'>작성자</span>`;
 	               }
@@ -549,13 +561,21 @@
 	    let html = `<div class="comment-item parent">
 				        <div class="comment-main">
 				            <div class="comment-profile">
-				                <div class="comment-avatar">
-				                    <i class="fas fa-user"></i>
-				                </div>
+				                <div class="comment-avatar">`;
+									if (c.profile_image_path) {
+									    html += `
+									        <img src="`+contextPath+c.profile_image_path+`">
+									    `;
+									} else {
+									    html += `
+									        <i class="fas fa-user"></i>
+									    `;
+									}
+                 	html += `</div>
 				            </div>
 				            <div class="comment-content">
 				                <div class="comment-header">
-				                    <span class="comment-author">` + (c.commentWriter) + `<span class="commentNo">` + c.commentNo + `</span>`
+				                    <span class="comment-author">` + c.mf_nickname + `<span class="commentNo">` + c.commentNo + `</span>`
 				                        + (c.userNo == w_user ? `<span class="author-tag">작성자</span>` : ``) +
 				                        `<span class="comment-date">(`+(c.commentTime)+`)</span>
 				                    </span>
@@ -584,13 +604,21 @@
 	    let html = `<div class="comment-item child">
 				        <div class="comment-main">
 				            <div class="comment-profile">
-				                <div class="comment-avatar">
-				                    <i class="fas fa-user"></i>
-				                </div>
+				                <div class="comment-avatar">`;
+									if (c.profile_image_path) {
+									    html += `
+									        <img src="`+contextPath+c.profile_image_path+`">
+									    `;
+									} else {
+									    html += `
+									        <i class="fas fa-user"></i>
+									    `;
+									}
+			     	html += `</div>
 				            </div>
 				            <div class="comment-content">
 				                <div class="comment-header">
-				                    <span class="comment-author">` + c.commentWriter+`<span class="commentNo">` + c.commentNo + `</span>`
+				                    <span class="comment-author">` + c.mf_nickname+`<span class="commentNo">` + c.commentNo + `</span>`
 				                         + (c.userNo == w_user ? `<span class="author-tag">작성자</span>` : ``) +
 										`<span class="comment-date">(` + c.commentTime + `)</span>
 				                    </span>

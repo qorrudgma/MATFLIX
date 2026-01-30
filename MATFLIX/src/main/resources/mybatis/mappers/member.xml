@@ -6,14 +6,26 @@
 
 	<!-- 회원가입 -->
 	<insert id="recruit" useGeneratedKeys="true" keyProperty="mf_no" keyColumn="mf_no">
-	  INSERT INTO matflix (
-	      mf_id, mf_pw, mf_pw_chk, mf_nickname,
-	      mf_name, mf_email, mf_phone, mf_birth, mf_gender
-	  ) VALUES (
-	      #{mf_id}, #{mf_pw}, #{mf_pw_chk}, #{mf_name},
-	      #{mf_name}, #{mf_email}, #{mf_phone}, #{mf_birth}, #{mf_gender}
-	  )
+		INSERT INTO matflix (
+	  		mf_id, mf_pw, mf_pw_chk, mf_nickname,
+	 		mf_name, mf_email, mf_phone, mf_birth, mf_gender
+		) VALUES (
+			#{mf_id}, #{mf_pw}, #{mf_pw_chk}, #{mf_name},
+			#{mf_name}, #{mf_email}, #{mf_phone}, #{mf_birth}, #{mf_gender}
+		)
 	</insert>
+
+	<!-- 프로필 이미지 생성 -->
+	<insert id="recruit_profile_image">
+		INSERT INTO user_image (mf_no, profile_image_path) VALUES (#{mf_no}, NULL)
+	</insert>
+
+	<!-- 프로필 이미지 수정 -->
+	<update id="modify_profile_image">
+		UPDATE user_image
+		   SET profile_image_path = #{profile_image_path}
+		 WHERE mf_no =#{mf_no}
+	</update>
 
 	<!-- 로그인 -->
 	<select id="login" resultType="int">
@@ -42,16 +54,44 @@
 		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
 		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}
 	</select>
+	
+	<!-- 내 프로필 -->
+	<select id="profile" resultType="com.boot.dto.ProfileDTO">
+		SELECT m.mf_no
+		  	 , m.mf_id
+		  	 , m.mf_nickname
+		  	 , m.mf_name
+		  	 , m.mf_email
+		 	 , m.mf_phone
+		 	 , m.mf_birth
+		  	 , m.mf_gender
+		  	 , m.mf_regdate
+		  	 , m.mf_role
+		  	 , m.mf_nickname_updatetime
+		  	 , ui.profile_image_path
+		  	 , (SELECT COUNT(*)
+		      	  FROM follow f
+		     	 WHERE f.following_id = m.mf_no) AS follower_count
+		  	 , (SELECT COUNT(*)
+		      	  FROM follow f
+		         WHERE f.follower_id = m.mf_no) AS following_count
+		  	 , (SELECT COUNT(*)
+		       	  FROM recipe r
+		      	 WHERE r.mf_no = m.mf_no) AS recipe_count
+		  FROM matflix m
+		  LEFT JOIN user_image ui
+	        ON ui.mf_no = m.mf_no
+		 WHERE m.mf_no = #{mf_no}
+	</select>
 
 	<!-- 개인 정보 수정 -->
 	<update id="update_ok" parameterType="hashmap">
 	    UPDATE matflix
-	    SET 
-	        mf_pw = #{mf_pw},
-	        mf_pw_chk = #{mf_pw_chk},
-	        mf_name = #{mf_name},
-	        mf_email = #{mf_email}
-	    WHERE mf_id = #{mf_id}
+	       SET mf_pw = #{mf_pw}
+	         , mf_pw_chk = #{mf_pw_chk}
+	         , mf_name = #{mf_name}
+	         , mf_email = #{mf_email}
+	     WHERE mf_id = #{mf_id}
 	</update>
 	
 	<!-- 유저 정보 삭제 -->

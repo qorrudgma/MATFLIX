@@ -22,14 +22,21 @@
             <div class="profile_header">
                 <div class="profile_image_div">
 	                <div class="profile_image_large" id="profile_image_preview">
-						<i class="fas fa-user"></i>
+						<c:choose>
+						    <c:when test="${not empty profile.profile_image_path}">
+								<img src="${pageContext.request.contextPath}${profile.profile_image_path}">
+							</c:when>
+							<c:otherwise>
+								<i class="fas fa-user"></i>
+							</c:otherwise>
+						</c:choose>
 	                </div>
 					<span class="modify_profile_image" id="open_profile_image_edit">이미지 수정</span>
 					<form id="profile_image_form" enctype="multipart/form-data">
 						<div class="profile_image_edit_panel" id="profile_image_edit_panel" style="display:none;">
 						    <input type="file"
 						           id="profile_image_file"
-								   name="profile_image_path"
+								   name="image_file"
 						           accept="image/*">
 						    <div class="profile_image_edit_actions">
 						        <button type="button" id="profile_image_confirm" class="mf_btn mf_btn_primary">
@@ -70,15 +77,15 @@
                     <div class="user_bio">안녕하세요! 맛있는 요리를 사랑하는 요리 초보입니다.</div>
                     <div class="profile_stats">
                         <div class="stat_item">
-                            <span class="stat_number">${my_recipe_count}</span>
+                            <span class="stat_number">${profile.recipe_count}</span>
                             <span class="stat_label">레시피</span>
                         </div>
                         <div class="stat_item">
-                            <span class="stat_number">${user_follower_count}</span>
+                            <span class="stat_number">${profile.follower_count}</span>
                             <span class="stat_label">팔로워</span>
                         </div>
                         <div class="stat_item">
-                            <span class="stat_number">${user_follow_count}</span>
+                            <span class="stat_number">${profile.following_count}</span>
                             <span class="stat_label">팔로잉</span>
                         </div>
                     </div>
@@ -150,7 +157,7 @@
                                             <fmt:formatDate value="${fav.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" />
                                         </div>
                                     </c:if>
-                                </div>
+<!--                                </div>-->
                                 
                                 <div class="favorite_actions">
                                     <button class="delete_btn" onclick="removeFavorite(${fav.recipeId})">
@@ -392,7 +399,9 @@
 		    }
 
 		    const formData = new FormData();
-		    formData.append("profile_image_path", fileInput.files[0]);
+		    formData.append("image_file", fileInput.files[0]);
+			// 기존 이미지 있을경우 추가하기
+		    formData.append("profile_image_path", null);
 
 		    $.ajax({
 		        url: "/profile_image",

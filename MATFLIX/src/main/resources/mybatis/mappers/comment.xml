@@ -81,16 +81,21 @@
     <!-- 댓글 갯수 -->
     <select id="recommended" resultType="com.boot.dto.CommentDTO">
 		SELECT c.commentNo
-			 , c.commentWriter
+			 , m.mf_nickname as mf_nickname
 			 , c.commentContent
 		     , c.userNo
 		     , c.commentCreatedTime
 			 , c.parentCommentNo
 			 , c.recommend_count
 		     , CASE WHEN cr.mf_no IS NULL THEN 0 ELSE 1 END AS recommended
+     		 , ui.profile_image_path AS profile_image_path
 		  FROM board_comment c
 		  LEFT JOIN comment_recommend cr
 		    ON c.commentNo = cr.commentNo AND cr.mf_no = #{mf_no}
+		  LEFT JOIN user_image ui
+			ON ui.mf_no = c.userNo
+		  LEFT JOIN matflix m
+			ON m.mf_no = c.userNo
 		 WHERE c.boardNo = #{boardNo} AND c.deleted = 0
 		 ORDER BY c.commentCreatedTime DESC
     </select>

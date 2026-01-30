@@ -14,6 +14,7 @@ import com.boot.dao.FollowDAO;
 import com.boot.dao.NotifSettingDAO;
 import com.boot.dao.NotificationDAO;
 import com.boot.dao.TeamDAO;
+import com.boot.dto.ProfileDTO;
 import com.boot.dto.TeamDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +41,22 @@ public class TeamServiceImpl implements TeamService {
 		Object Omf_no = param.get("mf_no");
 //		System.out.println(Omf_no);
 		int mf_no = Integer.parseInt(Omf_no.toString());
-
+		recruit_profile_image(mf_no);
 		log.info("알림 on/off 시작");
 		notifSettingService.add_notif_setting(mf_no);
 
+	}
+
+	@Override
+	public void recruit_profile_image(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		dao.recruit_profile_image(mf_no);
+	}
+
+	@Override
+	public void modify_profile_image(int mf_no, String image_path) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		dao.modify_profile_image(mf_no, image_path);
 	}
 
 	// 회원 리스트 all
@@ -133,5 +146,12 @@ public class TeamServiceImpl implements TeamService {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		Map<String, Object> rank_user = dao.rank_user(mf_no);
 		return rank_user;
+	}
+
+	@Override
+	public ProfileDTO profile(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		ProfileDTO PDTO = dao.profile(mf_no);
+		return PDTO;
 	}
 }

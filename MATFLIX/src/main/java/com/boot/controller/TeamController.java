@@ -33,12 +33,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dto.NotifSettingDTO;
+import com.boot.dto.ProfileDTO;
+import com.boot.dto.ProfileImageDTO;
 import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.EmailService;
+import com.boot.service.FileStorageService;
 import com.boot.service.FollowService;
 import com.boot.service.NotifSettingService;
 import com.boot.service.NotificationService;
@@ -78,6 +82,9 @@ public class TeamController {
 	@Autowired
 	private NotifSettingService notifSettingService;
 
+	@Autowired
+	private FileStorageService fileStorageService;
+
 	// 프로필 보기
 	@RequestMapping("/profile")
 	public String profile(HttpSession session, Model model) throws Exception {
@@ -87,7 +94,8 @@ public class TeamController {
 			return "redirect:/"; // 로그인 안 되어 있으면 로그인 페이지로
 		}
 
-		TeamDTO dto = service.find_list(user.getMf_id());
+		int mf_no = user.getMf_no();
+		ProfileDTO profile = service.profile(mf_no);
 		List<Map<String, Object>> profile_board = boardService.profile_board_list(user.getMf_no());
 		log.info(profile_board + "");
 		for (int i = 0; i < profile_board.size(); i++) {
@@ -97,19 +105,18 @@ public class TeamController {
 			board.put("recommend_count", recommend_count);
 		}
 
-		int mf_no = user.getMf_no();
 		List<RecipeDTO> my_recipe = recipeService.my_recipe_list(mf_no);
 
-		int mfNo = user.getMf_no();
+//		int mfNo = user.getMf_no();
 
-		int user_follow_count = followService.user_follow_count(mfNo);
-		int user_follower_count = followService.user_follower_count(mfNo);
+//		int user_follow_count = followService.user_follow_count(mfNo);
+//		int user_follower_count = followService.user_follower_count(mfNo);
 
 		model.addAttribute("my_recipe", my_recipe);
-		model.addAttribute("dto", dto);
-		model.addAttribute("profile_board", profile_board);
-		model.addAttribute("user_follow_count", user_follow_count);
-		model.addAttribute("user_follower_count", user_follower_count);
+		model.addAttribute("profile", profile);
+//		model.addAttribute("profile_board", profile_board);
+//		model.addAttribute("user_follow_count", user_follow_count);
+//		model.addAttribute("user_follower_count", user_follower_count);
 
 		return "profile";
 	}
@@ -123,9 +130,17 @@ public class TeamController {
 	// 프로필 이미지
 	@PostMapping("/profile_image")
 	@ResponseBody
-	public String profile_image(HttpSession session) {
+	public String profile_image(String profile_image_path, MultipartFile image_file, HttpSession session) {
 		log.info("profile_image()");
+		log.info("image_path => {}, image_file => {}", profile_image_path, image_file);
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		ProfileImageDTO PIDTO = new ProfileImageDTO();
+		PIDTO.setMf_no(mf_no);
+		PIDTO.setProfile_image_path(profile_image_path);
+		PIDTO.setImage_file(image_file);
+
+		fileStorageService.modify_profile_image(PIDTO);
 		return "";
 	}
 

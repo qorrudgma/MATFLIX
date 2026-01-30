@@ -26,4 +26,6 @@ public class CommentDTO {
 	private String comment_updatedTime;
 	// 조회용
 	private int recommended;
+	private String profile_image_path;
+	private String mf_nickname;
 }

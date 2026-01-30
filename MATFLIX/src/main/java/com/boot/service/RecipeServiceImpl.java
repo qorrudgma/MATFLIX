@@ -26,7 +26,7 @@ public class RecipeServiceImpl implements RecipeService {
 	private SqlSession sqlSession;
 
 	@Autowired
-	private RecipeFileStorageService fileStorageService;
+	private FileStorageService fileStorageService;
 
 	@Override
 	@Transactional

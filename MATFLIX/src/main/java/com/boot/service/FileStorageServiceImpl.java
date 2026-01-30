@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dao.RecipeDAO;
 import com.boot.dao.RecipeReviewDAO;
+import com.boot.dao.TeamDAO;
+import com.boot.dto.ProfileImageDTO;
 import com.boot.dto.RecipeImageDTO;
 import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
@@ -22,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Log4j2
 @Service("RecipeFileStorageService")
-public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
+public class FileStorageServiceImpl implements FileStorageService {
 	@Autowired
 	private SqlSession sqlSession;
 
@@ -286,6 +288,51 @@ public class RecipeFileStorageServiceImpl implements RecipeFileStorageService {
 			} catch (Exception e) {
 				log.error("리뷰 이미지 수정 실패", e);
 				throw new RuntimeException("리뷰 이미지 수정 중 오류 발생");
+			}
+		}
+	}
+
+	@Override
+	public void modify_profile_image(ProfileImageDTO dto) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		MultipartFile file = dto.getImage_file();
+
+		String base_dir = "C:/matflix_upload/profile";
+
+		if (file != null && !file.isEmpty()) {
+			try {
+				if (dto.getProfile_image_path() != null && !dto.getProfile_image_path().isBlank()) {
+					String old_image_path = "C:/matflix_upload" + dto.getProfile_image_path();
+					File old_file = new File(old_image_path);
+
+					if (old_file.exists()) {
+						boolean deleted = old_file.delete();
+						log.info("기존 프로필 이미지 삭제 => {} / 성공여부 = {}", old_file.getAbsolutePath(), deleted);
+					}
+				}
+
+				String original_name = file.getOriginalFilename();
+				String ext = "";
+
+				if (original_name != null && original_name.lastIndexOf(".") != -1) {
+					ext = original_name.substring(original_name.lastIndexOf("."));
+				}
+
+				String save_file_name = UUID.randomUUID() + ext;
+
+				File dir = new File(base_dir);
+				if (!dir.exists()) {
+					dir.mkdirs();
+				}
+
+				File save_file = new File(dir, save_file_name);
+				file.transferTo(save_file);
+
+				dao.modify_profile_image(dto.getMf_no(), "/profile/" + save_file_name);
+				log.info("프로필 이미지 수정 완료: {}", save_file.getAbsolutePath());
+			} catch (Exception e) {
+				log.error("프로필 이미지 수정 실패", e);
+				throw new RuntimeException("프로필 이미지 수정 중 오류 발생");
 			}
 		}
 	}

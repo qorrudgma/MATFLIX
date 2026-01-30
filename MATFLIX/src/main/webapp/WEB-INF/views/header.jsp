@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="com.boot.dto.TeamDTO" %>
 <% TeamDTO user = (TeamDTO) session.getAttribute("user"); %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +48,15 @@
 					<div class="user_container">
 						<div class="profile_image profile user-avatar">
 <!--							<img onclick="location.href='${pageContext.request.contextPath}/profile'" alt="MATFLIX" src="${pageContext.request.contextPath}/image/MATFLIX.png">-->
-							<i onclick="location.href='${pageContext.request.contextPath}/profile'" class="fas fa-user"></i>
+							<c:choose>
+			                    <c:when test="${not empty profile.profile_image_path}">
+									<img onclick="location.href='${pageContext.request.contextPath}/profile'"
+										 src="${pageContext.request.contextPath}${profile.profile_image_path}">
+								</c:when>
+								<c:otherwise>
+									<i onclick="location.href='${pageContext.request.contextPath}/profile'" class="fas fa-user"></i>
+								</c:otherwise>
+							</c:choose>
 						</div>
 						<div class="user_info">
 							<div class="profile_info">

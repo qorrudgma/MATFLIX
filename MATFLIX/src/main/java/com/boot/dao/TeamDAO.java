@@ -8,17 +8,24 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.boot.dto.ProfileDTO;
 import com.boot.dto.TeamDTO;
 
 @Mapper
 public interface TeamDAO {
 	public void recruit(HashMap<String, String> param);
 
+	public void recruit_profile_image(int mf_no);
+
+	public void modify_profile_image(@Param("mf_no") int mf_no, @Param("image_path") String image_path);
+
 	public ArrayList<TeamDTO> list();
 
 	public int login(@Param("mf_id") String id, @Param("mf_pw") String pw);
 
 	public TeamDTO find_list(@Param("mf_id") String mf_id);
+
+	public ProfileDTO profile(int mf_no);
 
 	public void update_ok(HashMap<String, String> param);
 

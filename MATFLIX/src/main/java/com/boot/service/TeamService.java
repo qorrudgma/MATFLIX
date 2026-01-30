@@ -7,11 +7,16 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.boot.dto.ProfileDTO;
 import com.boot.dto.TeamDTO;
 
 public interface TeamService {
 	// 회원가입
 	public void recruit(HashMap<String, String> param);
+
+	public void recruit_profile_image(int mf_no);
+
+	public void modify_profile_image(int mf_no, String image_path);
 
 	// 리스트 불러오기
 	public ArrayList<TeamDTO> list();
@@ -21,6 +26,8 @@ public interface TeamService {
 
 	// id값으로 회원정보 부르기
 	public TeamDTO find_list(String mf_id);
+
+	public ProfileDTO profile(int mf_no);
 
 	// update 로직처리
 	public void update_ok(HashMap<String, String> param);

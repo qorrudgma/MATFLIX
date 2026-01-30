@@ -25,8 +25,16 @@ public class ProfileDTO {
 	private String mf_role;
 
 	private LocalDateTime mf_nickname_updatetime;
-
-	private int follower_count;
-	private int following_count;
+	// 프로필 이미지
+	private String profile_image_path;
+	// 팔로우&팔로잉
+	private int follower_count; // 나를 팔로우 하는 사람 수
+	private int following_count; // 내가 팔로우 하는 사람 수
 	private int recipe_count;
+	// 레시피
+	private int recipe_id;
+	private String title;
+	private LocalDateTime created_at;
+	private String image_path;
+
 }

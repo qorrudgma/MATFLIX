@@ -11,9 +11,26 @@ CREATE TABLE matflix (
     mf_birth DATE,
     mf_gender CHAR(1) DEFAULT 'M' CHECK (mf_gender IN ('M', 'F')),
     mf_regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN'))
+    mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN')),
+    mf_nickname_updatetime date DEFAULT null
 );
 select * from matflix;
+select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
+		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id="qw12";
+
+-- 유저 프로필 사진
+CREATE TABLE user_image (
+    image_no INT AUTO_INCREMENT PRIMARY KEY,
+    mf_no INT NOT NULL,
+    profile_image_path VARCHAR(255),
+
+    CONSTRAINT fk_image_user
+        FOREIGN KEY (mf_no)
+        REFERENCES matflix(mf_no)
+        ON DELETE CASCADE
+);
+select * from user_image;
+
 
 -- 팔로우
 CREATE TABLE follow (
