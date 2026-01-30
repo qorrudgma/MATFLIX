@@ -6,23 +6,27 @@
 
 	<!-- 게시글 리스트 -->
     <select id="list" resultType="com.boot.dto.BoardDTO">
-        select boardNo
-             , boardName
-             , boardTitle
-             , boardContent
-             , boardDate
-             , boardHit
-             , mf_no
-             , recommend_count
-             , recommend_notify_step
-             , comment_count
-          from tbl_board
+        select b.boardNo
+		     , m.mf_nickname as boardName
+             , b.boardTitle
+             , b.boardContent
+             , b.boardDate
+             , b.boardHit
+             , b.mf_no
+             , b.recommend_count
+             , b.recommend_notify_step
+             , b.comment_count
+          from tbl_board b
+          LEFT JOIN user_image ui
+			ON ui.mf_no = b.mf_no
+          LEFT JOIN matflix m
+			ON m.mf_no = b.mf_no
     </select>
 
 	<!-- 팔로우 게시글 리스트 -->
     <select id="follow_board_list" resultType="com.boot.dto.BoardDTO">
         select b.boardNo
-		     , b.boardName
+		     , m.mf_nickname as boardName
 		     , b.boardTitle
 		     , b.boardContent
 		     , b.boardDate
@@ -34,6 +38,8 @@
 		  from tbl_board b
 		  join follow f
 		    on b.mf_no = f.following_id
+          LEFT JOIN matflix m
+			ON m.mf_no = b.mf_no
 	     where f.follower_id = #{mf_no}
 	     order by 1 desc
     </select>
@@ -51,8 +57,22 @@
     
 	<!-- 게시글 보기 -->
     <select id="contentView" resultType="com.boot.dto.BoardDTO">
-        select boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
-          from tbl_board
+        select b.boardNo
+         	 , m.mf_nickname as boardName
+         	 , b.boardTitle
+         	 , b.boardContent
+         	 , b.boardDate
+         	 , b.boardHit
+         	 , b.mf_no
+         	 , b.recommend_count
+         	 , b.recommend_notify_step
+         	 , b.comment_count
+         	 , ui.profile_image_path as profile_image_path
+          from tbl_board b
+          LEFT JOIN user_image ui
+			ON ui.mf_no = b.mf_no
+          LEFT JOIN matflix m
+			ON m.mf_no = b.mf_no
          where boardNo=#{boardNo}
     </select>
 

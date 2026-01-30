@@ -51,6 +51,17 @@
                             <span class="label">번호</span>
                             <span class="value">${content_view.boardNo}</span>
                         </div>
+                        <div class="profile_image_large" id="profile_image_preview">
+							<c:choose>
+							    <c:when test="${not empty content_view.profile_image_path}">
+							        <img
+							            src="${pageContext.request.contextPath}${content_view.profile_image_path}">
+							    </c:when>
+							    <c:otherwise>
+							        <i class="fas fa-user"></i>
+							    </c:otherwise>
+							</c:choose>
+                        </div>
                         <div class="post-views">
                             <span class="label">작성자</span>
                             <span class="value">${content_view.boardName}</span>

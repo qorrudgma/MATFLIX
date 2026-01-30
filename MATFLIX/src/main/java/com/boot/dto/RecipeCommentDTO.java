@@ -27,4 +27,5 @@ public class RecipeCommentDTO {
 	// 프론트에 필요한거
 	private String mf_nickname;
 	private int recommended;
+	private String profile_image_path;
 }

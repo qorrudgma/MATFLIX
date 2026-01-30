@@ -25,4 +25,6 @@ public class BoardDTO {
 	private int comment_count;
 
 	private List<BoardAttachDTO> attachList;
+
+	private String profile_image_path;
 }

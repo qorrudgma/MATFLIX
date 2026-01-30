@@ -48,15 +48,20 @@
 					<div class="user_container">
 						<div class="profile_image profile user-avatar">
 <!--							<img onclick="location.href='${pageContext.request.contextPath}/profile'" alt="MATFLIX" src="${pageContext.request.contextPath}/image/MATFLIX.png">-->
-							<c:choose>
-			                    <c:when test="${not empty profile.profile_image_path}">
-									<img onclick="location.href='${pageContext.request.contextPath}/profile'"
-										 src="${pageContext.request.contextPath}${profile.profile_image_path}">
-								</c:when>
-								<c:otherwise>
-									<i onclick="location.href='${pageContext.request.contextPath}/profile'" class="fas fa-user"></i>
-								</c:otherwise>
-							</c:choose>
+							<%
+							    String profileImagePath = user.getProfile_image_path();
+							    if (profileImagePath != null && !profileImagePath.isEmpty()) {
+							%>
+							    <img onclick="location.href='<%= request.getContextPath() %>/profile'"
+							         src="<%= request.getContextPath() + profileImagePath %>">
+							<%
+							    } else {
+							%>
+							    <i onclick="location.href='<%= request.getContextPath() %>/profile'"
+							       class="fas fa-user"></i>
+							<%
+							    }
+							%>
 						</div>
 						<div class="user_info">
 							<div class="profile_info">

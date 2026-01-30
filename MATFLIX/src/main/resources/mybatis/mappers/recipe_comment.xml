@@ -24,7 +24,10 @@
 		     , rc.created_at
 		     , rc.recommend_count
 		     , u.mf_nickname
+		     , ui.profile_image_path AS profile_image_path
     	  FROM recipe_comment rc
+		  LEFT JOIN user_image ui
+			ON rc.mf_no = ui.mf_no
           JOIN matflix u
             ON rc.mf_no = u.mf_no
          WHERE rc.recipe_id = #{recipe_id}

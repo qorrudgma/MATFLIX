@@ -32,7 +32,7 @@
 			from ( select rownum , boardNo, boardName, boardTitle, boardContent, boardDate, boardHit, mf_no, recommend_count, recommend_notify_step, comment_count
 					 from ( select row_number() over(order by boardNo desc) as rownum
 					 			 , b.boardNo
-					 			 , b.boardName
+					 			 , m.mf_nickname as boardName
 					 			 , b.boardTitle
 					 			 , b.boardContent
 					 			 , b.boardDate
@@ -42,6 +42,8 @@
 					 			 , b.recommend_notify_step
 					 			 , count(c.commentNo) as comment_count
 							  from tbl_board b
+							  left JOIN matflix m
+				                on b.mf_no = m.mf_no
 							  left JOIN board_comment c
 				                on b.boardNo = c.boardNo
 				               and c.deleted = 0

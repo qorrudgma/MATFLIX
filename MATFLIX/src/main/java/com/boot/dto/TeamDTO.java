@@ -25,4 +25,5 @@ public class TeamDTO {
 	private String mf_role;
 
 	private LocalDateTime mf_nickname_updatetime;
+	private String profile_image_path;
 }

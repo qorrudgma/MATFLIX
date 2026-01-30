@@ -49,10 +49,25 @@
 	</select>
 	
 	<!-- id로 회원 찾기 -->
-	<select id="find_list"
-		resultType="com.boot.dto.TeamDTO">
-		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
-		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}
+	<select id="find_list" resultType="com.boot.dto.TeamDTO">
+<!--		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,-->
+<!--		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}-->
+		SELECT m.mf_no
+		  	 , m.mf_id
+		  	 , m.mf_nickname
+		  	 , m.mf_name
+		  	 , m.mf_email
+		 	 , m.mf_phone
+		 	 , m.mf_birth
+		  	 , m.mf_gender
+		  	 , m.mf_regdate
+		  	 , m.mf_role
+		  	 , m.mf_nickname_updatetime
+		  	 , ui.profile_image_path
+		  FROM matflix m
+		  LEFT JOIN user_image ui
+	        ON ui.mf_no = m.mf_no
+		 WHERE m.mf_id = #{mf_id}
 	</select>
 	
 	<!-- 내 프로필 -->

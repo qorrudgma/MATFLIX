@@ -735,13 +735,21 @@
 	    let html = `<div class="comment-item parent">
 				        <div class="comment-main">
 				            <div class="comment-profile">
-				                <div class="comment-avatar">
-				                    <i class="fas fa-user"></i>
-				                </div>
+					           <div class="comment-avatar">`;
+								if (c.profile_image_path) {
+								    html += `
+								        <img src="`+contextPath+c.profile_image_path+`">
+								    `;
+								} else {
+								    html += `
+								        <i class="fas fa-user"></i>
+								    `;
+								}
+					html += `</div>
 				            </div>
 				            <div class="comment-content">
 				                <div class="comment-header">
-				                    <span class="comment-author">` + (c.mf_nickname) + `<span class="comment_no">` + c.comment_no + `</span>`
+				                    <span class="comment-author">` + c.mf_nickname + `<span class="comment_no">` + c.comment_no + `</span>`
 				                        + (c.mf_no == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
 				                        `<span class="comment-date">(`+(c.display_time)+`)</span>
 				                    </span>
@@ -770,9 +778,17 @@
 	    let html = `<div class="comment-item child">
 				        <div class="comment-main">
 				            <div class="comment-profile">
-				                <div class="comment-avatar">
-				                    <i class="fas fa-user"></i>
-				                </div>
+					           <div class="comment-avatar">`;
+								if (c.profile_image_path) {
+								    html += `
+								        <img src="`+contextPath+c.profile_image_path+`">
+								    `;
+								} else {
+								    html += `
+								        <i class="fas fa-user"></i>
+								    `;
+								}
+					html += `</div>
 				            </div>
 				            <div class="comment-content">
 				                <div class="comment-header">
