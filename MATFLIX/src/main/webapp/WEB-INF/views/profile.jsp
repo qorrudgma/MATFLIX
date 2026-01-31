@@ -146,37 +146,6 @@
         <!-- 내 게시글 -->
         <div class="tab_content" id="my_posts_content">
             <div class="board_list">
-                <c:forEach var="board" items="${profile_board}">
-                    <a href="content_view?pageNum=1&amount=10&type=&keyword=&boardNo=${board.boardNo}" class="board_card">
-                        <div class="board_title">
-                            <i class="fas fa-file-alt"></i> ${board.boardTitle}
-                        </div>
-                        <div class="board_stats">
-                            <div class="board_stat">
-                                <i class="fas fa-thumbs-up"></i>
-                                <span>추천수: ${board.recommend_count}</span>
-                            </div>
-                            <div class="board_stat">
-                                <i class="fas fa-eye"></i>
-                                <span>조회수: ${board.boardHit}</span>
-                            </div>
-                            <div class="board_stat">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>작성일: ${board.boardDate}</span>
-                            </div>
-                        </div>
-                    </a>
-                </c:forEach>
-                
-                <c:if test="${empty profile_board}">
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard"></i>
-                        <p>아직 작성한 게시글이 없습니다.</p>
-                        <a href="${pageContext.request.contextPath}/board_list" class="browse_btn">
-                            <i class="fas fa-pencil-alt"></i> 게시글 작성하기
-                        </a>
-                    </div>
-                </c:if>
             </div>
         </div>
 		
@@ -466,7 +435,52 @@
 		                   alert("오류 발생"+e);
 		               }
 		           });
-				}
+				}else if(tabId === "my_posts"){
+	   				console.log("내 게시글 탭");
+	   				$.ajax({
+	   	               type: "post",
+	   	               url: "/my_board_list",
+	   	               success: function(my_board_list) {
+	   						console.log(my_board_list);
+	   					 	let html = "";
+	   						if (my_board_list && my_board_list.length > 0) {
+	   							my_board_list.forEach(function(board) {
+	   								html += `<a href="content_view?pageNum=1&amount=10&type=&keyword=&boardNo=`+board.boardNo+`" class="board_card">
+						                        <div class="board_title">
+						                            <i class="fas fa-file-alt"></i> `+board.boardTitle+` <span id="profile_comment_count">[`+board.comment_count+`]</span>
+						                        </div>
+						                        <div class="board_stats">
+						                            <div class="board_stat">
+						                                <i class="fas fa-thumbs-up"></i>
+						                                <span>추천수: `+board.recommend_count+`</span>
+						                            </div>
+						                            <div class="board_stat">
+						                                <i class="fas fa-eye"></i>
+						                                <span>조회수: `+board.boardHit+`</span>
+						                            </div>
+						                            <div class="board_stat">
+						                                <i class="fas fa-calendar-alt"></i>
+						                                <span>작성일: `+board.boardDate+`</span>
+						                            </div>
+						                        </div>
+						                    </a>`;
+	   							});
+	   						}else {
+	   							html += `<div class="empty-state">
+					                        <i class="fas fa-clipboard"></i>
+					                        <p>아직 작성한 게시글이 없습니다.</p>
+					                        <a href="`+contextPath+`/board_list" class="browse_btn">
+					                            <i class="fas fa-pencil-alt"></i> 게시글 작성하기
+					                        </a>
+					                    </div>`;
+	   						}
+	   						$(".board_list").html(html);
+	   	               },
+	   	               error: function(e) {
+	   	                   alert("오류 발생"+e);
+	   	               }
+	   	           });
+	   			}
             });
 			
 			$('input[type="checkbox"]').change(function() {

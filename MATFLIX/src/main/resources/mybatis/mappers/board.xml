@@ -23,6 +23,26 @@
 			ON m.mf_no = b.mf_no
     </select>
 
+	<!-- 내 게시글 리스트 -->
+    <select id="my_board_list" resultType="com.boot.dto.BoardDTO">
+        select b.boardNo
+		     , m.mf_nickname as boardName
+             , b.boardTitle
+             , b.boardContent
+             , b.boardDate
+             , b.boardHit
+             , b.mf_no
+             , b.recommend_count
+             , b.recommend_notify_step
+             , b.comment_count
+          from tbl_board b
+          LEFT JOIN user_image ui
+			ON ui.mf_no = b.mf_no
+          LEFT JOIN matflix m
+			ON m.mf_no = b.mf_no
+		 WHERE b.mf_no = #{mf_no}
+    </select>
+
 	<!-- 팔로우 게시글 리스트 -->
     <select id="follow_board_list" resultType="com.boot.dto.BoardDTO">
         select b.boardNo

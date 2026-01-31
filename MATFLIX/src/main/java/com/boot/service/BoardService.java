@@ -10,6 +10,8 @@ import com.boot.dto.BoardDTO;
 public interface BoardService {
 	public ArrayList<BoardDTO> list();
 
+	public ArrayList<BoardDTO> my_board_list(int mf_no);
+
 	public void write(BoardDTO boardDTO);
 
 	public BoardDTO contentView(HashMap<String, String> param);

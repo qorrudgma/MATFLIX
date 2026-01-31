@@ -385,9 +385,10 @@
   font-size: 14px;
 }
 
-.board_stat i {
+.board_stat i, #profile_comment_count {
   color: #e50914;
 }
+
 /* 닉네임 */
 .nickname-form {
     background-color: #f9f9f9;

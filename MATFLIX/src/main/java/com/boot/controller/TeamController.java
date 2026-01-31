@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.boot.dto.BoardDTO;
 import com.boot.dto.FavoriteRecipeDTO;
 import com.boot.dto.NotifSettingDTO;
 import com.boot.dto.ProfileDTO;
@@ -160,6 +161,21 @@ public class TeamController {
 		List<FavoriteRecipeDTO> favorite_recipe_list = favoriteRecipeService.favorite_recipe_list(mf_no);
 		log.info("favorite_recipe_list=> " + favorite_recipe_list);
 		return favorite_recipe_list;
+	}
+
+	// 프로필 내 게시글
+	@PostMapping("/my_board_list")
+	@ResponseBody
+	public List<BoardDTO> my_board_list(HttpSession session) {
+		log.info("my_board_list()");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		if (user == null) {
+			throw new RuntimeException("로그인 필요");
+		}
+		int mf_no = user.getMf_no();
+		List<BoardDTO> my_board_list = boardService.my_board_list(mf_no);
+		log.info("my_board_list=> " + my_board_list);
+		return my_board_list;
 	}
 
 	// 탈퇴 페이지 이동

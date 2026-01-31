@@ -32,6 +32,13 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	public ArrayList<BoardDTO> my_board_list(int mf_no) {
+		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
+		ArrayList<BoardDTO> my_board_list = dao.my_board_list(mf_no);
+		return my_board_list;
+	}
+
+	@Override
 	public void write(BoardDTO boardDTO) {
 		log.info("@# BoardServiceImpl boardDTO=>" + boardDTO);
 
