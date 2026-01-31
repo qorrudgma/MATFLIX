@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.boot.dto.FavoriteRecipeDTO;
 import com.boot.dto.NotifSettingDTO;
 import com.boot.dto.ProfileDTO;
 import com.boot.dto.ProfileImageDTO;
@@ -42,6 +43,7 @@ import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.EmailService;
+import com.boot.service.FavoriteRecipeService;
 import com.boot.service.FileStorageService;
 import com.boot.service.FollowService;
 import com.boot.service.NotifSettingService;
@@ -80,6 +82,9 @@ public class TeamController {
 	private RecommendService recommendService;
 
 	@Autowired
+	private FavoriteRecipeService favoriteRecipeService;
+
+	@Autowired
 	private NotifSettingService notifSettingService;
 
 	@Autowired
@@ -96,14 +101,15 @@ public class TeamController {
 
 		int mf_no = user.getMf_no();
 		ProfileDTO profile = service.profile(mf_no);
-		List<Map<String, Object>> profile_board = boardService.profile_board_list(user.getMf_no());
-		log.info(profile_board + "");
-		for (int i = 0; i < profile_board.size(); i++) {
-			Map<String, Object> board = profile_board.get(i);
-			int boardNo = (int) board.get("boardNo");
-			int recommend_count = recommendService.total_recommend(boardNo);
-			board.put("recommend_count", recommend_count);
-		}
+
+//		List<Map<String, Object>> profile_board = boardService.profile_board_list(user.getMf_no());
+//		log.info(profile_board + "");
+//		for (int i = 0; i < profile_board.size(); i++) {
+//			Map<String, Object> board = profile_board.get(i);
+//			int boardNo = (int) board.get("boardNo");
+//			int recommend_count = recommendService.total_recommend(boardNo);
+//			board.put("recommend_count", recommend_count);
+//		}
 
 		List<RecipeDTO> my_recipe = recipeService.my_recipe_list(mf_no);
 
@@ -121,12 +127,6 @@ public class TeamController {
 		return "profile";
 	}
 
-//   @RequestMapping("/delete_member")
-//   public String delete_member(@RequestParam("mf_id") String mf_id, Model model) {
-//      model.addAttribute("mf_id", mf_id);
-//      return "delete_member";
-//   }
-
 	// 프로필 이미지
 	@PostMapping("/profile_image")
 	@ResponseBody
@@ -134,6 +134,9 @@ public class TeamController {
 		log.info("profile_image()");
 		log.info("image_path => {}, image_file => {}", profile_image_path, image_file);
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		if (user == null) {
+			throw new RuntimeException("로그인 필요");
+		}
 		int mf_no = user.getMf_no();
 		ProfileImageDTO PIDTO = new ProfileImageDTO();
 		PIDTO.setMf_no(mf_no);
@@ -142,6 +145,21 @@ public class TeamController {
 
 		fileStorageService.modify_profile_image(PIDTO);
 		return "";
+	}
+
+	// 프로필 즐겨찾기
+	@PostMapping("/favorite_recipe_list")
+	@ResponseBody
+	public List<FavoriteRecipeDTO> favorite_recipe_list(HttpSession session) {
+		log.info("favorite_recipe_list()");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		if (user == null) {
+			throw new RuntimeException("로그인 필요");
+		}
+		int mf_no = user.getMf_no();
+		List<FavoriteRecipeDTO> favorite_recipe_list = favoriteRecipeService.favorite_recipe_list(mf_no);
+		log.info("favorite_recipe_list=> " + favorite_recipe_list);
+		return favorite_recipe_list;
 	}
 
 	// 탈퇴 페이지 이동

@@ -265,6 +265,23 @@ update recipe
 DELETE FROM recipe
 WHERE recipe_id = 1;
 alter table recipe add COLUMN recipe_favorite_count INT DEFAULT 0;
+select f.favorite_no
+	 , r.recipe_id
+	 , f.mf_no
+	 , r.category
+	 , r.title
+	 , m.mf_nickname
+	 , r.created_at
+	 , ri.image_path
+  from favorite_recipe f
+  left join recipe r
+	on f.recipe_id = r.recipe_id
+  JOIN matflix m
+	ON f.mf_no = m.mf_no
+  LEFT JOIN recipe_image ri
+	ON f.recipe_id = ri.recipe_id
+   AND ri.image_type ="THUMBNAIL"
+ where f.mf_no = 61;
 
 -- 재료
 CREATE TABLE recipe_ingredient (
@@ -374,6 +391,11 @@ CREATE TABLE favorite_recipe (
     REFERENCES matflix(mf_no)
     ON DELETE CASCADE
 );
+select * from favorite_recipe;
+select count(*)
+    	  from favorite_recipe
+		 where recipe_id = 7
+		   and mf_no = 61;
 
 -- 레시피 댓글 테이블
 CREATE TABLE recipe_comment (

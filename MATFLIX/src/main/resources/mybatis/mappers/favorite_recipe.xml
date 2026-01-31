@@ -6,9 +6,8 @@
     
     <!-- 츨찾 추가 -->
     <insert id="insert_favorite_recipe">
-		insert into favorite_recipe(recipe_id
-			 , mf_no
-		values(#{recipe_id},#{mf_no})
+		insert into favorite_recipe(recipe_id, mf_no)
+		values (#{recipe_id},#{mf_no})
     </insert>
     
     <!-- 츨찾 삭제 -->
@@ -24,5 +23,26 @@
     	  from favorite_recipe
 		 where recipe_id = #{recipe_id}
 		   and mf_no = #{mf_no}
+    </select>
+    
+    <!-- 츨찾 리스트 확인 -->
+    <select id="favorite_recipe_list" resultType="com.boot.dto.FavoriteRecipeDTO">
+    	select f.favorite_no
+			 , r.recipe_id
+			 , f.mf_no
+			 , r.category
+			 , r.title
+			 , m.mf_nickname
+			 , r.created_at
+			 , ri.image_path
+		  from favorite_recipe f
+		  left join recipe r
+			on f.recipe_id = r.recipe_id
+		  JOIN matflix m
+			ON f.mf_no = m.mf_no
+		  LEFT JOIN recipe_image ri
+			ON f.recipe_id = ri.recipe_id
+		   AND ri.image_type ="THUMBNAIL"
+		 where f.mf_no = #{mf_no}
     </select>
 </mapper>

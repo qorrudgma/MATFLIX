@@ -49,12 +49,12 @@
 		</c:if>
 		<c:choose>
 			<c:when test="${not empty user and favorite_check == 1}">
-				<button type="button" id="insert_favorite_recipe">
+				<button type="button" id="delete_favorite_recipe">
                     <i class="fas fa-star"></i>즐찾 되어있음
                 </button>
 			</c:when>
 			<c:otherwise>
-				<button type="button" id="delete_favorite_recipe">
+				<button type="button" id="insert_favorite_recipe">
                     <i class="fas fa-star"></i>즐찾 안 되어있음
                 </button>
 			</c:otherwise>

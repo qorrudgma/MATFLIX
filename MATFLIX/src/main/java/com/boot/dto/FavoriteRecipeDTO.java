@@ -14,4 +14,10 @@ public class FavoriteRecipeDTO {
 	private int recipe_id;
 	private int mf_no;
 	private LocalDateTime created_at;
+
+	// 프로필용
+	private String category;
+	private String title;
+	private String mf_nickname;
+	private String image_path;
 }

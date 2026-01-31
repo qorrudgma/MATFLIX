@@ -169,7 +169,7 @@ public class RecipeController {
 		if (user != null) {
 			int mf_no = user.getMf_no();
 			model.addAttribute("recommended", recipeRecommendService.check_recipe_recommend(recipe_id, mf_no));
-			model.addAttribute("favorite_check", favoriteRecipeService.check_favorite_recipe(recipe_id, mf_no));
+			model.addAttribute("favorite_check", favoriteRecipeService.check_favorite_recipe(mf_no, recipe_id));
 			if (followService.check_follow(user.getMf_no(), recipe.getMf_no()) == 1) {
 				model.addAttribute("follow", true);
 			} else {
@@ -178,6 +178,34 @@ public class RecipeController {
 		}
 		log.info("model => " + model);
 		return "recipe_content_view";
+	}
+
+	@PostMapping("/insert_favorite_recipe")
+	@ResponseBody
+	public Map<String, Object> insert_favorite_recipe(@RequestParam("recipe_id") int recipe_id, HttpSession session) {
+		log.info("insert_favorite_recipe()");
+		Map<String, Object> result = new HashMap<>();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+
+		favoriteRecipeService.insert_favorite_recipe(mf_no, recipe_id);
+		result.put("favorite", true);
+
+		return result;
+	}
+
+	@PostMapping("/delete_favorite_recipe")
+	@ResponseBody
+	public Map<String, Object> delete_favorite_recipe(@RequestParam("recipe_id") int recipe_id, HttpSession session) {
+		log.info("delete_favorite_recipe()");
+		Map<String, Object> result = new HashMap<>();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+
+		favoriteRecipeService.delete_favorite_recipe(mf_no, recipe_id);
+		result.put("favorite", true);
+
+		return result;
 	}
 
 	@PostMapping("/recipe_recommend")

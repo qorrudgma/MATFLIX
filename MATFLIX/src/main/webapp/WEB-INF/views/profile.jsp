@@ -138,45 +138,8 @@
         
         <div class="tab_content" id="favorites_content">
             <!-- 즐겨찾기 목록 -->
-            <div class="favorites_list">
-                <c:choose>
-                    <c:when test="${not empty favorites && fn:length(favorites) > 0}">
-                        <c:forEach var="fav" items="${favorites}">
-                            <div class="favorite_item" id="favorite-item-${fav.recipeId}">
-                                <div class="favorite_content">
-                                    <h3 class="favorite_title">
-                                        <a href="${pageContext.request.contextPath}/recipe_content_view?rc_recipe_id=${fav.recipeId}" class="recipe_link">
-                                            <i class="fas fa-utensils"></i> 레시피 #${fav.recipeId}
-                                        </a>
-                                    </h3>
-                                    
-                                    <c:if test="${not empty fav.createdAt}">
-                                        <div class="favorite_date">
-                                            <i class="far fa-calendar-alt"></i>
-                                            즐겨찾기 추가일:
-                                            <fmt:formatDate value="${fav.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" />
-                                        </div>
-                                    </c:if>
-<!--                                </div>-->
-                                
-                                <div class="favorite_actions">
-                                    <button class="delete_btn" onclick="removeFavorite(${fav.recipeId})">
-                                        <i class="fas fa-trash-alt"></i> 삭제
-                                    </button>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="empty-state">
-                            <i class="fas fa-heart"></i>
-                            <p>즐겨찾기한 레시피가 없습니다.</p>
-                            <a href="${pageContext.request.contextPath}/recipe_board" class="browse_btn">
-                                <i class="fas fa-search"></i> 레시피 둘러보기
-                            </a>
-                        </div>
-                    </c:otherwise>
-                </c:choose>
+<!--            <div class="favorites_list">-->
+            <div class="recipe_grid" id="favorites_list">
             </div>
         </div>
         
@@ -357,7 +320,8 @@
     <script>
 		let originalProfileImageHtml = null;
 		let selectedProfileImageFile = null;
-
+		const contextPath = "${pageContext.request.contextPath}";
+		
 		// 이미지 수정 열기
 		$("#open_profile_image_edit").on("click", function () {
 		    const preview = $("#profile_image_preview");
@@ -466,7 +430,43 @@
 		                   alert("오류 발생"+e);
 		               }
 		           });
-		        }
+		        } else if(tabId === "favorites"){
+					console.log("즐겨 찾기 탭");
+					$.ajax({
+		               type: "post",
+		               url: "/favorite_recipe_list",
+		               success: function(favorite_recipe_list) {
+							console.log(favorite_recipe_list);
+						 	let html = "";
+							if (favorite_recipe_list && favorite_recipe_list.length > 0) {
+								favorite_recipe_list.forEach(function(fav) {
+									html += `<a class="recipe-card" href="recipe_content_view?recipe_id=`+fav.recipe_id+`">
+												<div class="recipe-image">
+													<img src="`+contextPath+fav.image_path+`" alt="`+fav.title+`">
+													<div class="recipe-category">`+fav.category+`</div>
+												</div>
+												<div class="recipe-info">
+													<h3>`+fav.title+`</h3>
+													<p><strong>`+fav.mf_nickname+`</strong> · `+fav.created_at+`</p>
+												</div>
+											</a>`;
+								});
+							}else {
+								html += `<div class="empty-state">
+						                <i class="fas fa-utensils"></i>
+						                <p>아직 등록한 레시피가 없습니다.</p>
+						                <a href="insert_recipe" class="add_recipe_btn">
+						                    <i class="fas fa-plus"></i> 레시피 등록하기
+						                </a>
+						            </div>`;
+							}
+							$("#favorites_list").html(html);
+		               },
+		               error: function(e) {
+		                   alert("오류 발생"+e);
+		               }
+		           });
+				}
             });
 			
 			$('input[type="checkbox"]').change(function() {
@@ -585,44 +585,44 @@
         }
 		
 		// 닉네임 수정 폼 표시/숨김 처리
-		        $("#show_nickname_form").click(function() {
-		            $("#nickname_change_form").slideDown(300);
-		            $(this).hide();
-		        });
+        $("#show_nickname_form").click(function() {
+            $("#nickname_change_form").slideDown(300);
+            $(this).hide();
+        });
 
-		        $("#cancel_nickname").click(function() {
-		            $("#nickname_change_form").slideUp(300);
-		            $("#show_nickname_form").show();
-		        });
+        $("#cancel_nickname").click(function() {
+            $("#nickname_change_form").slideUp(300);
+            $("#show_nickname_form").show();
+        });
 
-		        // 닉네임 변경 폼 제출
-		        $(".nickname-form").submit(function(e) {
-		            e.preventDefault();
-					
-					const nickname = $("#mf_nickname").val().trim();
-				    const nicknameRegex = /^[a-zA-Z가-힣0-9]{1,8}$/;
-					
-					if (!nicknameRegex.test(nickname)) {
-				        alert("특수문자는 사용 불가하며 최대 8글자까지 입력할 수 있습니다.");
-				        $("#mf_nickname").focus();
-				        return;
-				    }
-		            
-		            $.ajax({
-		                type: "POST",
-		                url: $(this).attr("action"),
-		                data: $(this).serialize(),
-		                success: function(response) {
-							alert(response.message);
-					        if (response.success) {
-					            location.reload(); // 페이지 리로드
-					        }
-		                },
-		                error: function() {
-		                    alert("닉네임 변경 중 오류가 발생했습니다.");
-		                }
-		            });
-		        });
+        // 닉네임 변경 폼 제출
+        $(".nickname-form").submit(function(e) {
+            e.preventDefault();
+			
+			const nickname = $("#mf_nickname").val().trim();
+		    const nicknameRegex = /^[a-zA-Z가-힣0-9]{1,8}$/;
+			
+			if (!nicknameRegex.test(nickname)) {
+		        alert("특수문자는 사용 불가하며 최대 8글자까지 입력할 수 있습니다.");
+		        $("#mf_nickname").focus();
+		        return;
+		    }
+            
+            $.ajax({
+                type: "POST",
+                url: $(this).attr("action"),
+                data: $(this).serialize(),
+                success: function(response) {
+					alert(response.message);
+			        if (response.success) {
+			            location.reload(); // 페이지 리로드
+			        }
+                },
+                error: function() {
+                    alert("닉네임 변경 중 오류가 발생했습니다.");
+                }
+            });
+        });
     </script>
 </body>
 </html>
