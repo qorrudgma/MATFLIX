@@ -33,8 +33,10 @@
 			 , r.category
 			 , r.title
 			 , m.mf_nickname
+			 , r.star
 			 , r.created_at
 			 , ri.image_path
+			 , (select count(*) from recipe_review where recipe_id = r.recipe_id) as review_count
 		  from favorite_recipe f
 		  left join recipe r
 			on f.recipe_id = r.recipe_id

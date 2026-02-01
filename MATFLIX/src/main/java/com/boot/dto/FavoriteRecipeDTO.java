@@ -20,4 +20,6 @@ public class FavoriteRecipeDTO {
 	private String title;
 	private String mf_nickname;
 	private String image_path;
+	private int star;
+	private int review_count;
 }

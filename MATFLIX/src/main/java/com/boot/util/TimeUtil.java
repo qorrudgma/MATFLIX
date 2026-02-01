@@ -1,6 +1,7 @@
 package com.boot.util;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -58,7 +59,18 @@ public class TimeUtil {
 			return "";
 		}
 
-		return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		int currentYear = LocalDate.now().getYear();
+		int targetYear = time.getYear();
+
+		DateTimeFormatter formatter;
+
+		if (currentYear == targetYear) {
+			formatter = DateTimeFormatter.ofPattern("MM-dd");
+		} else {
+			formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		}
+
+		return time.format(formatter);
 	}
 
 	/* LocalDateTime => "yyyy-MM-dd HH:mm" */
@@ -68,6 +80,17 @@ public class TimeUtil {
 			return "";
 		}
 
-		return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+		int currentYear = LocalDate.now().getYear();
+		int targetYear = time.getYear();
+
+		DateTimeFormatter formatter;
+
+		if (currentYear == targetYear) {
+			formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm");
+		} else {
+			formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		}
+
+		return time.format(formatter);
 	}
 }

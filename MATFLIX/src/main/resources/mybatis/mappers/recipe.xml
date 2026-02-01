@@ -88,6 +88,7 @@
 	<!-- 레시피 리스트 -->	
 	<select id="recipe_list" resultType="com.boot.dto.RecipeDTO">
 		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.created_at, r.updated_at, m.mf_nickname, ri.image_path
+			 , (select count(*) from recipe_review where recipe_id = r.recipe_id) as review_count
 		  FROM recipe r
 		  JOIN matflix m
 			ON r.mf_no = m.mf_no
@@ -99,7 +100,8 @@
 
 	<!-- 마이 레시피 리스트 -->	
 	<select id="my_recipe_list" resultType="com.boot.dto.RecipeDTO">
-		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.updated_at, m.mf_nickname, ri.image_path
+		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.created_at, r.updated_at, m.mf_nickname, ri.image_path
+			 , (select count(*) from recipe_review where recipe_id = r.recipe_id) as review_count
 		  FROM recipe r
 		  JOIN matflix m
 			ON r.mf_no = m.mf_no

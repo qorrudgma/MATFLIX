@@ -113,7 +113,9 @@ public class TeamController {
 //		}
 
 		List<RecipeDTO> my_recipe = recipeService.my_recipe_list(mf_no);
-
+		for (RecipeDTO c : my_recipe) {
+			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
+		}
 //		int mfNo = user.getMf_no();
 
 //		int user_follow_count = followService.user_follow_count(mfNo);

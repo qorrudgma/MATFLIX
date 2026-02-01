@@ -265,6 +265,7 @@ update recipe
 DELETE FROM recipe
 WHERE recipe_id = 1;
 alter table recipe add COLUMN recipe_favorite_count INT DEFAULT 0;
+
 select f.favorite_no
 	 , r.recipe_id
 	 , f.mf_no
@@ -282,6 +283,26 @@ select f.favorite_no
 	ON f.recipe_id = ri.recipe_id
    AND ri.image_type ="THUMBNAIL"
  where f.mf_no = 61;
+ 
+select r.recipe_id
+	 , r.mf_no
+     , r.title
+     , r.category
+     , r.updated_at
+     , m.mf_nickname
+     , ri.image_path
+  from recipe r
+  JOIN matflix m
+	ON r.mf_no = m.mf_no
+  left join follow f
+    on r.mf_no = f.following_id
+  left join recipe_image ri
+	ON r.recipe_id = ri.recipe_id
+   AND ri.image_type ="THUMBNAIL"
+ where f.follower_id = 62
+ order by r.created_at asc;
+
+select * from follow;
 
 -- 재료
 CREATE TABLE recipe_ingredient (
@@ -465,6 +486,27 @@ CREATE TABLE recipe_review (
 		ON DELETE CASCADE
 );
 select * from recipe_review;
+delete from recipe_review where recipe_id = 6;
+
+select f.favorite_no
+			 , r.recipe_id
+			 , f.mf_no
+			 , r.category
+			 , r.title
+			 , m.mf_nickname
+			 , r.star
+			 , r.created_at
+			 , ri.image_path
+             , (select count(*) from recipe_review where recipe_id = r.recipe_id) as review_count
+		  from favorite_recipe f
+		  left join recipe r
+			on f.recipe_id = r.recipe_id
+		  JOIN matflix m
+			ON f.mf_no = m.mf_no
+		  LEFT JOIN recipe_image ri
+			ON f.recipe_id = ri.recipe_id
+		   AND ri.image_type ="THUMBNAIL"
+		 where f.mf_no = 61;
 
 -- 리뷰 이미지
 CREATE TABLE review_image (

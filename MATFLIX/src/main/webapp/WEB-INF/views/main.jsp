@@ -76,8 +76,21 @@
 									<div class="recipe-category">한식</div>
 								</div>
 								<div class="recipe-info">
-									<h3>${r.title}</h3>
-									<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
+									<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+									<span class="recipe_star">
+									    <span class="star_fill">
+											<c:choose>
+											    <c:when test="${r.star == 0}">
+													<span class ='no_star'>리뷰 없음</span>
+											    </c:when>
+											    <c:otherwise>
+											        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+											    </c:otherwise>
+											</c:choose>
+									    </span>
+									</span>
+									<p><strong>${r.mf_nickname}</strong></p>
+									<span class="recipe_time">${r.display_time}</span>
 								</div>
 							</a>
 						</c:if>
@@ -110,10 +123,23 @@
 				              		<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
 				              		<div class="recipe-category">중식</div>
 			            		</div>
-			            		<div class="recipe-info">
-			              			<h3>${r.title}</h3>
-			              			<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
-			            		</div>
+								<div class="recipe-info">
+									<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+									<span class="recipe_star">
+									    <span class="star_fill">
+											<c:choose>
+											    <c:when test="${r.star == 0}">
+													<span class ='no_star'>리뷰 없음</span>
+											    </c:when>
+											    <c:otherwise>
+											        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+											    </c:otherwise>
+											</c:choose>
+									    </span>
+									</span>
+									<p><strong>${r.mf_nickname}</strong></p>
+									<span class="recipe_time">${r.display_time}</span>
+								</div>
 			          		</a>
 			        	</c:if>
 			        </c:forEach>
@@ -146,10 +172,23 @@
 			              			<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
 			              			<div class="recipe-category">일식</div>
 			            		</div>
-			            		<div class="recipe-info">
-				              		<h3>${r.title}</h3>
-				              		<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
-			            		</div>
+								<div class="recipe-info">
+									<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+									<span class="recipe_star">
+									    <span class="star_fill">
+											<c:choose>
+											    <c:when test="${r.star == 0}">
+													<span class ='no_star'>리뷰 없음</span>
+											    </c:when>
+											    <c:otherwise>
+											        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+											    </c:otherwise>
+											</c:choose>
+									    </span>
+									</span>
+									<p><strong>${r.mf_nickname}</strong></p>
+									<span class="recipe_time">${r.display_time}</span>
+								</div>
 			          		</a>
 			        	</c:if>
 			      	</c:forEach>
@@ -182,10 +221,23 @@
 			              			<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
 			              			<div class="recipe-category">양식</div>
 			            		</div>
-		            			<div class="recipe-info">
-			              			<h3>${r.title}</h3>
-			              			<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
-			            		</div>
+								<div class="recipe-info">
+									<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+									<span class="recipe_star">
+									    <span class="star_fill">
+											<c:choose>
+											    <c:when test="${r.star == 0}">
+													<span class ='no_star'>리뷰 없음</span>
+											    </c:when>
+											    <c:otherwise>
+											        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+											    </c:otherwise>
+											</c:choose>
+									    </span>
+									</span>
+									<p><strong>${r.mf_nickname}</strong></p>
+									<span class="recipe_time">${r.display_time}</span>
+								</div>
 			          		</a>
 			        	</c:if>
 			      	</c:forEach>
@@ -217,10 +269,23 @@
 		              				<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
 		              				<div class="recipe-category">디저트</div>
 		            			</div>
-		            			<div class="recipe-info">
-		              				<h3>${r.title}</h3>
-		              				<p><strong>${r.mf_nickname}</strong> · 나중에 시간 추가하기</p>
-	            				</div>
+								<div class="recipe-info">
+									<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+									<span class="recipe_star">
+									    <span class="star_fill">
+											<c:choose>
+											    <c:when test="${r.star == 0}">
+													<span class ='no_star'>리뷰 없음</span>
+											    </c:when>
+											    <c:otherwise>
+											        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+											    </c:otherwise>
+											</c:choose>
+									    </span>
+									</span>
+									<p><strong>${r.mf_nickname}</strong></p>
+									<span class="recipe_time">${r.display_time}</span>
+								</div>
 		          			</a>
 		        		</c:if>
 		      		</c:forEach>

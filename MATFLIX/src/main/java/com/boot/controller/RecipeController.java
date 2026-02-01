@@ -126,7 +126,14 @@ public class RecipeController {
 
 	@GetMapping("/main")
 	public String main(Model model) {
-		model.addAttribute("recipe_list", recipeService.recipe_list());
+		List<RecipeDTO> my_recipe = recipeService.recipe_list();
+//		for (RecipeDTO c : my_recipe) {
+//			c.setDisplay_time(TimeUtil.timeAgo(c.getCreated_at()));
+//		}
+		for (RecipeDTO c : my_recipe) {
+			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
+		}
+		model.addAttribute("recipe_list", my_recipe);
 		return "main";
 	}
 

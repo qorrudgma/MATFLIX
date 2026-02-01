@@ -200,6 +200,31 @@ body {
   font-weight: 400;
 }
 
+.review_count{
+	color: rgb(255, 0, 0);
+}
+
+.recipe_star {
+    font-size: 16px;
+    letter-spacing: 2px;
+	height: 30px;
+}
+
+.recipe_star .star_fill {
+	font-size: 20px;
+    color: #FFD700;
+}
+
+.no_star{
+	font-size: 15px;
+	color: rgb(128, 128, 128);
+}
+
+.recipe_time {
+	color:gray;
+	font-size: 14px;
+}
+
 .slider-controls {
   display: flex;
   gap: 10px;
@@ -357,13 +382,14 @@ body {
   color: var(--text-color);
   margin: 0;
   line-height: 1.4;
+  border-bottom: 1px dotted #bbb;
   /* 두 줄 이상일 경우 말줄임표 처리 */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 2.8em;
+  height: 2em;
 }
 
 .recipe-info p {
