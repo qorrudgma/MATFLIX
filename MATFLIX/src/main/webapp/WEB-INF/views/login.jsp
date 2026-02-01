@@ -44,7 +44,7 @@
                 <form id="user_login" class="login_form" action="main_membership" method="post">
                     <div class="form_group">
                         <label for="mf_id"><i class="fas fa-user"></i> 아이디</label>
-                        <input type="text" name="mf_id" id="mf_id" required oninvalid="this.setCustomValidity('아이디를 입력해주세요.')" oninput="this.setCustomValidity('')">
+                        <input type="text" name="mf_id" id="mf_id" required oninvalid="this.setCustomValidity('아이디를 입력해주세요.')" oninput="this.setCustomValidity('')" autofocus>
                     </div>
                     
                     <div class="form_group">

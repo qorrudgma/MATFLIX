@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.boot.dao.RecipeReviewDAO;
 import com.boot.dto.RecipeReviewDTO;
@@ -24,9 +25,10 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	@Autowired
 	private FileStorageService recipeFileStorageService;
 
+	@Transactional
 	@Override
 	public void process_review_write(RecipeReviewWriteDTO dto) {
-		log.info("process_review_write()");
+		log.info("process_review_write => " + dto);
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		RecipeReviewDTO RRDTO = new RecipeReviewDTO();
 		RRDTO.setRecipe_id(dto.getRecipe_id());
@@ -48,8 +50,9 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 
 		RecipeReviewSummaryDTO RRSDTO = new RecipeReviewSummaryDTO();
 		RRSDTO.setRecipe_id(dto.getRecipe_id());
-		RRSDTO.setRating_sum(dto.getRating());
+		RRSDTO.setRating(dto.getRating());
 		dao.insert_review_summary(RRSDTO);
+		log.info("별점 디비 저장");
 	}
 
 	@Override
