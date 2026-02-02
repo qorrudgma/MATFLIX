@@ -17,6 +17,8 @@ public interface FileStorageService {
 
 	public void modify_recipe_image(int recipe_id, RecipeWriteDTO dto);
 
+	public void delete_revoiw_image(int recipe_id);
+
 	public void modify_revoiw_image(RecipeReviewWriteDTO dto);
 
 	public void modify_profile_image(ProfileImageDTO dto);

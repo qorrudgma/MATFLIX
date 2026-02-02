@@ -293,6 +293,27 @@ public class FileStorageServiceImpl implements FileStorageService {
 	}
 
 	@Override
+	public void delete_revoiw_image(int review_id) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		String image_path = dao.review_image_path(review_id);
+
+		try {
+			File delete_image_path = new File("C:/matflix_upload", image_path);
+
+			if (delete_image_path.exists()) {
+				boolean deleted = delete_image_path.delete();
+				log.info("기존 리뷰 이미지 삭제 => {} / 성공여부 = {}", delete_image_path.getAbsolutePath(), deleted);
+			}
+
+			dao.delete_review_image(review_id);
+			log.info("리뷰 이미지 삭제 완료: {}", delete_image_path.getAbsolutePath());
+		} catch (Exception e) {
+			log.error("리뷰 이미지 삭제 실패", e);
+			throw new RuntimeException("리뷰 이미지 삭제 중 오류 발생");
+		}
+	}
+
+	@Override
 	public void modify_profile_image(ProfileImageDTO dto) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		MultipartFile file = dto.getImage_file();

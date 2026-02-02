@@ -73,10 +73,21 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 		dao.update_review_summary(RRSDTO);
 	}
 
+	@Transactional
 	@Override
-	public void delete_review(int recipe_id) {
+	public void delete_review(int review_id) {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
-		dao.delete_review(recipe_id);
+		// 별점 수정
+		RecipeReviewDTO RRDTO = dao.find_delete_review_data(review_id);
+		RecipeReviewSummaryDTO RRSDTO = new RecipeReviewSummaryDTO();
+		RRSDTO.setRecipe_id(RRDTO.getRecipe_id());
+		RRSDTO.setOld_rating(RRDTO.getRating());
+		RRSDTO.setNew_rating(0);
+		dao.delete_review_summary(RRSDTO);
+		// 이미지 삭제
+		recipeFileStorageService.delete_revoiw_image(review_id);
+		// 리뷰 삭제
+		dao.delete_review(review_id);
 	}
 
 	@Override
@@ -89,8 +100,7 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	@Override
 	public RecipeReviewDTO select_review(int review_id) {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
-		RecipeReviewDTO review_detail = new RecipeReviewDTO();
-		review_detail = dao.select_review(review_id);
+		RecipeReviewDTO review_detail = dao.select_review(review_id);
 		return review_detail;
 	}
 
@@ -130,6 +140,12 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	}
 
 	@Override
+	public String review_image_path(int recipe_id) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		return dao.review_image_path(recipe_id);
+	}
+
+	@Override
 	public void update_review_image(ReviewImageDTO dto) {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		dao.update_review_image(dto);
@@ -139,5 +155,17 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 	public void update_review_summary(RecipeReviewSummaryDTO dto) {
 		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
 		dao.update_review_summary(dto);
+	}
+
+	@Override
+	public void delete_review_summary(RecipeReviewSummaryDTO dto) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		dao.delete_review_summary(dto);
+	}
+
+	@Override
+	public RecipeReviewDTO find_delete_review_data(int review_id) {
+		RecipeReviewDAO dao = sqlSession.getMapper(RecipeReviewDAO.class);
+		return dao.find_delete_review_data(review_id);
 	}
 }

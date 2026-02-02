@@ -18,7 +18,9 @@ public interface RecipeReviewService {
 
 	public void update_review_image(ReviewImageDTO dto);
 
-	public void delete_review(int recipe_id);
+	public void delete_review(int review_id);
+
+	public RecipeReviewDTO find_delete_review_data(int review_id);
 
 	public List<RecipeReviewDTO> review_list();
 
@@ -29,6 +31,8 @@ public interface RecipeReviewService {
 
 	public void delete_review_image(int recipe_id);
 
+	public String review_image_path(int recipe_id);
+
 	public List<ReviewImageDTO> review_image_list(@Param("recipe_id") int recipe_id, @Param("sort") String sort);
 
 	// 리뷰 별점
@@ -37,4 +41,6 @@ public interface RecipeReviewService {
 	public RecipeReviewSummaryDTO review_summary_list(int review_id);
 
 	public void update_review_summary(RecipeReviewSummaryDTO dto);
+
+	public void delete_review_summary(RecipeReviewSummaryDTO dto);
 }

@@ -26,9 +26,12 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -240,7 +243,7 @@ public class RecipeController {
 		return result;
 	}
 
-	// 리뷰 =====================
+// 리뷰 ==================================================================================
 	@PostMapping("/review/write")
 	public String review_write(RecipeReviewWriteDTO recipeReviewWriteDTO, HttpSession session) {
 		log.info("review_write()");
@@ -257,6 +260,7 @@ public class RecipeController {
 	public RecipeReviewDTO review_detail(@RequestParam int review_id) {
 		log.info("review_detail()");
 		RecipeReviewDTO review_detail = recipeReviewService.select_review(review_id);
+		log.info("review_detail => " + review_detail);
 		String time = TimeUtil.timeAgo(review_detail.getCreated_at());
 		log.info("time => " + time);
 		review_detail.setDisplay_updated_at(time);
@@ -281,5 +285,13 @@ public class RecipeController {
 		recipeReviewService.modify_review(recipeReviewWriteDTO);
 		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
 		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
+	}
+
+	@DeleteMapping("/review/delete/{review_id}")
+	@ResponseBody
+	public ResponseEntity<String> deleteReview(@PathVariable int review_id, HttpSession session) {
+		recipeReviewService.delete_review(review_id);
+
+		return ResponseEntity.ok("success");
 	}
 }

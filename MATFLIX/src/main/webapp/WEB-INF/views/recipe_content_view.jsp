@@ -289,11 +289,9 @@
 						  data-rating=""
 						  data-content=""
 						  data-image_path="">리뷰 수정하기</span>
-					<form id="review_delete_form" method="post" action="review/delete">
-						<input type="hidden" name="review_id" id="delete_review_id" value="">
-						<input type="hidden" name="mf_no" id="delete_mf_no" value="">
-                		<span class="review_delete">리뷰 삭제하기</span>
-					</form>
+<!--					<input type="hidden" name="review_id" id="delete_review_id" value="">-->
+					<input type="hidden" name="mf_no" id="delete_mf_no" value="">
+            		<span id="review_delete" data-review_id="" class="review_delete">리뷰 삭제하기</span>
 	            </div>
 	        </div>
 	    </div>
@@ -579,12 +577,14 @@
 									   .attr("data-content", review_detail.content)
 									   .attr("data-image_path", review_img);
 					$("#delete_review_id").val(review_detail.review_id);
+					$("#review_delete").attr("data-review_id", review_detail.review_id);
 					$("#delete_mf_no").val(review_detail.mf_no);
 					$("#review_modify_review_id").val(review_detail.review_id);
 					$("#old_rating").val(review_detail.rating);
 			    } else {
 					console.log("수정 불가능");
 			        $("#review_modify").hide();
+			        $("#review_delete").hide();
 			    }
 			    // 모달 열기
 			    $("#photo_review_detail").fadeIn();
@@ -623,6 +623,24 @@
             $(".review_image_preview").hide();
         }
 		
+	});
+	
+	// 리뷰 삭제하기
+	$(document).on("click", "#review_delete", function () {
+		const review_id = $(this).data("review_id");
+		$("#photo_review_detail").fadeOut();
+
+		$.ajax({
+	        url: "/review/delete/"+review_id,
+	        type: "DELETE",
+	        success: function() {
+				$(".img_div[data-review_id='" + review_id + "']").remove();
+			    alert("리뷰 삭제 성공");
+	        },
+			error: function () {
+			    alert("리뷰 삭제 실패");
+			}
+	    });
 	});
 	
 	// 리뷰 닫기
