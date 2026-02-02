@@ -189,9 +189,9 @@
 				</div>
 				<!-- 리뷰 정렬 -->
 				<div class="review_sort_simple">
-				    <span class="review_sort_btn active" data_sort="latest">최신순</span>
-				    <span class="review_sort_btn" data_sort="rating_desc">별점 높은순</span>
-				    <span class="review_sort_btn" data_sort="rating_asc">별점 낮은순</span>
+				    <span class="review_sort_btn active" data-sort="latest">최신순</span>
+				    <span class="review_sort_btn" data-sort="rating_desc">별점 높은순</span>
+				    <span class="review_sort_btn" data-sort="rating_asc">별점 낮은순</span>
 				    <input type="hidden" id="review_sort_value" value="latest">
 				</div>
 			</c:when>
@@ -523,7 +523,7 @@
 			,data: {sort:sort, recipe_id:recipe_id}
 			,success: function(review_sort){
 				renderReviewImages(review_sort);
-				// console.log(review_sort);
+				console.log(review_sort);
 			}
 			,error: function(){
 				alert("실패");
