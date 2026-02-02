@@ -159,4 +159,16 @@
 		 WHERE recipe_id = #{recipe_id}
 	</select>
 
+	<!-- 별점 수정 -->
+	<update id="modify_recipe_star">
+		UPDATE recipe
+	       SET star = (SELECT
+				              CASE
+				                  WHEN review_count = 0 THEN 0
+				                  ELSE rating_sum / review_count
+				              END
+			           	 FROM recipe_review_summary
+			            WHERE recipe_id = #{recipe_id})
+	     WHERE recipe_id = #{recipe_id}
+	</update>
 </mapper>

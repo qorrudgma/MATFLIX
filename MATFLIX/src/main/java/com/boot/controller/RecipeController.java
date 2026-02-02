@@ -1,22 +1,3 @@
-/*==========================================================
-* 파일명     : RecipeController.java
-* 작성자     : 임진우
-* 작성일자   : 2025-05-07
-* 설명       : recipe 등록, 수정, 삭제, 조회, 관리에 관한 컨트롤러입니다.
-
-* 수정 이력 :
-* 날짜         수정자       내용
-* --------   ----------   ------------------------- 
-* 2025-05-07   임진우       최초 생성
-* 2025-05-07   임진우       Spring Lagacy에서 Boot로 이동
-* 2025-05-07   임진우       이미지 파일 업로드 완료
-* 2025-05-08   임진우       main : 이미지 나타내기 로직 구현 => 카테로리별 리스트
-* 2025-05-08   임진우       요리 게시판 리스트 및 해당 요리 뷰 작성
-* 2025-05-12   임진우       테이블에 유저넘버 추가
-* 2025-05-12   임진우       내 레시피 생성
-* 2025-05-12   임진우       레시피 보드에 작성자 이름 및 정보 삽입
-============================================================*/
-
 package com.boot.controller;
 
 import java.util.HashMap;
@@ -129,14 +110,15 @@ public class RecipeController {
 
 	@GetMapping("/main")
 	public String main(Model model) {
-		List<RecipeDTO> my_recipe = recipeService.recipe_list();
+		List<RecipeDTO> recipe_list = recipeService.recipe_list();
 //		for (RecipeDTO c : my_recipe) {
 //			c.setDisplay_time(TimeUtil.timeAgo(c.getCreated_at()));
 //		}
-		for (RecipeDTO c : my_recipe) {
+		for (RecipeDTO c : recipe_list) {
 			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
 		}
-		model.addAttribute("recipe_list", my_recipe);
+		model.addAttribute("recipe_list", recipe_list);
+		log.info("my_recipe => " + recipe_list);
 		return "main";
 	}
 
@@ -238,7 +220,7 @@ public class RecipeController {
 			result.put("status", "cancel");
 		}
 		result.put("count", recipeService.recipe_recommend_count(recipe_id));
-		log.info("result => " + result);
+//		log.info("result => " + result);
 
 		return result;
 	}
@@ -250,7 +232,7 @@ public class RecipeController {
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		int mf_no = user.getMf_no();
 		recipeReviewWriteDTO.setMf_no(mf_no);
-		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
+//		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
 		recipeReviewService.process_review_write(recipeReviewWriteDTO);
 		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
 	}
@@ -260,11 +242,11 @@ public class RecipeController {
 	public RecipeReviewDTO review_detail(@RequestParam int review_id) {
 		log.info("review_detail()");
 		RecipeReviewDTO review_detail = recipeReviewService.select_review(review_id);
-		log.info("review_detail => " + review_detail);
+//		log.info("review_detail => " + review_detail);
 		String time = TimeUtil.timeAgo(review_detail.getCreated_at());
-		log.info("time => " + time);
+//		log.info("time => " + time);
 		review_detail.setDisplay_updated_at(time);
-		log.info("review_detail => " + review_detail);
+//		log.info("review_detail => " + review_detail);
 		return review_detail;
 	}
 
@@ -283,7 +265,7 @@ public class RecipeController {
 		int mf_no = user.getMf_no();
 		recipeReviewWriteDTO.setMf_no(mf_no);
 		recipeReviewService.modify_review(recipeReviewWriteDTO);
-		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
+//		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
 		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
 	}
 

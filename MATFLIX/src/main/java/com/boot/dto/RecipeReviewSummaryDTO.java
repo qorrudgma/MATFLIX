@@ -21,4 +21,12 @@ public class RecipeReviewSummaryDTO {
 	private int rating;
 	private int old_rating;
 	private int new_rating;
+
+// private double rating_avg;
+//	public int star;
+//	public double p_5;
+//	public double p_4;
+//	public double p_3;
+//	public double p_2;
+//	public double p_1;
 }

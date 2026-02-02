@@ -126,7 +126,7 @@
     </section>
 	
 	<!-- 사진 리뷰 -->
-	<section class="photo_review_section">
+	<section class="photo_review_section" id="photo_review_section">
 	    <div class="photo_review_header">
 	        <h2>사진 리뷰</h2>
 	    </div>
@@ -637,7 +637,8 @@
 	        url: "/review/delete/"+review_id,
 	        type: "DELETE",
 	        success: function() {
-				$(".img_div[data-review_id='" + review_id + "']").remove();
+				//$(".img_div[data-review_id='" + review_id + "']").remove();
+				location.reload();
 			    alert("리뷰 삭제 성공");
 	        },
 			error: function () {
@@ -768,7 +769,6 @@
 	    $(this).closest("form").find(".review_star span").removeClass("active");
 	    $(this).addClass("active").prevAll().addClass("active");
 	});
-
 	
 	// 댓글===============================================
 	// 페이지 로드 시 댓글 목록 초기화

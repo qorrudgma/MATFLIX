@@ -692,6 +692,7 @@
     font-size: 26px;
     cursor: pointer;
     color: #999;
+	z-index: 100;
 }
 
 /* 상세 이미지 */

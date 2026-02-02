@@ -250,4 +250,10 @@ public class RecipeServiceImpl implements RecipeService {
 		int count = dao.recipe_recommend_count(recipe_id);
 		return count;
 	}
+
+	@Override
+	public void modify_recipe_star(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		dao.modify_recipe_star(recipe_id);
+	}
 }

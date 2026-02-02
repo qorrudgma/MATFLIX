@@ -55,4 +55,6 @@ public interface RecipeService {
 	public List<RecipeTagDTO> recipe_tag(int recipe_id);
 
 	public int recipe_recommend_count(int recipe_id);
+
+	public void modify_recipe_star(int recipe_id);
 }

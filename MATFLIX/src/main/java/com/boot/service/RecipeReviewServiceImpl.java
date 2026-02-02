@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.boot.dao.RecipeDAO;
 import com.boot.dao.RecipeReviewDAO;
 import com.boot.dto.RecipeReviewDTO;
 import com.boot.dto.RecipeReviewSummaryDTO;
@@ -52,6 +53,9 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 		RRSDTO.setRecipe_id(dto.getRecipe_id());
 		RRSDTO.setRating(dto.getRating());
 		dao.insert_review_summary(RRSDTO);
+
+		RecipeDAO Rdao = sqlSession.getMapper(RecipeDAO.class);
+		Rdao.modify_recipe_star(dto.getRecipe_id());
 		log.info("별점 디비 저장");
 	}
 
@@ -71,6 +75,8 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 		RRSDTO.setOld_rating(dto.getOld_rating());
 		RRSDTO.setNew_rating(dto.getRating());
 		dao.update_review_summary(RRSDTO);
+		RecipeDAO Rdao = sqlSession.getMapper(RecipeDAO.class);
+		Rdao.modify_recipe_star(dto.getRecipe_id());
 	}
 
 	@Transactional
@@ -88,6 +94,8 @@ public class RecipeReviewServiceImpl implements RecipeReviewService {
 		recipeFileStorageService.delete_revoiw_image(review_id);
 		// 리뷰 삭제
 		dao.delete_review(review_id);
+		RecipeDAO Rdao = sqlSession.getMapper(RecipeDAO.class);
+		Rdao.modify_recipe_star(RRDTO.getRecipe_id());
 	}
 
 	@Override
