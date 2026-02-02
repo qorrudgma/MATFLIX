@@ -260,7 +260,7 @@ CREATE TABLE recipe (
 select * from recipe where recipe_id =9;
 select * from recipe;
 update recipe
-		   set recommend = recommend + 1
+		   set star = null
 		 where recipe_id = 6;
 DELETE FROM recipe
 WHERE recipe_id = 1;
@@ -486,8 +486,22 @@ CREATE TABLE recipe_review (
 		ON DELETE CASCADE
 );
 select * from recipe_review;
-delete from recipe_review where recipe_id = 6;
-
+select * from recipe_review_summary;
+update recipe_review_summary set review_count = review_count + 1 where recipe_id = 7;
+SELECT r.review_id
+			 , r.recipe_id
+			 , r.mf_no
+			 , r.rating
+			 , r.deleted
+			 , r.content
+			 , r.created_at
+			 , m.mf_nickname
+		  FROM recipe_review r
+		  left join matflix m
+		    on r.mf_no = m.mf_no
+		 WHERE r.review_id = 15
+		   AND deleted = 0
+		 ORDER BY created_at DESC;
 select f.favorite_no
 			 , r.recipe_id
 			 , f.mf_no
@@ -541,7 +555,7 @@ select * from recipe_review_summary;
 SELECT * 
   FROM recipe_review_summary
  WHERE recipe_id = 6;
-
+delete from recipe_review_summary where recipe_id = 6;
 update recipe_review_summary
    set rating_4 = 1
  WHERE recipe_id = 6;
@@ -561,68 +575,3 @@ create table notice_board(
 -- ------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------
--- 레시피 테이블
-CREATE TABLE recipe_r (
-    rc_recipe_id     INT PRIMARY KEY AUTO_INCREMENT,
-    rc_name          VARCHAR(100) NOT NULL,
-    rc_description   TEXT,
-    rc_category1_id  VARCHAR(20),
-    rc_category2_id  VARCHAR(20) DEFAULT 'a',
-    rc_cooking_time  VARCHAR(20),
-    rc_difficulty    ENUM('easy', 'medium', 'hard'),
-    rc_created_at    DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    rc_img           VARCHAR(1000),  -- 요리 메인 사진(1장)
-    rc_tip           VARCHAR(1000),
-    rc_tag           VARCHAR(1000),
-    mf_no        INT,
-    star_score DOUBLE default 0
-);
-
--- 레시피 파일
-CREATE TABLE rc_attach (
-    uuid VARCHAR(100) NOT NULL PRIMARY KEY,     -- 파일 고유 식별자 (UUID)
-    uploadPath VARCHAR(200) NOT NULL,          -- 업로드 경로
-    fileName VARCHAR(255) NOT NULL,               -- 파일 이름
-    image BOOLEAN DEFAULT FALSE,                  -- 이미지 여부 (true: 이미지, false: 일반 파일)
-    rc_recipe_id INT NOT NULL                     -- 참조하는 레시피 ID
-    );
-
--- 재료 테이블
-CREATE TABLE rc_ingredient (
-    rc_recipe_id INT, -- 외래키
-    rc_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,    -- 자동 증가 재료 ID
-    rc_ingredient_name VARCHAR(1000),                -- 주재료명
-    rc_ingredient_amount VARCHAR(1000),               -- 주재료양
-    FOREIGN KEY (rc_recipe_id) REFERENCES recipe_r(rc_recipe_id) ON DELETE CASCADE
-);
-
--- 조리 과정 테이블
-CREATE TABLE rc_course (
-    rc_recipe_id INT, -- 외래키
-    rc_course_id INT AUTO_INCREMENT PRIMARY KEY,       -- 자동 증가 과정 ID
-    rc_course_description VARCHAR(1000) DEFAULT '',    -- 조리과정 설명
-    rc_course_img VARCHAR(1000),                     -- 조리과정 사진
-    FOREIGN KEY (rc_recipe_id) REFERENCES recipe_r(rc_recipe_id) ON DELETE CASCADE
-);
-
--- 레시피 게시판 테이블
-CREATE TABLE rc_board (
-    rc_boardNo int AUTO_INCREMENT PRIMARY KEY,
-    rc_boardName VARCHAR(20),
-    rc_boardTitle VARCHAR(100),
-    rc_boardContent VARCHAR(300),
-    rc_boardDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    rc_boardHit int DEFAULT 0,
-    rc_recipe_id INT
-);
-
--- 레시피 댓글
-CREATE TABLE rc_board_comment(
-   rc_commentNo int primary key auto_increment,
-   rc_commentWriter varchar(20),
-   rc_commentContent varchar(300),
-   rc_boardNo int, 
-   rc_commentCreatedTime datetime default current_timestamp,
-   user_star_score int default 0,
-   mf_no INT NOT NULL
-);

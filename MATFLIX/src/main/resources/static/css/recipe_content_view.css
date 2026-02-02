@@ -79,9 +79,38 @@
     background-color: #dc3545;
 }
 
+/* 즐겨찾기 */
+#insert_favorite_recipe,
+#delete_favorite_recipe {
+	background:rgb(255, 107, 107);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+#insert_favorite_recipe {
+    color: white!important;
+}
+
+#delete_favorite_recipe {
+    color: yellow;
+}
+
+#delete_favorite_recipe:hover,
+#insert_favorite_recipe:hover {
+    background: rgb(205, 7, 17);
+}
+
 /* Intro */
 .recipe_intro_section {
-    font-size: 18px;
+    font-size: 20px;
 	font-weight: bold;
     margin-bottom: 40px;
 	background-color: #ffffff;
@@ -205,6 +234,14 @@
 }
 
 /* 사진 리뷰 섹션 */
+.photo_review_detail_content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+	position: relative;
+	padding-bottom: 50px;
+}
+
 .photo_review_section {
     margin: 50px 0;
 	background-color: #ffffff;
@@ -225,7 +262,12 @@
     font-size: 22px;
 }
 
+#detail_text{
+	font-size: 20px;
+}
+
 .photo_review_like_btn {
+	margin-left: auto;
     background: #e50914;
     color: #fff;
     border: none;
@@ -271,6 +313,41 @@
 	flex-direction: column;
 	align-items: center; 
 	justify-content: center;
+}
+
+/* 수정 + 삭제 버튼 공통 영역 */
+.photo_modify,
+.review_delete {
+    position: absolute;
+    bottom: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.photo_modify {
+    left: 10px;
+    background: #f1f3f5;
+    color: #333;
+}
+
+.review_delete {
+    right: 10px;
+    background: #ffe3e3;
+    color: #c92a2a;
+}
+
+.photo_modify:hover {
+    background: #dee2e6;
+}
+
+.review_delete:hover {
+    background: #ffcccc;
 }
 
 /* =========================

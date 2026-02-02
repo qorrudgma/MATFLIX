@@ -23,7 +23,7 @@
             <span class="hero_category">${recipe.category}</span>
             <h1>${recipe.title}</h1>
             <p>${recipe.mf_nickname} · ${recipe.display_updated_at}</p>
-            <p class="recommend">추천 · <span id="recommend_count">${recipe.recommend}</span></p>
+            <p class="recommend">레시피 추천 · <span id="recommend_count">${recipe.recommend}</span></p>
 			<c:if test="${not empty user and recipe.mf_no != user.mf_no}">
 				<c:choose>
 					<c:when test="${follow}">
@@ -43,22 +43,25 @@
 
     <!-- 레시피 소개 -->
     <section class="recipe_intro_section">
-        <p>${recipe.intro}</p>
+        <p>
+			<c:choose>
+				<c:when test="${not empty user and favorite_check == 1}">
+					<button type="button" id="delete_favorite_recipe">
+	                    <i class="fas fa-star"></i>
+	                </button>
+				</c:when>
+				<c:otherwise>
+					<button type="button" id="insert_favorite_recipe">
+	                    <i class="fas fa-star"></i>
+	                </button>
+				</c:otherwise>
+			</c:choose>
+			${recipe.intro}
+		</p>
+		
 		<c:if test="${not empty user and recipe.mf_no == user.mf_no}">
 			<a href="/recipe_modify_page?recipe_id=${recipe.recipe_id}" class="edit-btn">수정</a>
 		</c:if>
-		<c:choose>
-			<c:when test="${not empty user and favorite_check == 1}">
-				<button type="button" id="delete_favorite_recipe">
-                    <i class="fas fa-star"></i>즐찾 되어있음
-                </button>
-			</c:when>
-			<c:otherwise>
-				<button type="button" id="insert_favorite_recipe">
-                    <i class="fas fa-star"></i>즐찾 안 되어있음
-                </button>
-			</c:otherwise>
-		</c:choose>
     </section>
 
     <!-- 재료 -->
@@ -108,24 +111,24 @@
 		        <button type="submit" class="delete_recipe"><i class="fa-solid fa-trash"></i> 레시피 삭제하기</button>
 		    </form>
 		</c:if>
+		<c:choose>
+			<c:when test="${recommended != 1}">
+		        <button class="photo_review_like_btn">
+		            <i class="fas fa-thumbs-up"></i> 레시피 추천
+		        </button>
+			</c:when>
+			<c:otherwise>
+				<button class="photo_review_like_btn active">
+				    <i class="fas fa-thumbs-up"></i> 레시피 추천 취소
+				</button>
+			</c:otherwise>
+		</c:choose>
     </section>
 	
 	<!-- 사진 리뷰 -->
 	<section class="photo_review_section">
 	    <div class="photo_review_header">
 	        <h2>사진 리뷰</h2>
-			<c:choose>
-				<c:when test="${recommended != 1}">
-			        <button class="photo_review_like_btn">
-			            <i class="fas fa-thumbs-up"></i> 추천
-			        </button>
-				</c:when>
-				<c:otherwise>
-					<button class="photo_review_like_btn active">
-					    <i class="fas fa-thumbs-up"></i> 추천 취소
-					</button>
-				</c:otherwise>
-			</c:choose>
 	    </div>
 		<c:choose>
 		    <c:when test="${not empty review_summary_list}">
@@ -406,7 +409,7 @@
                 console.log("즐겨찾기 추가 성공");
 				// 버튼 교체
 				$("#insert_favorite_recipe").replaceWith(`<button type="button" id="delete_favorite_recipe">
-													        <i class="fas fa-star"></i>즐찾 되어있음
+													        <i class="fas fa-star"></i>
 													    </button>`);
             }
             ,error: function () {
@@ -431,7 +434,7 @@
             ,success: function (result) {
                 console.log("즐겨찾기 취소 성공");
 				$("#delete_favorite_recipe").replaceWith(`<button type="button" id="insert_favorite_recipe">
-												            <i class="far fa-star"></i>즐찾 안 되어있음
+												            <i class="fa fa-star"></i>
 												        </button>`);
             }
             ,error: function () {
@@ -485,10 +488,10 @@
 				$("#recommend_count").text(result.count);
 	            if(result.status === "recommended") {
 					console.log("recommended");
-	                $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천 취소').addClass("active");
+	                $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 레시피 추천 취소').addClass("active");
 	            } else {
 					console.log("cancel");
-	                $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 추천').removeClass("active");
+	                $(".photo_review_like_btn").html('<i class="fas fa-heart"></i> 레시피 추천').removeClass("active");
 	            }
 	        }
 	        ,error: function () {
