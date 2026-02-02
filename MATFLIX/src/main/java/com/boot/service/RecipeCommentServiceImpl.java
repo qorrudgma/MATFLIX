@@ -3,6 +3,7 @@ package com.boot.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,17 @@ public class RecipeCommentServiceImpl implements RecipeCommentService {
 	}
 
 	@Override
-	public List<RecipeCommentDTO> all_recipe_comment(int recipt_id) {
+	public List<RecipeCommentDTO> all_recipe_comment(@Param("recipe_id") int recipe_id, @Param("mf_no") int mf_no) {
 		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
 		List<RecipeCommentDTO> recipe_coment_list = new ArrayList<>();
-		recipe_coment_list = dao.all_recipe_comment(recipt_id);
+		recipe_coment_list = dao.all_recipe_comment(recipe_id, mf_no);
 		return recipe_coment_list;
+	}
+
+	@Override
+	public void recipe_comment_modify(RecipeCommentDTO recipeCommentDTO) {
+		RecipeCommentDAO dao = sqlSession.getMapper(RecipeCommentDAO.class);
+		dao.recipe_comment_modify(recipeCommentDTO);
 	}
 
 	@Override

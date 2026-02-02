@@ -917,13 +917,16 @@
     right: 14px;
 }
 
-.comment-actions .delete {
+.comment-actions .delete,
+.comment-actions .modify {
+	padding: 2px;
     font-size: 12px;
     color: #999;
     cursor: pointer;
 }
 
-.comment-actions .delete:hover {
+.comment-actions .delete:hover,
+.comment-actions .modify:hover {
     color: #ff5252;
 }
 

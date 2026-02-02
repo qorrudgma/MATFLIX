@@ -43,7 +43,7 @@ public class RecipeCommentController {
 		recipeCommentService.insert_recipe_comment(recipeCommentDTO);
 		log.info("mf_no => " + mf_no);
 		int recipe_id = recipeCommentDTO.getRecipe_id();
-		recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id);
+		recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id, mf_no);
 		log.info("recipe_id => " + recipe_id);
 
 		return recipeCommentList;
@@ -51,8 +51,13 @@ public class RecipeCommentController {
 
 	@GetMapping("/recipe/comment/list")
 	@ResponseBody
-	public List<RecipeCommentDTO> comment_list(@RequestParam("recipe_id") int recipe_id) {
-		List<RecipeCommentDTO> recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id);
+	public List<RecipeCommentDTO> comment_list(@RequestParam("recipe_id") int recipe_id, HttpSession session) {
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = 0;
+		if (user != null) {
+			mf_no = user.getMf_no();
+		}
+		List<RecipeCommentDTO> recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id, mf_no);
 		if (recipeCommentList != null) {
 			for (RecipeCommentDTO c : recipeCommentList) {
 				c.setDisplay_time(TimeUtil.timeAgo(c.getCreated_at()));
@@ -69,6 +74,23 @@ public class RecipeCommentController {
 		log.info("comment_no => " + comment_no);
 		recipeCommentService.recipe_comment_delete(comment_no);
 		log.info("디비에 deleted = 1");
+	}
+
+	@PostMapping("/recipe/comment/modify")
+	@ResponseBody
+	public List<RecipeCommentDTO> recipe_comment_modify(RecipeCommentDTO recipeCommentDTO, HttpSession session) {
+		log.info("@# /recipe/comment");
+		log.info("@# recipeCommentDTO=>" + recipeCommentDTO);
+		List<RecipeCommentDTO> recipeCommentList = new ArrayList<>();
+
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		int mf_no = user.getMf_no();
+		recipeCommentDTO.setMf_no(mf_no);
+		recipeCommentService.recipe_comment_modify(recipeCommentDTO);
+		int recipe_id = recipeCommentDTO.getRecipe_id();
+		recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id, mf_no);
+
+		return recipeCommentList;
 	}
 
 	@PostMapping("/recipe/comment/recommend")

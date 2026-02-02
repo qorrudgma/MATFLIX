@@ -23,17 +23,26 @@
 		     , rc.deleted
 		     , rc.created_at
 		     , rc.recommend_count
-		     , u.mf_nickname
+		     , m.mf_nickname
 		     , ui.profile_image_path AS profile_image_path
+	        <!-- 로그인 -->
+	        <if test="mf_no != 0">
+	            , (select count(*) from recipe_comment_recommend rcr where rcr.mf_no = #{mf_no} and comment_no = rc.comment_no) AS recommended
+	        </if>
     	  FROM recipe_comment rc
 		  LEFT JOIN user_image ui
 			ON rc.mf_no = ui.mf_no
-          JOIN matflix u
-            ON rc.mf_no = u.mf_no
+          JOIN matflix m
+            ON rc.mf_no = m.mf_no
          WHERE rc.recipe_id = #{recipe_id}
            AND rc.deleted = 0
          ORDER BY rc.comment_no ASC
     </select>
+
+	<!-- 댓글 수정 -->
+    <update id="recipe_comment_modify">
+    	update recipe_comment set comment_content = #{comment_content} where comment_no=#{comment_no} and mf_no = #{mf_no}
+    </update>
 
 	<!-- 댓글 삭제 -->
     <update id="recipe_comment_delete">

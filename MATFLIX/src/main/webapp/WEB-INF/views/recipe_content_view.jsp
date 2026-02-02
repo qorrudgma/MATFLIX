@@ -310,7 +310,7 @@
             <button type="button" onclick="commentWrite(0)" class="btn-comment">등록</button>
         </div>
 
-        <!-- 댓글 리스트 (값은 네가 연결) -->
+        <!-- 댓글 리스트 -->
         <div id="comment_list" class="comment_list">
         </div>
     </section>
@@ -836,7 +836,7 @@
 				            <div class="comment-content">
 				                <div class="comment-header">
 				                    <span class="comment-author">` + c.mf_nickname + `<span class="comment_no">` + c.comment_no + `</span>`
-				                        + (c.mf_no == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
+				                        + (recipe_user == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
 				                        `<span class="comment-date">(`+(c.display_time)+`)</span>
 				                    </span>
 				                </div>
@@ -854,6 +854,9 @@
 				        <div class="comment-actions">
 				            <div class="dropdown-item delete"onclick="deleteComment(` + c.comment_no + `)">
 								<i class="fas fa-trash-alt"></i> 삭제
+				            </div>
+				            <div class="dropdown-item modify"onclick="modifyComment(` + c.comment_no + `)">
+								<i class="fas fa-pen"></i> 수정
 				            </div>
 				        </div>` : ``) + `</div>`;
 	    return html;
@@ -879,7 +882,7 @@
 				            <div class="comment-content">
 				                <div class="comment-header">
 				                    <span class="comment-author">` + c.mf_nickname+`<span class="comment_no">` + c.comment_no + `</span>`
-				                         + (c.mf_no == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
+				                         + (recipe_user == sessionUserNo? `<span class="author-tag">작성자</span>` : ``) +
 										`<span class="comment-date">(` + c.display_time + `)</span>
 				                    </span>
 				                </div>
@@ -894,9 +897,11 @@
 				        </div>
 				        ` + (c.mf_no == sessionUserNo ? `
 				        <div class="comment-actions">
-				            <div class="dropdown-item delete"
-				                 onclick="deleteComment(` + c.comment_no + `)">
+				            <div class="dropdown-item delete" onclick="deleteComment(` + c.comment_no + `)">
 				                <i class="fas fa-trash-alt"></i> 삭제
+				            </div>
+				            <div class="dropdown-item modify" onclick="modifyComment(` + c.comment_no + `)">
+				                <i class="fas fa-pen"></i> 수정
 				            </div>
 				        </div>` : ``) + `</div>`;
 	    return html;
@@ -1015,6 +1020,63 @@
         });
     }
 	
+	// 댓글 수정 기능
+    function modifyComment(comment_no) {
+		$(".comment-edit-box").remove();
+		const commentItem = $(".comment_no").filter(function () {
+					            return $(this).text() == comment_no;
+					        }).closest(".comment-item");
+
+	    const textEl = commentItem.find(".comment-text");
+	    const originText = textEl.text();
+
+	    // 수정 입력창 생성
+	    const editBox = `
+	        <div class="comment-edit-box">
+	            <input type="text" class="comment-edit-input" value="` + originText + `">
+	            <div class="comment-edit-actions">
+	                <button onclick="submitCommentModify(` + comment_no + `)">수정</button>
+	                <button onclick="cancelCommentModify()">취소</button>
+	            </div>
+	        </div>
+	    `;
+
+	    // 기존 텍스트 숨기고 수정창 삽입
+	    textEl.hide();
+	    textEl.after(editBox);
+    }
+	
+	function submitCommentModify(comment_no) {
+	    const input = $(".comment-edit-input");
+	    const newContent = input.val().trim();
+
+	    if (!newContent) {
+	        alert("내용을 입력해주세요.");
+	        return;
+	    }
+
+	    $.ajax({
+	        type: "post",
+	        url: "/recipe/comment/modify",
+	        data: {
+	            comment_no: comment_no,
+	            comment_content: newContent
+	        },
+	        success: function () {
+	            alert("댓글 수정 완료");
+	            loadComments(); // 전체 새로고침
+	        },
+	        error: function () {
+	            alert("댓글 수정 실패");
+	        }
+	    });
+	}
+	
+	// 댓글 수정 취소
+	function cancelCommentModify() {
+	    $(".comment-edit-box").remove();
+	    $(".comment-text").show();
+	}
 
 	// 댓글 추천
 	function commentRecommend(comment_no, el){

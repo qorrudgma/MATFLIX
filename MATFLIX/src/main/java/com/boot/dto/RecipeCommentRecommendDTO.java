@@ -17,4 +17,5 @@ public class RecipeCommentRecommendDTO {
 
 	// 화면에 보여지는 시간
 	private LocalDateTime display_time;
+	private int recommended;
 }

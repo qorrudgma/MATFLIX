@@ -2,12 +2,16 @@ package com.boot.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.boot.dto.RecipeCommentDTO;
 
 public interface RecipeCommentService {
 	public void insert_recipe_comment(RecipeCommentDTO recipeCommentDTO);
 
-	public List<RecipeCommentDTO> all_recipe_comment(int recipt_id);
+	public List<RecipeCommentDTO> all_recipe_comment(@Param("recipe_id") int recipe_id, @Param("mf_no") int mf_no);
+
+	public void recipe_comment_modify(RecipeCommentDTO recipeCommentDTO);
 
 	public void recipe_comment_delete(int comment_no);
 
