@@ -55,8 +55,21 @@
                             <span class="stat_label">레시피</span>
                         </div>
                     </div>
-                    
-                    <button class="follow-button" id="followBtn">팔로우</button>
+					<c:if test="${not empty user and profile.mf_no != user.mf_no}">
+						<c:choose>
+							<c:when test="${follow}">
+								<button type="button" id="follow_btn" class="follow-btn delete_follow">
+			                        <i class="fas fa-user-minus"></i> 팔로우 취소
+			                    </button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" id="follow_btn" class="follow-btn add_follow">
+			                        <i class="fas fa-user-plus"></i> 팔로우
+			                    </button>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+<!--                    <button class="follow-button" id="followBtn">팔로우</button>-->
                 </div>
             </div>
             
@@ -125,6 +138,9 @@
     <jsp:include page="footer.jsp"/>
     
     <script>
+		var sessionUserNo = "${not empty user ? user.mf_no : '' }";
+		var other_mf_no = "${profile.mf_no}";
+		
         // 탭 전환 기능
         $(document).ready(function() {
 			const mf_no = "${param.mf_no}";
@@ -177,19 +193,58 @@
    						}
 		            });
 				}
-            
-            // 팔로우 버튼 토글
-            $('#followBtn').click(function() {
-                $(this).toggleClass('following');
-                if ($(this).hasClass('following')) {
-                    $(this).text('팔로우 취소');
-                    // 여기에 팔로우 API 호출 추가
-                } else {
-                    $(this).text('팔로우');
-                    // 여기에 언팔로우 API 호출 추가
-                }
-            });
-        });
+        	});
+			// 팔로우 추가 버튼
+			$(document).on("click", ".add_follow", function (e) {
+			    e.preventDefault();
+				console.log("팔로우 추가 버튼 누름");
+
+			    if (sessionUserNo == '') {
+			        alert("로그인 후 이용 가능합니다.");
+			        return;
+			    }
+
+			    $.ajax({
+			         type: "POST"
+			        ,data: {following_id: other_mf_no, follower_id:sessionUserNo, follower_email:""}
+			        ,url: "/add_follow"
+			        ,success: function (result) {
+			            console.log("팔로우 성공");
+			            $("#follow_btn").removeClass("add_follow")
+			                .html('<i class="fas fa-user-minus"></i> 팔로우 취소')
+			                .addClass("delete_follow");
+			        }
+			        ,error: function () {
+			            console.log("팔로우 실패");
+			        }
+			    });
+			});
+
+			// 팔로우 삭제 버튼
+			$(document).on("click", ".delete_follow", function (e) {
+			    e.preventDefault();
+				console.log("팔로우 취소 버튼 누름");
+
+			    if (sessionUserNo == '') {
+			        alert("로그인 후 이용 가능합니다.");
+			        return;
+			    }
+
+			    $.ajax({
+			         type: "POST"
+			        ,data: {following_id: other_mf_no, follower_id:sessionUserNo}
+			        ,url: "/delete_follow"
+			        ,success: function (result) {
+			            console.log("팔로우 삭제 성공");
+			            $("#follow_btn").removeClass("delete_follow")
+			                .html('<i class="fas fa-user-plus"></i> 팔로우')
+			                .addClass("add_follow");
+			        }
+			        ,error: function () {
+			            console.log("팔로우 실패");
+			        }
+			    });
+			});
     });
     </script>
 </body>

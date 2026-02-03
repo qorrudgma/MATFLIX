@@ -2,6 +2,8 @@ package com.boot.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,17 +45,25 @@ public class OtherController {
 	private RecommendService recommendService;
 
 	@RequestMapping("/other_profile")
-	public String other_profile(@RequestParam("mf_no") int mf_no, Model model) {
-		TeamDTO user = teamService.find_user_by_no(mf_no);
+	public String other_profile(@RequestParam("mf_no") int mf_no, HttpSession session, Model model) {
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		ProfileDTO profile = teamService.profile(mf_no);
 
 		List<RecipeDTO> my_recipe = recipeService.my_recipe_list(mf_no);
 		for (RecipeDTO c : my_recipe) {
 			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
 		}
+		if (user != null) {
+			if (followService.check_follow(user.getMf_no(), mf_no) == 1) {
+				model.addAttribute("follow", true);
+			} else {
+				model.addAttribute("follow", false);
+			}
+		}
 
 		model.addAttribute("my_recipe", my_recipe);
 		model.addAttribute("profile", profile);
+		log.info("model => " + model);
 
 		return "other_profile";
 	}
