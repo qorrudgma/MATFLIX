@@ -1,10 +1,11 @@
 package com.boot.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import com.boot.dto.RankDTO;
 
 @Mapper
 public interface FollowDAO {
@@ -40,5 +41,7 @@ public interface FollowDAO {
 	public void mf_delete_follow(int mf_no);
 
 	// 유저 랭킹
-	public List<Map<String, Object>> user_rank();
+	public void update_user_ranking();
+
+	public List<RankDTO> select_user_ranking();
 }

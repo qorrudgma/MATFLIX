@@ -73,13 +73,75 @@
 	</select>
 	
 	<!-- 팔로우 랭킹 -->
-	<select id="user_rank" resultType="map">
-		SELECT following_id
-			 , COUNT(*) AS follower_count
-		  FROM follow
-		 GROUP BY following_id
-		 ORDER BY follower_count DESC
-		 LIMIT 100;
-	</select>
+	<insert id="update_user_ranking">
+        INSERT INTO user_ranking (mf_no
+						       , mf_nickname
+						       , follower_count
+						       , avg_recipe_recommend
+						       , avg_recipe_star
+						       , avg_board_recommend
+						       , ranking_score)
+		SELECT
+		      u.mf_no
+		    , u.mf_nickname
+		    , u.follower_count
+		    , u.avg_recipe_recommend
+		    , u.avg_recipe_star
+		    , u.avg_board_recommend
+		    , u.ranking_score
+		FROM (
+		    SELECT m.mf_no
+		         , m.mf_nickname
+		         , IFNULL(f.follower_count, 0) AS follower_count
+		         , IFNULL(r.avg_recipe_recommend, 0) AS avg_recipe_recommend
+		         , IFNULL(r.avg_recipe_star, 0) AS avg_recipe_star
+		         , IFNULL(b.avg_board_recommend, 0) AS avg_board_recommend
+		         , ROUND(IFNULL(f.follower_count, 0) * 0.3
+		            	+ IFNULL(r.avg_recipe_recommend, 0) * 0.3
+		            	+ IFNULL(r.avg_recipe_star, 0) * 0.2
+		            	+ IFNULL(b.avg_board_recommend, 0) * 0.2, 4) AS ranking_score
+		    FROM matflix m
+		
+		    LEFT JOIN (SELECT following_id
+		             		, COUNT(*) AS follower_count
+		         		 FROM follow
+		        		GROUP BY following_id) f
+	          ON m.mf_no = f.following_id
+		
+		    LEFT JOIN (SELECT mf_no
+		            		, ROUND(AVG(recommend), 3) AS avg_recipe_recommend
+		            		, ROUND(AVG(star), 2) AS avg_recipe_star
+		        		 FROM recipe
+		        		GROUP BY mf_no) r
+	          ON m.mf_no = r.mf_no
+		
+		    LEFT JOIN (SELECT mf_no
+		            		, ROUND(AVG(recommend_count), 3) AS avg_board_recommend
+		        		 FROM tbl_board
+		        		GROUP BY mf_no) b
+	          ON m.mf_no = b.mf_no) u
+		ON DUPLICATE KEY UPDATE
+	      mf_nickname = u.mf_nickname
+	    , follower_count = u.follower_count
+	    , avg_recipe_recommend = u.avg_recipe_recommend
+	    , avg_recipe_star = u.avg_recipe_star
+	    , avg_board_recommend = u.avg_board_recommend
+	    , ranking_score = u.ranking_score
+    </insert>
 	
+	
+	<!-- 랭킹 -->
+	<select id="select_user_ranking" resultType="com.boot.dto.RankDTO">
+		SELECT ur.mf_no
+			 , ur.mf_nickname
+			 , ur.follower_count
+			 , ur.avg_recipe_star
+			 , ur.ranking_score
+			 , ui.profile_image_path
+		  FROM user_ranking ur
+		  LEFT JOIN user_image ui
+		    ON ur.mf_no = ui.mf_no
+		 ORDER BY ranking_score DESC
+		 LIMIT 10
+	</select>
 </mapper>

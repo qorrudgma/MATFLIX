@@ -16,6 +16,7 @@ public class FavoriteRecipeDTO {
 	private LocalDateTime created_at;
 
 	// 프로필용
+	private String display_time;
 	private String category;
 	private String title;
 	private String mf_nickname;

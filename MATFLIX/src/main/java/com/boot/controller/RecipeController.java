@@ -104,7 +104,11 @@ public class RecipeController {
 
 	@GetMapping("/recipe_list")
 	public String recipe_list(Model model) {
-		model.addAttribute("recipe_list", recipeService.recipe_list());
+		List<RecipeDTO> recipe_list = recipeService.recipe_list();
+		for (RecipeDTO c : recipe_list) {
+			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
+		}
+		model.addAttribute("recipe_list", recipe_list);
 		return "recipe_list";
 	}
 

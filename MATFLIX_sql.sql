@@ -18,6 +18,9 @@ select * from matflix;
 select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
 		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id="qw12";
 
+CREATE INDEX idx_follow_following_id ON follow(following_id);
+CREATE INDEX idx_recipe_mf_no ON recipe(mf_no);
+CREATE INDEX idx_board_mf_no ON tbl_board(mf_no);
 -- 유저 프로필 사진
 CREATE TABLE user_image (
     image_no INT AUTO_INCREMENT PRIMARY KEY,
@@ -257,7 +260,7 @@ CREATE TABLE recipe (
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-select * from recipe where recipe_id =9;
+select * from recipe where recipe_id =7;
 select * from recipe;
 update recipe
 		   set star = null
@@ -442,6 +445,25 @@ CREATE TABLE recipe_comment (
         ON DELETE CASCADE
 );
 select * from recipe_comment;
+SELECT rc.comment_no
+		     , rc.recipe_id
+		     , rc.mf_no
+		     , rc.comment_content
+		     , rc.parentCommentNo
+		     , rc.deleted
+		     , rc.created_at
+		     , rc.recommend_count
+		     , m.mf_nickname
+		     , ui.profile_image_path AS profile_image_path
+             , (select count(*) from recipe_comment_recommend rcr where rcr.mf_no = 61 and comment_no = rc.comment_no) AS recommended
+    	  FROM recipe_comment rc
+		  LEFT JOIN user_image ui
+			ON rc.mf_no = ui.mf_no
+          JOIN matflix m
+            ON rc.mf_no = m.mf_no
+         WHERE rc.recipe_id = 7
+           AND rc.deleted = 0
+         ORDER BY rc.comment_no ASC;
 
 CREATE TABLE recipe_comment_recommend (
 	recipe_comment_recommend_id  BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -571,6 +593,102 @@ create table notice_board(
 	notice_boardHit int default 0,
 	mf_no int default 0
 );
+
+CREATE TABLE user_ranking (
+    mf_no INT PRIMARY KEY,
+    mf_nickname VARCHAR(100),
+    follower_count INT NOT NULL,
+    avg_recipe_recommend DECIMAL(6,3) NOT NULL,
+    avg_recipe_star DECIMAL(4,2) NOT NULL,
+    avg_board_recommend DECIMAL(6,3) NOT NULL,
+    ranking_score DECIMAL(10,4) NOT NULL,
+    calculated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+SELECT *
+  FROM user_ranking
+ ORDER BY ranking_score DESC
+ LIMIT 100;
+ SELECT ur.mf_no
+			 , ur.mf_nickname
+			 , ur.follower_count
+			 , ur.avg_recipe_star
+			 , ur.ranking_score
+			 , ui.profile_image_path
+		  FROM user_ranking ur
+		  LEFT JOIN user_image ui
+		    ON ur.mf_no = ui.mf_no
+		 ORDER BY ranking_score DESC
+		 LIMIT 10;
+
+INSERT INTO user_ranking (
+    mf_no,
+    mf_nickname,
+    follower_count,
+    avg_recipe_recommend,
+    avg_recipe_star,
+    avg_board_recommend,
+    ranking_score
+)
+SELECT
+    new.mf_no,
+    new.mf_nickname,
+    new.follower_count,
+    new.avg_recipe_recommend,
+    new.avg_recipe_star,
+    new.avg_board_recommend,
+    new.ranking_score
+FROM (
+    SELECT
+        m.mf_no,
+        m.mf_nickname,
+
+        IFNULL(f.follower_count, 0) AS follower_count,
+
+        IFNULL(r.avg_recipe_recommend, 0) AS avg_recipe_recommend,
+        IFNULL(r.avg_recipe_star, 0) AS avg_recipe_star,
+        IFNULL(b.avg_board_recommend, 0) AS avg_board_recommend,
+
+        ROUND(
+            IFNULL(f.follower_count, 0) * 0.3 +
+            IFNULL(r.avg_recipe_recommend, 0) * 0.3 +
+            IFNULL(r.avg_recipe_star, 0) * 0.2 +
+            IFNULL(b.avg_board_recommend, 0) * 0.2
+        , 4) AS ranking_score
+
+    FROM matflix m
+
+    LEFT JOIN (
+        SELECT
+            following_id,
+            COUNT(*) AS follower_count
+        FROM follow
+        GROUP BY following_id
+    ) f ON m.mf_no = f.following_id
+
+    LEFT JOIN (
+        SELECT
+            mf_no,
+            ROUND(AVG(recommend), 3) AS avg_recipe_recommend,
+            ROUND(AVG(star), 2) AS avg_recipe_star
+        FROM recipe
+        GROUP BY mf_no
+    ) r ON m.mf_no = r.mf_no
+
+    LEFT JOIN (
+        SELECT
+            mf_no,
+            ROUND(AVG(recommend_count), 3) AS avg_board_recommend
+        FROM tbl_board
+        GROUP BY mf_no
+    ) b ON m.mf_no = b.mf_no
+) AS new
+ON DUPLICATE KEY UPDATE
+    mf_nickname = new.mf_nickname,
+    follower_count = new.follower_count,
+    avg_recipe_recommend = new.avg_recipe_recommend,
+    avg_recipe_star = new.avg_recipe_star,
+    avg_board_recommend = new.avg_board_recommend,
+    ranking_score = new.ranking_score;
 -- ------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------

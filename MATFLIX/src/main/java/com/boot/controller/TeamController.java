@@ -144,6 +144,9 @@ public class TeamController {
 		}
 		int mf_no = user.getMf_no();
 		List<FavoriteRecipeDTO> favorite_recipe_list = favoriteRecipeService.favorite_recipe_list(mf_no);
+		for (FavoriteRecipeDTO c : favorite_recipe_list) {
+			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
+		}
 		log.info("favorite_recipe_list=> " + favorite_recipe_list);
 		return favorite_recipe_list;
 	}

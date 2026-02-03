@@ -431,6 +431,9 @@ body {
   color: #e74c3c;
 }
 
+.empty-box{
+	margin: 0 auto;
+}
 /* 반응형 */
 @media (max-width: 768px) {
   .recipe-slider {

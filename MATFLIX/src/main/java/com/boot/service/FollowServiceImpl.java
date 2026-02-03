@@ -1,7 +1,6 @@
 package com.boot.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.boot.dao.FollowDAO;
 import com.boot.dao.NotifSettingDAO;
 import com.boot.dao.NotificationDAO;
+import com.boot.dto.RankDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,11 +89,16 @@ public class FollowServiceImpl implements FollowService {
 
 	// 유저 랭킹
 	@Override
-	public List<Map<String, Object>> user_rank() {
+	public void update_user_ranking() {
 		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
-		List<Map<String, Object>> user_rank = dao.user_rank();
+		dao.update_user_ranking();
+	}
 
-		return user_rank;
+	@Override
+	public List<RankDTO> select_user_ranking() {
+		FollowDAO dao = sqlSession.getMapper(FollowDAO.class);
+		List<RankDTO> user_ranking = dao.select_user_ranking();
+		return user_ranking;
 	}
 
 	@Override

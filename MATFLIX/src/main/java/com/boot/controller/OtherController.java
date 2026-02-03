@@ -1,20 +1,25 @@
 package com.boot.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.BoardDTO;
+import com.boot.dto.ProfileDTO;
+import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.FollowService;
+import com.boot.service.RecipeService;
 import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
+import com.boot.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +29,9 @@ public class OtherController {
 
 	@Autowired
 	private TeamService teamService;
+
+	@Autowired
+	private RecipeService recipeService;
 
 	@Autowired
 	private BoardService boardService;
@@ -37,27 +45,25 @@ public class OtherController {
 	@RequestMapping("/other_profile")
 	public String other_profile(@RequestParam("mf_no") int mf_no, Model model) {
 		TeamDTO user = teamService.find_user_by_no(mf_no);
-		int follow_count = followService.user_follow_count(mf_no);
-		int follower_count = followService.user_follower_count(mf_no);
+		ProfileDTO profile = teamService.profile(mf_no);
 
-		List<Map<String, Object>> profile_board = boardService.profile_board_list(mf_no);
-		List<Map<String, Object>> profile_board_list = new ArrayList<>();
-		for (Map<String, Object> board : profile_board) {
-			int board_no = (int) board.get("boardNo");
-			int recommend_count = recommendService.total_recommend(board_no);
-
-			board.put("recommend_count", recommend_count);
-
-			profile_board_list.add(board);
+		List<RecipeDTO> my_recipe = recipeService.my_recipe_list(mf_no);
+		for (RecipeDTO c : my_recipe) {
+			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
 		}
 
-		model.addAttribute("user", user);
-		model.addAttribute("follow_count", follow_count);
-		model.addAttribute("follower_count", follower_count);
-		model.addAttribute("profile_board_list", profile_board_list);
-		log.info("profile_board_list => " + profile_board_list);
-//		log.info("upload_list => " + upload_list);
+		model.addAttribute("my_recipe", my_recipe);
+		model.addAttribute("profile", profile);
 
 		return "other_profile";
+	}
+
+	@PostMapping("/other_board_list")
+	@ResponseBody
+	public List<BoardDTO> my_board_list(int mf_no) {
+		log.info("other_board_list()");
+		List<BoardDTO> other_board_list = boardService.my_board_list(mf_no);
+		log.info("other_board_list=> " + other_board_list);
+		return other_board_list;
 	}
 }

@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <!-- 프로필 CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/other_profile.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
     <!-- 폰트어썸 아이콘 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
@@ -24,31 +26,32 @@
         <section class="profile_section">
             <div class="profile_header">
                 <div class="profile_info_container">
-                    <div class="profile_avatar">
-                        <i class="fas fa-user"></i>
+                    <div class="profile_image_large" id="profile_image_preview">
+						<c:choose>
+						    <c:when test="${not empty profile.profile_image_path}">
+								<img src="${pageContext.request.contextPath}${profile.profile_image_path}">
+							</c:when>
+							<c:otherwise>
+								<i class="fas fa-user"></i>
+							</c:otherwise>
+						</c:choose>
                     </div>
                     
-                    <h1 class="profile_name">
-                        <c:forEach var="profile" items="${user_rank_list}" varStatus="rank">
-                            <c:if test="${profile.mf_no == param.mf_no}">
-                                ${profile.mf_nickname}님
-                            </c:if>
-                        </c:forEach>
-                    </h1>
+                    <h1 class="profile_name">${profile.mf_nickname}</h1>
                     
                     <div class="user_bio">안녕하세요! 맛있는 요리를 사랑하는 요리 초보입니다.</div>
                     
                     <div class="profile_stats">
                         <div class="stat_item">
-                            <span class="stat_number">${follow_count}</span>
+                            <span class="stat_number">${profile.follower_count}</span>
                             <span class="stat_label">팔로워</span>
                         </div>
                         <div class="stat_item">
-                            <span class="stat_number">${follower_count}</span>
+                            <span class="stat_number">${profile.following_count}</span>
                             <span class="stat_label">팔로잉</span>
                         </div>
                         <div class="stat_item">
-                            <span class="stat_number">${recipe_list.size()}</span>
+                            <span class="stat_number">${profile.recipe_count}</span>
                             <span class="stat_label">레시피</span>
                         </div>
                     </div>
@@ -70,94 +73,50 @@
                 
                 <!-- 레시피 탭 -->
                 <div class="tab_content active" id="recipes_content">
-                    <h2 class="section_title">
-                        <i class="fas fa-utensils"></i> 레시피
-                    </h2>
-                    
-                    <div class="recipe_grid">
-                        <c:forEach var="recipe" items="${recipe_list}">
-                            <c:set var="recipe_id" value="${recipe.rc_recipe_id}" />
-                            <a href="recipe_content_view?rc_recipe_id=${recipe.rc_recipe_id}" class="recipe_card">
-                                <c:set var="found_image" value="false" />
-                                <c:forEach var="attach" items="${upload_list}">
-                                    <c:if test="${!found_image && attach.rc_recipe_id == recipe_id && attach.image}">
-                                        <img src="/upload/${attach.uploadPath}/${attach.uuid}_${attach.fileName}" alt="${recipe.rc_name}" />
-                                        <c:set var="found_image" value="true" />
-                                    </c:if>
-                                </c:forEach>
-                                <c:if test="${!found_image}">
-                                    <img src="${pageContext.request.contextPath}/images/default-recipe.jpg" alt="${recipe.rc_name}" />
-                                </c:if>
-                                
-                                <div class="recipe_info">
-                                    <div class="recipe_title">${recipe.rc_name}</div>
-                                    
-                                    <!-- 평균 별점 표시 -->
-                                    <c:if test="${not empty recipe.star_score}">
-                                        <div class="star-display">
-                                            <c:forEach begin="1" end="5" var="i">
-                                                <c:choose>
-                                                    <c:when test="${i <= recipe.star_score}">
-                                                        &#9733; <!-- filled star -->
-                                                    </c:when>
-                                                    <c:when test="${i - 1 < recipe.star_score && recipe.star_score < i}">
-                                                        &#9733; <!-- half star로 대체할 수도 있음 -->
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="empty">&#9733;</span> <!-- empty star -->
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                            <span style="color: var(--light-text);">(${recipe.star_score}점)</span>
-                                        </div>
-                                    </c:if>
-                                </div>
-                            </a>
-                        </c:forEach>
-                        
-                        <c:if test="${empty recipe_list}">
-                            <div class="empty-state">
-                                <i class="fas fa-utensils"></i>
-                                <p>아직 등록된 레시피가 없습니다.</p>
-                            </div>
-                        </c:if>
-                    </div>
+					<!-- 내 레시피 목록 -->
+		            <div class="recipe_grid">
+						<c:forEach var="r" items="${my_recipe}">
+							<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+								<div class="recipe-image">
+									<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+									<div class="recipe-category">한식</div>
+								</div>
+								<div class="recipe-info">
+									<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+									<span class="recipe_star">
+									    <span class="star_fill">
+											<c:choose>
+											    <c:when test="${r.star == 0}">
+													<span class ='no_star'>리뷰 없음</span>
+											    </c:when>
+											    <c:otherwise>
+											        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+											    </c:otherwise>
+											</c:choose>
+									    </span>
+									</span>
+									<p><strong>${r.mf_nickname}</strong></p>
+									<span class="recipe_time">${r.display_time}</span>
+								</div>
+							</a>
+						</c:forEach>
+		                
+		                <c:if test="${empty my_recipe}">
+		                    <div class="empty-state">
+		                        <i class="fas fa-utensils"></i>
+		                        <p>아직 등록한 레시피가 없습니다.</p>
+		                        <a href="insert_recipe" class="add_recipe_btn">
+		                            <i class="fas fa-plus"></i> 레시피 등록하기
+		                        </a>
+		                    </div>
+		                </c:if>
+		            </div>
                 </div>
                 
                 <!-- 게시글 탭 -->
                 <div class="tab_content" id="posts_content">
-                    <h2 class="section_title">
-                        <i class="fas fa-clipboard"></i> 게시글
-                    </h2>
-                    
-                    <div class="board_list">
-                        <c:forEach var="board" items="${profile_board_list}" begin="0" end="5">
-                            <a href="content_view?pageNum=1&amount=10&type=&keyword=&boardNo=${board.boardNo}" class="board_card">
-                                <div class="board_title">${board.boardTitle}</div>
-                                <div class="board_stats">
-                                    <div class="board_stat">
-                                        <i class="fas fa-thumbs-up"></i>
-                                        <span>추천수: ${board.recommend_count}</span>
-                                    </div>
-                                    <div class="board_stat">
-                                        <i class="fas fa-eye"></i>
-                                        <span>조회수: ${board.boardHit}</span>
-                                    </div>
-                                    <div class="board_stat">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <span>작성일: ${board.boardDate}</span>
-                                    </div>
-                                </div>
-                            </a>
-                        </c:forEach>
-                        
-                        <c:if test="${empty profile_board_list}">
-                            <div class="empty-state">
-                                <i class="fas fa-clipboard"></i>
-                                <p>아직 작성한 게시글이 없습니다.</p>
-                            </div>
-                        </c:if>
-                    </div>
+					<div class="board_list">
+		            </div>
                 </div>
             </div>
         </section>
@@ -168,6 +127,7 @@
     <script>
         // 탭 전환 기능
         $(document).ready(function() {
+			const mf_no = "${param.mf_no}";
             $('.profile_tab').click(function() {
                 const tabId = $(this).data('tab');
                 
@@ -178,7 +138,45 @@
                 // 콘텐츠 전환
                 $('.tab_content').removeClass('active');
                 $('#' + tabId + '_content').addClass('active');
-            });
+				
+				if(tabId === "posts"){
+	   				console.log("내 게시글 탭");
+	   				$.ajax({
+	   	               type: "post",
+					   data: {mf_no : mf_no},
+	   	               url: "/other_board_list",
+	   	               success: function(other_board_list) {
+	   						console.log(other_board_list);
+	   					 	let html = "";
+	   						if (other_board_list && other_board_list.length > 0) {
+	   							other_board_list.forEach(function(board) {
+	   								html += `<a href="content_view?pageNum=1&amount=10&type=&keyword=&boardNo=`+board.boardNo+`" class="board_card">
+						                        <div class="board_title">
+						                            <i class="fas fa-file-alt"></i> `+board.boardTitle+` <span id="profile_comment_count">[`+board.comment_count+`]</span>
+						                        </div>
+						                        <div class="board_stats">
+						                            <div class="board_stat">
+						                                <i class="fas fa-thumbs-up"></i>
+						                                <span>추천수: `+board.recommend_count+`</span>
+						                            </div>
+						                            <div class="board_stat">
+						                                <i class="fas fa-eye"></i>
+						                                <span>조회수: `+board.boardHit+`</span>
+						                            </div>
+						                            <div class="board_stat">
+						                                <i class="fas fa-calendar-alt"></i>
+						                                <span>작성일: `+board.boardDate+`</span>
+						                            </div>
+						                        </div>
+						                    </a>`;
+	   							});
+	   						}else {
+		                       html += "<p class='empty'>게시글이 없습니다.</p>";
+		                    }
+		                    $(".board_list").html(html);
+   						}
+		            });
+				}
             
             // 팔로우 버튼 토글
             $('#followBtn').click(function() {
@@ -191,9 +189,8 @@
                     // 여기에 언팔로우 API 호출 추가
                 }
             });
-            
-            // 이미 팔로우 중인지 확인하는 로직 추가 필요
         });
+    });
     </script>
 </body>
 </html>

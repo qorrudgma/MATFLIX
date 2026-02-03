@@ -113,11 +113,17 @@
 							<div class="recipe-category">한식</div>
 						</div>
 						<div class="recipe-info">
-							<h3>${r.title}</h3>
+							<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
 							<span class="recipe_star">
 							    <span class="star_fill">
-							        <c:forEach begin="1" end="${r.star}">★</c:forEach>
-							        <c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+									<c:choose>
+									    <c:when test="${r.star == 0}">
+											<span class ='no_star'>리뷰 없음</span>
+									    </c:when>
+									    <c:otherwise>
+									        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+									    </c:otherwise>
+									</c:choose>
 							    </span>
 							</span>
 							<p><strong>${r.mf_nickname}</strong></p>
