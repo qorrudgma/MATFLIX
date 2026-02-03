@@ -410,6 +410,27 @@
     color: #555;
 }
 
+.password_wrap {
+    position: relative;
+    width: 100%;
+}
+
+.password_wrap input {
+    width: 100%;
+    padding-right: 45px !important;
+}
+
+.password_toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: black;
+    font-size: 16px;
+    padding: 5px;
+}
+
 .form-row input[type="text"] {
     padding: 8px 10px;
     border: 1px solid #ddd;

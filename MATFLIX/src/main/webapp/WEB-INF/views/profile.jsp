@@ -185,15 +185,24 @@
                         <label for="mf_pw">
                             <i class="fas fa-lock"></i> 비밀번호
                         </label>
-                        <input type="password" id="mf_pw" name="mf_pw" required>
+						<div class="password_wrap">
+	                        <input type="password" id="mf_pw" name="mf_pw" required>
+							<span class="password_toggle">
+	                            <i class="fa fa-eye" id="togglePassword"></i>
+	                        </span>
+	                    </div>
                     </div>
                     
                     <div class="form_group">
                         <label for="mf_pw_chk">
                             <i class="fas fa-check-circle"></i> 비밀번호 확인
                         </label>
-                        <input type="password" id="mf_pw_chk" name="mf_pw_chk" required
-                            oninput="checkPasswordMatch()">
+						<div class="password_wrap">
+                        	<input type="password" id="mf_pw_chk" name="mf_pw_chk" required oninput="checkPasswordMatch()">
+							<span class="password_toggle">
+	                        	<i class="fa fa-eye" id="togglePwChk"></i>
+	                        </span>
+	                    </div>
                         <div id="pw_match_msg" class="validation_msg"></div>
                     </div>
                     
@@ -665,6 +674,25 @@
                 }
             });
         });
+		
+		// 비밀번호 표시/숨기기 기능
+		$(document).ready(function() {
+		    // 비밀번호 필드 토글
+		    $("#togglePassword").on("click", function() {
+		        const passwordField = document.getElementById("mf_pw");
+		        const type = passwordField.type === "password" ? "text" : "password";
+		        passwordField.type = type;
+		        $(this).toggleClass("fa-eye fa-eye-slash");
+		    });
+		    
+		    // 비밀번호 확인 필드 토글
+		    $("#togglePwChk").on("click", function() {
+		        const passwordField = document.getElementById("mf_pw_chk");
+		        const type = passwordField.type === "password" ? "text" : "password";
+		        passwordField.type = type;
+		        $(this).toggleClass("fa-eye fa-eye-slash");
+		    });
+		});
     </script>
 </body>
 </html>
