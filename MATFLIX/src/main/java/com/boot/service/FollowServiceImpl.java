@@ -30,12 +30,12 @@ public class FollowServiceImpl implements FollowService {
 		log.info("!@#$" + following_id + "!@#" + follower_id + "!@#" + follower_email);
 		dao.add_follow(following_id, follower_id, follower_email);
 		log.info("여기는 도착?");
-		int result = NSdao.check_notif_setting(following_id, "follow");
-		log.info("!@#$" + result);
-		if (result == 1) {
-			log.info("여기는 도착?2");
-			Ndao.add_notification(follower_id, following_id, 0, 3);
-		}
+//		int result = NSdao.check_notif_setting(following_id, "follow");
+//		log.info("!@#$" + result);
+//		if (result == 1) {
+//			log.info("여기는 도착?2");
+//			Ndao.add_notification(follower_id, following_id, 0, 3);
+//		}
 		log.info("FollowServiceImpl 테이블에 데이터 넣음");
 	}
 

@@ -22,11 +22,11 @@
 }
 /* 컬럼 비율 */
 .col_no { width: 10%; }
-.col_title { width: 43%; }
+.col_title { width: 47%; }
 .col_name { width: 19%; }
 .col_date { width: 12%; }
-.col_views { width: 8%; }
-.col_views { width: 8%; }
+.col_views { width: 6%; }
+.col_views { width: 6%; }
 
 /* 제목만 왼쪽 정렬 + 말줄임 */
 .board_table td.title {
@@ -285,7 +285,7 @@ table tr:not(:first-child):not(:last-child) {
 }
 
 .write-btn-cell {
-  text-align: right;
+  text-align: right !important;
   padding: 15px !important;
 }
 

@@ -210,6 +210,13 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
+	public List<RecipeDTO> follow_recipe_list(int mf_no) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		List<RecipeDTO> dto = dao.follow_recipe_list(mf_no);
+		return dto;
+	}
+
+	@Override
 	public RecipeDTO recipe(int recipe_id) {
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
 		RecipeDTO dto = dao.recipe(recipe_id);

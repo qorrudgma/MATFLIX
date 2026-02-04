@@ -158,7 +158,7 @@
 }
 
 /* 탭 메뉴 스타일 */
-.mypage_tabs {
+.mypage_tabs, .follow_page_tabs {
   display: flex;
   background-color: #fff;
   border-radius: 10px;
@@ -195,6 +195,10 @@
   padding: 30px;
   min-height: 400px;
   background-color: transparent;
+}
+
+#follow_recipes_content, #follow_posts_content {
+	background-color: white !important;
 }
 
 .tab_content.active {

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.boot.dto.BoardDTO;
 import com.boot.dto.Criteria;
 import com.boot.dto.PageDTO;
+import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.PageService;
+import com.boot.service.RecipeService;
+import com.boot.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 public class PageController {
 	@Autowired
 	private PageService service;
+	@Autowired
+	private RecipeService recipeService;
 
 	@RequestMapping("/list")
 	public String list(@Param("cri") Criteria cri, Model model) {
@@ -80,8 +86,15 @@ public class PageController {
 		}
 		int f_total = service.f_getTotalCount(cri, mf_no);
 
+		List<RecipeDTO> recipe_list = recipeService.follow_recipe_list(mf_no);
+		for (RecipeDTO c : recipe_list) {
+			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
+		}
+
 		model.addAttribute("follow_board_list", follow_board_list);
 		model.addAttribute("pageMaker", new PageDTO(f_total, cri));
+		model.addAttribute("recipe_list", recipe_list);
+		log.info("recipe_list => " + recipe_list);
 
 		return "follow_board_list";
 	}

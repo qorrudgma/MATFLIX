@@ -44,6 +44,8 @@ public interface RecipeService {
 
 	public List<RecipeDTO> my_recipe_list(int mf_no);
 
+	public List<RecipeDTO> follow_recipe_list(int mf_no);
+
 	public RecipeDTO recipe(int recipe_id);
 
 	public List<RecipeIngredientDTO> recipe_ingredient(int recipe_id);

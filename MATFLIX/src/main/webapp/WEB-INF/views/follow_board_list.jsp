@@ -12,6 +12,9 @@
    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
    <!-- 게시판 CSS -->
    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/list.css">
+   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
+   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/recipe_list.css">
+   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile.css">
    <!-- 폰트어썸 아이콘 -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
    <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
@@ -27,100 +30,352 @@
        
        <h2>친구들의 이야기</h2>
        <p>친구들의 이야기들을 모아 보아요!</p>
-       
-       <form method="get" id="searchForm">
-          <select name="type">
-             <option value="" <c:out value="${pageMaker.cri.type == null ? 'selected':''}"/>>전체 목록조회</option>
-             <option value="T" <c:out value="${pageMaker.cri.type eq 'T' ? 'selected':''}"/>>제목</option>
-             <option value="C" <c:out value="${pageMaker.cri.type eq 'C' ? 'selected':''}"/>>내용</option>
-             <option value="W" <c:out value="${pageMaker.cri.type eq 'W' ? 'selected':''}"/>>작성자</option>
-             <option value="TC" <c:out value="${pageMaker.cri.type eq 'TC' ? 'selected':''}"/>>제목 + 내용</option>
-             <option value="TW" <c:out value="${pageMaker.cri.type eq 'TW' ? 'selected':''}"/>>제목 + 작성자</option>
-             <option value="CW" <c:out value="${pageMaker.cri.type eq 'TCW' ? 'selected':''}"/>>내용 + 작성자</option>
-          </select>
-
-          <input type="text" name="keyword" value="${pageMaker.cri.keyword}" placeholder= "모든 게시물을 보는 옵션입니다. 검색을 눌러주세요!">
-          <input type="hidden" name="pageNum" value="1">
-          <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
-          <button><i class="fas fa-search"></i> 검색</button>
-       </form>
-       
-       <table class="board_table">
-			<colgroup>
-		       <col class="col_no">
-		       <col class="col_title">
-		       <col class="col_name">
-		       <col class="col_date">
-		       <col class="col_views">
-		       <col class="col_recommend">
-		    </colgroup>
-          <tr>
-			<th class="list_no">번호</th>
-			<th class="list_title">제목</th>
-			<th class="list_name">이름</th>
-			<th class="list_date">날짜</th>
-			<th class="list_views">조회수</th>
-			<th class="list_recommend">추천수</th>
-          </tr>
-          <c:forEach var="dto" items="${follow_board_list}" varStatus="status">
-             <tr style="--row-index: ${status.index}">
-                <td>${dto.boardNo}</td>
-                <td class="title">
-                   <a class="move_link" href="${dto.boardNo}">
-                      <i class="fas fa-utensils"></i> ${dto.boardTitle} <span id="comment_count">[${dto.comment_count}]</span>
-                   </a>
-                </td>
-                <td>${dto.boardName}</td>
-                <td>${dto.displayDate}</td>
-                <td>${dto.boardHit}</td>
-				<td>${dto.recommend_count}</td>
-             </tr>
-          </c:forEach>
-          <c:if test="${empty follow_board_list}">
-             <tr>
-                <td colspan="5" style="text-align: center; padding: 30px;">
-                   등록된 게시글이 없습니다.
-                </td>
-             </tr>
-          </c:if>
-          <tr>
-             <td colspan="5" class="write-btn-cell">
-             </td>
-          </tr>
-       </table>
-
-       <div class="div_page">
-          <ul>
-             <c:if test="${pageMaker.prev}">
-               <li class="paginate_button">
-                  <a href="${pageMaker.startPage -1}">
-                     <i class="fas fa-chevron-left"></i>
-                  </a>
-               </li>
-             </c:if>
-
-             <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-               <li class="paginate_button ${pageMaker.cri.pageNum==num ? 'active' :''}">
-                  <a href="${num}">${num}</a>
-               </li>
-             </c:forEach>
-
-             <c:if test="${pageMaker.next}">
-               <li class="paginate_button">
-                  <a href="${pageMaker.endPage +1}">
-                     <i class="fas fa-chevron-right"></i>
-                  </a>
-               </li>
-             </c:if>
-          </ul>
+	   
+	   <!-- 탭 메뉴 -->
+       <div class="follow_page_tabs">
+           <div class="tab_btn active" data-tab="follow_recipes">레시피</div>
+           <div class="tab_btn" data-tab="follow_posts">게시글</div>
        </div>
 
-       <form id="actionForm" action="follow_board_list" method="get">
-          <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
-          <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
-          <input type="hidden" name="type" value="${pageMaker.cri.type}">
-          <input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
-       </form>
+	   <div class="tab_content active" id="follow_recipes_content">
+			<!-- KOREAN -->
+			<section class="category-section" id="cat-korean">
+				<div class="category-header">
+					<h3 class="category-title"><i class="fas fa-bowl-food"></i> 한식 <span class="en-title">(Korean Food)</span></h3>
+				</div>
+
+				<div class="recipe_slider_wrap">
+				        <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+				        <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+						
+					<div class="recipe_slider">
+						<c:set var="hasKorean" value="false" />
+						<c:forEach var="r" items="${recipe_list}">
+							<c:if test="${r.category eq 'KOREAN'}">
+								<c:set var="hasKorean" value="true" />
+								<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+									<div class="recipe-image">
+										<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+										<div class="recipe-category">한식</div>
+									</div>
+									<div class="recipe-info">
+										<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+										<span class="recipe_star">
+										    <span class="star_fill">
+												<c:choose>
+												    <c:when test="${r.star == 0}">
+														<span class ='no_star'>리뷰 없음</span>
+												    </c:when>
+												    <c:otherwise>
+												        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+												    </c:otherwise>
+												</c:choose>
+										    </span>
+										</span>
+										<p><strong>${r.mf_nickname}</strong></p>
+										<span class="recipe_time">${r.display_time}</span>
+									</div>
+								</a>
+							</c:if>
+						</c:forEach>
+
+						<c:if test="${not hasKorean}">
+							<div class="empty-box">한식 레시피가 아직 없어요.</div>
+						</c:if>
+					</div>
+				</div>
+			</section>
+
+			<!-- CHINESE -->
+			<section class="category-section" id="cat-chinese">
+				<div class="category-header">
+			    	<h3 class="category-title"><i class="fas fa-bowl-food"></i> 중식 <span class="en-title">(Chinese Food)</span></h3>
+			    </div>
+
+			    <div class="recipe_slider_wrap">
+				    <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+				    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+		
+				    <div class="recipe_slider">
+				    	<c:set var="hasChinese" value="false" />
+				        <c:forEach var="r" items="${recipe_list}">
+				        	<c:if test="${r.category eq 'CHINESE'}">
+				          		<c:set var="hasChinese" value="true" />
+				          		<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+				            		<div class="recipe-image">
+					              		<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+					              		<div class="recipe-category">중식</div>
+				            		</div>
+									<div class="recipe-info">
+										<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+										<span class="recipe_star">
+										    <span class="star_fill">
+												<c:choose>
+												    <c:when test="${r.star == 0}">
+														<span class ='no_star'>리뷰 없음</span>
+												    </c:when>
+												    <c:otherwise>
+												        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+												    </c:otherwise>
+												</c:choose>
+										    </span>
+										</span>
+										<p><strong>${r.mf_nickname}</strong></p>
+										<span class="recipe_time">${r.display_time}</span>
+									</div>
+				          		</a>
+				        	</c:if>
+				        </c:forEach>
+		
+				        <c:if test="${not hasChinese}">
+				        	<div class="empty-box">중식 레시피가 아직 없어요.</div>
+				       	</c:if>
+			    	</div>
+			  	</div>
+			</section>
+
+
+			<!-- JAPANESE -->
+			<section class="category-section" id="cat-japanese">
+				<div class="category-header">
+			    	<h3 class="category-title"><i class="fas fa-bowl-food"></i> 일식 <span class="en-title">(Japanese Food)</span></h3>
+			  	</div>
+
+			  	<div class="recipe_slider_wrap">
+			    	<button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+				    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+		
+				    <div class="recipe_slider">
+				      	<c:set var="hasJapanese" value="false" />
+				      	<c:forEach var="r" items="${recipe_list}">
+				        	<c:if test="${r.category eq 'JAPANESE'}">
+				          		<c:set var="hasJapanese" value="true" />
+				          		<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+				            		<div class="recipe-image">
+				              			<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+				              			<div class="recipe-category">일식</div>
+				            		</div>
+									<div class="recipe-info">
+										<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+										<span class="recipe_star">
+										    <span class="star_fill">
+												<c:choose>
+												    <c:when test="${r.star == 0}">
+														<span class ='no_star'>리뷰 없음</span>
+												    </c:when>
+												    <c:otherwise>
+												        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+												    </c:otherwise>
+												</c:choose>
+										    </span>
+										</span>
+										<p><strong>${r.mf_nickname}</strong></p>
+										<span class="recipe_time">${r.display_time}</span>
+									</div>
+				          		</a>
+				        	</c:if>
+				      	</c:forEach>
+		
+				      	<c:if test="${not hasJapanese}">
+				        	<div class="empty-box">일식 레시피가 아직 없어요.</div>
+				      	</c:if>
+			    	</div>
+			  	</div>
+			</section>
+
+
+			<!-- WESTERN -->
+			<section class="category-section" id="cat-western">
+			  	<div class="category-header">
+			    	<h3 class="category-title"><i class="fas fa-bowl-food"></i> 양식 <span class="en-title">(Western Food)</span></h3>
+			  	</div>
+
+			  	<div class="recipe_slider_wrap">
+				    <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+				    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+		
+				    <div class="recipe_slider">
+				      	<c:set var="hasWestern" value="false" />
+			      		<c:forEach var="r" items="${recipe_list}">
+				        	<c:if test="${r.category eq 'WESTERN'}">
+				          		<c:set var="hasWestern" value="true" />
+				          		<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+				            		<div class="recipe-image">
+				              			<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+				              			<div class="recipe-category">양식</div>
+				            		</div>
+									<div class="recipe-info">
+										<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+										<span class="recipe_star">
+										    <span class="star_fill">
+												<c:choose>
+												    <c:when test="${r.star == 0}">
+														<span class ='no_star'>리뷰 없음</span>
+												    </c:when>
+												    <c:otherwise>
+												        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+												    </c:otherwise>
+												</c:choose>
+										    </span>
+										</span>
+										<p><strong>${r.mf_nickname}</strong></p>
+										<span class="recipe_time">${r.display_time}</span>
+									</div>
+				          		</a>
+				        	</c:if>
+				      	</c:forEach>
+		
+				        <c:if test="${not hasWestern}">
+				        	<div class="empty-box">양식 레시피가 아직 없어요.</div>
+				        </c:if>
+				    </div>
+			  	</div>
+			</section>
+
+			<!-- DESSERT -->
+			<section class="category-section" id="cat-dessert">
+			  	<div class="category-header">
+			    	<h3 class="category-title"><i class="fas fa-ice-cream"></i> 디저트 <span class="en-title">(Dessert)</span></h3>
+			  	</div>
+
+			  	<div class="recipe_slider_wrap">
+				    <button class="slider_btn prev_btn"><i class="fas fa-chevron-left"></i></button>
+				    <button class="slider_btn next_btn"><i class="fas fa-chevron-right"></i></button>
+
+		    		<div class="recipe_slider">
+			      		<c:set var="hasDessert" value="false" />
+			      		<c:forEach var="r" items="${recipe_list}">
+			        		<c:if test="${r.category eq 'DESSERT'}">
+			          			<c:set var="hasDessert" value="true" />
+		          				<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
+		            				<div class="recipe-image">
+			              				<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
+			              				<div class="recipe-category">디저트</div>
+			            			</div>
+									<div class="recipe-info">
+										<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
+										<span class="recipe_star">
+										    <span class="star_fill">
+												<c:choose>
+												    <c:when test="${r.star == 0}">
+														<span class ='no_star'>리뷰 없음</span>
+												    </c:when>
+												    <c:otherwise>
+												        <c:forEach begin="1" end="${r.star}">★</c:forEach><c:forEach begin="${r.star + 1}" end="5">☆</c:forEach>
+												    </c:otherwise>
+												</c:choose>
+										    </span>
+										</span>
+										<p><strong>${r.mf_nickname}</strong></p>
+										<span class="recipe_time">${r.display_time}</span>
+									</div>
+			          			</a>
+			        		</c:if>
+			      		</c:forEach>
+
+			      		<c:if test="${not hasDessert}">
+			        		<div class="empty-box">디저트 레시피가 아직 없어요.</div>
+			      		</c:if>
+			    	</div>
+			  	</div>
+			</section>
+	   </div>
+	   
+       <div class="tab_content" id="follow_posts_content">
+	       <form method="get" id="searchForm">
+	          <select name="type">
+	             <option value="" <c:out value="${pageMaker.cri.type == null ? 'selected':''}"/>>전체 목록조회</option>
+	             <option value="T" <c:out value="${pageMaker.cri.type eq 'T' ? 'selected':''}"/>>제목</option>
+	             <option value="C" <c:out value="${pageMaker.cri.type eq 'C' ? 'selected':''}"/>>내용</option>
+	             <option value="W" <c:out value="${pageMaker.cri.type eq 'W' ? 'selected':''}"/>>작성자</option>
+	             <option value="TC" <c:out value="${pageMaker.cri.type eq 'TC' ? 'selected':''}"/>>제목 + 내용</option>
+	             <option value="TW" <c:out value="${pageMaker.cri.type eq 'TW' ? 'selected':''}"/>>제목 + 작성자</option>
+	             <option value="CW" <c:out value="${pageMaker.cri.type eq 'TCW' ? 'selected':''}"/>>내용 + 작성자</option>
+	          </select>
+	
+	          <input type="text" name="keyword" value="${pageMaker.cri.keyword}" placeholder= "모든 게시물을 보는 옵션입니다. 검색을 눌러주세요!">
+	          <input type="hidden" name="pageNum" value="1">
+	          <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+	          <button><i class="fas fa-search"></i> 검색</button>
+	       </form>
+	       
+	       <table class="board_table">
+				<colgroup>
+			       <col class="col_no">
+			       <col class="col_title">
+			       <col class="col_name">
+			       <col class="col_date">
+			       <col class="col_views">
+			       <col class="col_recommend">
+			    </colgroup>
+	          <tr>
+				<th class="list_no">번호</th>
+				<th class="list_title">제목</th>
+				<th class="list_name">이름</th>
+				<th class="list_date">날짜</th>
+				<th class="list_views">조회수</th>
+				<th class="list_recommend">추천수</th>
+	          </tr>
+	          <c:forEach var="dto" items="${follow_board_list}" varStatus="status">
+	             <tr style="--row-index: ${status.index}">
+	                <td>${dto.boardNo}</td>
+	                <td class="title">
+	                   <a class="move_link" href="${dto.boardNo}">
+	                      <i class="fas fa-utensils"></i> ${dto.boardTitle} <span id="comment_count">[${dto.comment_count}]</span>
+	                   </a>
+	                </td>
+	                <td>${dto.boardName}</td>
+	                <td>${dto.displayDate}</td>
+	                <td>${dto.boardHit}</td>
+					<td>${dto.recommend_count}</td>
+	             </tr>
+	          </c:forEach>
+	          <c:if test="${empty follow_board_list}">
+	             <tr>
+	                <td colspan="5" style="text-align: center; padding: 30px;">
+	                   등록된 게시글이 없습니다.
+	                </td>
+	             </tr>
+	          </c:if>
+	          <tr>
+	             <td colspan="5" class="write-btn-cell">
+	             </td>
+	          </tr>
+	       </table>
+	
+	       <div class="div_page">
+	          <ul>
+	             <c:if test="${pageMaker.prev}">
+	               <li class="paginate_button">
+	                  <a href="${pageMaker.startPage -1}">
+	                     <i class="fas fa-chevron-left"></i>
+	                  </a>
+	               </li>
+	             </c:if>
+	
+	             <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+	               <li class="paginate_button ${pageMaker.cri.pageNum==num ? 'active' :''}">
+	                  <a href="${num}">${num}</a>
+	               </li>
+	             </c:forEach>
+	
+	             <c:if test="${pageMaker.next}">
+	               <li class="paginate_button">
+	                  <a href="${pageMaker.endPage +1}">
+	                     <i class="fas fa-chevron-right"></i>
+	                  </a>
+	               </li>
+	             </c:if>
+	          </ul>
+	       </div>
+	
+	       <form id="actionForm" action="follow_board_list" method="get">
+	          <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+	          <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+	          <input type="hidden" name="type" value="${pageMaker.cri.type}">
+	          <input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
+	       </form>
+	   </div>
    </div>
    
    <jsp:include page="footer.jsp" />
@@ -204,6 +459,20 @@
          }
       }
    );
+   
+   $(document).ready(function() {
+       // 탭 전환 기능
+       $('.tab_btn').click(function() {
+           const tabId = $(this).data('tab');
+           
+           // 탭 활성화
+           $('.tab_btn').removeClass('active');
+           $(this).addClass('active');
+		   // 콘텐츠 전환
+	       $('.tab_content').removeClass('active');
+	       $('#' + tabId + '_content').addClass('active');
+	   });
+   });
 </script>
 </body>
 </html>

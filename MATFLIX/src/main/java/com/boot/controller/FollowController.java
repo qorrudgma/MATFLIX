@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.service.FollowService;
+import com.boot.service.RecipeService;
 import com.boot.service.SseService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ public class FollowController {
 
 	@Autowired
 	private FollowService followService;
+
+	@Autowired
+	private RecipeService recipeService;
 	@Autowired
 	private final SseService sseService = new SseService();
 

@@ -46,6 +46,12 @@
                         <label for="mf_id"><i class="fas fa-user"></i> 아이디</label>
                         <input type="text" name="mf_id" id="mf_id" required oninvalid="this.setCustomValidity('아이디를 입력해주세요.')" oninput="this.setCustomValidity('')" autofocus>
                     </div>
+					
+					<c:if test="${not empty error}">
+					    <div class="error_msg" style="color:red; font-weight:bold; margin-bottom:10px;">
+					        ${error}
+					    </div>
+					</c:if>
                     
                     <div class="form_group">
                         <label for="mf_pw"><i class="fas fa-lock"></i> 비밀번호 </label>

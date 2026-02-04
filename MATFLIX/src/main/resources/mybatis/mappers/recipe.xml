@@ -112,6 +112,22 @@
 		 ORDER BY r.updated_at DESC
 	</select>
 
+	<!-- 팔로우 레시피 리스트 -->	
+	<select id="follow_recipe_list" resultType="com.boot.dto.RecipeDTO">
+		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.created_at, r.updated_at, m.mf_nickname, ri.image_path
+			 , (select count(*) from recipe_review where recipe_id = r.recipe_id) as review_count
+		  FROM recipe r
+		  JOIN matflix m
+			ON r.mf_no = m.mf_no
+		  LEFT JOIN recipe_image ri
+		    ON r.recipe_id = ri.recipe_id
+		   AND ri.image_type ="THUMBNAIL"
+		 WHERE r.mf_no IN (SELECT f.following_id
+		 					 FROM follow f
+		 					WHERE f.follower_id = #{mf_no})
+		 ORDER BY r.updated_at DESC
+	</select>
+
 	<!-- 레시피 -->	
 	<select id="recipe" resultType="com.boot.dto.RecipeDTO">
 		SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.created_at, r.recommend, r.updated_at, m.mf_nickname, ri.image_path
