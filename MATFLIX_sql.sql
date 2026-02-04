@@ -2,8 +2,7 @@
 CREATE TABLE matflix (
     mf_no INT AUTO_INCREMENT PRIMARY KEY,
     mf_id VARCHAR(20) NOT NULL,
-    mf_pw VARCHAR(20) NOT NULL,
-    mf_pw_chk VARCHAR(20),
+    mf_pw VARCHAR(255) NOT NULL,
     mf_name VARCHAR(20) NOT NULL,
     mf_nickname VARCHAR(1000),
     mf_email VARCHAR(50),
@@ -12,15 +11,54 @@ CREATE TABLE matflix (
     mf_gender CHAR(1) DEFAULT 'M' CHECK (mf_gender IN ('M', 'F')),
     mf_regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
     mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN')),
-    mf_nickname_updatetime date DEFAULT null
+    mf_nickname_updatetime date DEFAULT null,
+    UNIQUE KEY uk_matflix_id (mf_id) -- 중복 방지
 );
 select * from matflix;
+delete from matflix where mf_id = "bcrypt";
 select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
 		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id="qw12";
+SELECT m.mf_no, m.mf_id, m.mf_nickname, m.mf_name, m.mf_pw
+FROM matflix m
+LEFT JOIN tbl_board b ON m.mf_no = b.mf_no
+LEFT JOIN recipe r ON m.mf_no = r.mf_no
+WHERE b.mf_no IS NULL
+  AND r.mf_no IS NULL;
+  ALTER TABLE matflix 
+MODIFY mf_pw VARCHAR(255) NOT NULL;
+ALTER TABLE matflix 
+DROP COLUMN mf_pw_chk;
 
-CREATE INDEX idx_follow_following_id ON follow(following_id);
-CREATE INDEX idx_recipe_mf_no ON recipe(mf_no);
-CREATE INDEX idx_board_mf_no ON tbl_board(mf_no);
+SELECT m.mf_no
+	 , m.mf_id
+	 , m.mf_pw
+	 , m.mf_nickname
+	 , m.mf_name
+	 , m.mf_email
+	 , m.mf_phone
+	 , m.mf_birth
+	 , m.mf_gender
+	 , m.mf_regdate
+	 , m.mf_role
+	 , m.mf_nickname_updatetime
+	 , ui.profile_image_path
+  FROM matflix m
+  LEFT JOIN user_image ui
+	ON ui.mf_no = m.mf_no
+ WHERE m.mf_id = "bcrypt2";
+         
+-- 탈퇴 이유
+CREATE TABLE member_withdraw_reason (
+    withdraw_id INT AUTO_INCREMENT PRIMARY KEY,
+    mf_no INT NOT NULL,
+    reason_type VARCHAR(50),
+    reason_detail TEXT,
+    withdraw_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_withdraw_member
+    FOREIGN KEY (mf_no) REFERENCES matflix(mf_no)
+    ON DELETE CASCADE
+);
 -- 유저 프로필 사진
 CREATE TABLE user_image (
     image_no INT AUTO_INCREMENT PRIMARY KEY,
@@ -45,7 +83,19 @@ CREATE TABLE follow (
     UNIQUE KEY uniq_follow (follower_id, following_id) -- 중복 방지
 );
 select * from follow;
-select * from follow where follower_id = 61;
+select following_id from follow where follower_id = 62;
+SELECT r.recipe_id, r.mf_no, r.title, r.intro, r.servings, r.cook_time, r.difficulty, r.category, r.tip, r.star, r.created_at, r.updated_at, m.mf_nickname, ri.image_path
+			 , (select count(*) from recipe_review where recipe_id = r.recipe_id) as review_count
+		  FROM recipe r
+		  JOIN matflix m
+			ON r.mf_no = m.mf_no
+		  LEFT JOIN recipe_image ri
+		    ON r.recipe_id = ri.recipe_id
+		   AND ri.image_type ="THUMBNAIL"
+		 WHERE r.mf_no IN (SELECT f.following_id
+		 					 FROM follow f
+		 					WHERE f.follower_id = 62)
+		 ORDER BY r.updated_at DESC;
 TRUNCATE TABLE follow;
 delete f
   from follow f
@@ -95,7 +145,12 @@ CREATE TABLE notif_setting (
 );
 
 select * from notif_setting;
-
+INSERT INTO notif_setting (mf_no)
+SELECT mf_no
+FROM matflix
+WHERE mf_no NOT IN (
+    SELECT mf_no FROM notif_setting
+);
 
 -- 게시판 테이블
 CREATE TABLE tbl_board (

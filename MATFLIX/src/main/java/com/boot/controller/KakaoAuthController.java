@@ -57,7 +57,6 @@ public class KakaoAuthController {
 		if (existing == null) {
 			dto.setMf_id(kakaoId);
 			dto.setMf_pw("kakao_login");
-			dto.setMf_pw_chk("kakao_login");
 			dto.setMf_name(nickname);
 			dto.setMf_nickname(nickname);
 			dto.setMf_email(email);

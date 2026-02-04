@@ -21,9 +21,11 @@ public interface TeamDAO {
 
 	public ArrayList<TeamDTO> list();
 
-	public int login(@Param("mf_id") String id, @Param("mf_pw") String pw);
+//	public TeamDTO login(@Param("mf_id") String id, @Param("mf_pw") String pw);
 
 	public TeamDTO find_list(@Param("mf_id") String mf_id);
+
+	public int find_id(@Param("mf_id") String mf_id);
 
 	public ProfileDTO profile(int mf_no);
 

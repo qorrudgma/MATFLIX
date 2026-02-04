@@ -246,9 +246,9 @@
                 </form>
                 
                 <div class="delete_account">
-                    <button type="button" class="delete_btn" onclick="location.href='/delete_member'">
-                        <i class="fas fa-user-times"></i> 회원 탈퇴
-                    </button>
+					<button type="button" class="delete_btn" id="open_delete_modal">
+					    <i class="fas fa-user-times"></i> 회원 탈퇴
+					</button>
                 </div>
             </div>
         </div>
@@ -330,6 +330,36 @@
 		</div>
 		
     </div>
+	<div id="delete_modal">
+	    <div class="delete_modal_content">
+
+	        <h2>정말 회원 탈퇴 하시겠습니까?</h2>
+	        <p class="warning_text">
+	            탈퇴 시 모든 데이터는 복구되지 않습니다.
+	        </p>
+
+	        <!-- 비밀번호 -->
+	        <input type="password" id="delete_pw" placeholder="비밀번호 입력">
+
+	        <!-- 탈퇴 이유 -->
+	        <div class="delete_reason">
+	            <label><input type="radio" name="reason" value="서비스 불만"> 서비스가 불편해요</label>
+	            <label><input type="radio" name="reason" value="사용 빈도 낮음"> 사용을 잘 안해요</label>
+	            <label><input type="radio" name="reason" value="콘텐츠 부족"> 콘텐츠가 부족해요</label>
+	            <label>
+	                <input type="radio" name="reason" value="etc"> 기타
+	            </label>
+
+	            <textarea id="etc_reason" placeholder="기타 사유 입력"></textarea>
+	        </div>
+
+	        <div class="delete_modal_btn">
+	            <button id="confirm_delete">탈퇴</button>
+	            <button id="close_delete_modal">취소</button>
+	        </div>
+
+	    </div>
+	</div>
     
     <jsp:include page="footer.jsp" />
     
@@ -763,6 +793,28 @@
 		        passwordField.type = type;
 		        $(this).toggleClass("fa-eye fa-eye-slash");
 		    });
+		});
+		
+		$(document).ready(function(){
+		    $("#open_delete_modal").click(function(){
+		        $("#delete_modal").css("display","flex");
+		    });
+
+		    $("#close_delete_modal").click(function(){
+		        $("#delete_modal").hide();
+		    });
+		});
+		
+		$("#delete_modal").click(function(e){
+		    if(e.target === this){
+		        $(this).hide();
+		    }
+		});
+		
+		$(document).keydown(function(e){
+		    if(e.key === "Escape"){
+		        $("#delete_modal").hide();
+		    }
 		});
     </script>
 </body>

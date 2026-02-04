@@ -14,7 +14,6 @@ public class TeamDTO {
 	private int mf_no;
 	private String mf_id;
 	private String mf_pw;
-	private String mf_pw_chk;
 	private String mf_nickname;
 	private String mf_name;
 	private String mf_email;

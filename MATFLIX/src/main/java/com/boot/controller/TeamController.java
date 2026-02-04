@@ -212,15 +212,12 @@ public class TeamController {
 	@RequestMapping("/member_check_ok")
 	@ResponseBody
 	public String member_check_ok(@RequestParam("mf_id") String mf_id, @RequestParam("mf_pw") String mf_pw) {
+		log.info("member_check_ok()");
 		boolean check_ok = false;
-		TeamDTO dto = service.find_list(mf_id);
-		String mf_pw_check = dto.getMf_pw();
-		System.out.println(mf_pw_check);
-		if (mf_pw.equals(mf_pw_check)) {
-			System.out.println("test1");
+		TeamDTO dto = service.login(mf_id, mf_pw);
+		if (dto != null) {
 			check_ok = true;
 		}
-		System.out.println("test2");
 		return check_ok ? "available" : "unavailable";
 	}
 
@@ -228,7 +225,7 @@ public class TeamController {
 	@RequestMapping("/mem_update")
 	@ResponseBody
 	public Map<String, Object> mem_update(@RequestParam HashMap<String, String> param, HttpSession session) {
-		System.out.println(param);
+		log.info("mem_update()");
 		service.update_ok(param);
 		session.invalidate(); // 로그아웃 처리
 
@@ -255,15 +252,15 @@ public class TeamController {
 	public String login_ok(@RequestParam("mf_id") String mf_id, @RequestParam("mf_pw") String mf_pw,
 			@RequestParam(required = false) String remember, HttpServletResponse response, HttpServletRequest request,
 			Model model) {
-		log.info("@# mf_id 입니다 : " + mf_id);
-		log.info("@# mf_pw 입니다 : " + mf_pw);
-		int result = service.login(mf_id, mf_pw);
-		log.info("@# result =>" + result);
-		if (result == 1) {
-			TeamDTO dto = service.find_list(mf_id);
+//		int result = service.login(mf_id, mf_pw);
+//		log.info("@# result =>" + result);
+		int find_id = service.find_id(mf_id);
+		if (find_id == 1) {
+			TeamDTO user = service.login(mf_id, mf_pw);
 			HttpSession session = request.getSession();
-			session.setAttribute("user", dto);
-			TeamDTO user = (TeamDTO) session.getAttribute("user");
+			session.setAttribute("user", user);
+			log.info("user => " + user);
+//			TeamDTO user = (TeamDTO) session.getAttribute("user");
 
 			int notification_count = notificationService.notification_count(user.getMf_no());
 			log.info("notification_count => " + notification_count);

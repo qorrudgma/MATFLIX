@@ -22,10 +22,12 @@ public interface TeamService {
 	public ArrayList<TeamDTO> list();
 
 	// 로그인 로직처리
-	public int login(@Param("mf_id") String mfId, @Param("mf_pw") String mfPw);
+	public TeamDTO login(@Param("mf_id") String mfId, @Param("mf_pw") String mfPw);
 
 	// id값으로 회원정보 부르기
 	public TeamDTO find_list(String mf_id);
+
+	public int find_id(@Param("mf_id") String mf_id);
 
 	public ProfileDTO profile(int mf_no);
 

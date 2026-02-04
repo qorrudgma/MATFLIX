@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.boot.dao.FollowDAO;
@@ -28,15 +29,25 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private NotifSettingService notifSettingService;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	// 회원가입
 	@Override
 	public void recruit(HashMap<String, String> param) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		dao.recruit(param);
 		System.out.println(param);
 		System.out.println(param.get("mf_id"));
-		// 기존에 HashMap<String, String> param 만들어서 오프젝트로 뽑아서 스트링으로 만들고 다시 인트로 만드는 과정 필요
-		// 안하면 코드 다른것들 싹 고쳐야함
+
+		// 비번 꺼내기
+		String raw_pw = param.get("mf_pw");
+		// 해시 생성
+		String encoded_pw = passwordEncoder.encode(raw_pw);
+		// param에 다시 넣기
+		param.put("mf_pw", encoded_pw);
+		log.info(encoded_pw);
+		dao.recruit(param);
+
 		Object Omf_no = param.get("mf_no");
 //		System.out.println(Omf_no);
 		int mf_no = Integer.parseInt(Omf_no.toString());
@@ -74,21 +85,38 @@ public class TeamServiceImpl implements TeamService {
 		return find_list;
 	}
 
+	@Override
+	public int find_id(@Param("mf_id") String mf_id) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		int find_id = dao.find_id(mf_id);
+		return find_id;
+	}
+
 	// 로그인
 	@Override
-	public int login(@Param("mf_id") String mf_id, @Param("mf_pw") String mf_pw) {
-		int re = -1;
-
+	public TeamDTO login(@Param("mf_id") String mf_id, @Param("mf_pw") String mf_pw) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		re = dao.login(mf_id, mf_pw);
+		TeamDTO teamDTO = dao.find_list(mf_id);
 
-		return re;
+		if (teamDTO == null) {
+			return null;
+		}
+		if (passwordEncoder.matches(mf_pw, teamDTO.getMf_pw())) {
+			return teamDTO;
+		}
+
+		return null;
 	}
 
 	@Override
 	public void update_ok(HashMap<String, String> param) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		System.out.println("@# update ok =>" + param);
+		// 비번 꺼내기
+		String raw_pw = param.get("mf_pw");
+		// 해시 생성
+		String encoded_pw = passwordEncoder.encode(raw_pw);
+		// param에 다시 넣기
+		param.put("mf_pw", encoded_pw);
 		dao.update_ok(param);
 		log.info("@# update_ok2!!!!!!!!");
 	}

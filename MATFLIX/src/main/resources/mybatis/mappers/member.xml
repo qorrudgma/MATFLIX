@@ -7,10 +7,10 @@
 	<!-- 회원가입 -->
 	<insert id="recruit" useGeneratedKeys="true" keyProperty="mf_no" keyColumn="mf_no">
 		INSERT INTO matflix (
-	  		mf_id, mf_pw, mf_pw_chk, mf_nickname,
+	  		mf_id, mf_pw, mf_nickname,
 	 		mf_name, mf_email, mf_phone, mf_birth, mf_gender
 		) VALUES (
-			#{mf_id}, #{mf_pw}, #{mf_pw_chk}, #{mf_name},
+			#{mf_id}, #{mf_pw}, #{mf_name},
 			#{mf_name}, #{mf_email}, #{mf_phone}, #{mf_birth}, #{mf_gender}
 		)
 	</insert>
@@ -28,22 +28,22 @@
 	</update>
 
 	<!-- 로그인 -->
-	<select id="login" resultType="int">
-		SELECT COUNT(*) FROM matflix
-		<where>
-			<if test="mf_id != null and mf_id != ''">
-				AND mf_id = #{mf_id}
-			</if>
-			<if test="mf_pw != null and mf_pw != ''">
-				AND mf_pw = #{mf_pw}
-			</if>
-		</where>
-	</select>
+<!--	<select id="login" resultType="int">-->
+<!--		SELECT COUNT(*) FROM matflix-->
+<!--		<where>-->
+<!--			<if test="mf_id != null and mf_id != ''">-->
+<!--				AND mf_id = #{mf_id}-->
+<!--			</if>-->
+<!--			<if test="mf_pw != null and mf_pw != ''">-->
+<!--				AND mf_pw = #{mf_pw}-->
+<!--			</if>-->
+<!--		</where>-->
+<!--	</select>-->
 
 	<!-- 회원 리스트 -->
 	<select id="list" resultType="com.boot.dto.TeamDTO">
 		select mf_no, mf_id, mf_pw,
-		mf_pw_chk, mf_name, mf_nickname, mf_email,
+		mf_name, mf_nickname, mf_email,
 		mf_phone, mf_birth, mf_gender from
 		matflix
 	</select>
@@ -54,6 +54,7 @@
 <!--		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id=#{mf_id}-->
 		SELECT m.mf_no
 		  	 , m.mf_id
+		  	 , m.mf_pw
 		  	 , m.mf_nickname
 		  	 , m.mf_name
 		  	 , m.mf_email
@@ -103,7 +104,6 @@
 	<update id="update_ok" parameterType="hashmap">
 	    UPDATE matflix
 	       SET mf_pw = #{mf_pw}
-	         , mf_pw_chk = #{mf_pw_chk}
 	         , mf_name = #{mf_name}
 	         , mf_email = #{mf_email}
 	     WHERE mf_id = #{mf_id}
@@ -145,7 +145,7 @@
 
 	<!-- 유저 고유 번호로 정보 찾기 -->
 	<select id="find_user_by_no" resultType="com.boot.dto.TeamDTO">
-		select mf_no, mf_id, mf_pw, mf_pw_chk, mf_name, mf_nickname, mf_email, mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_no = #{mf_no}
+		select mf_no, mf_id, mf_pw, mf_name, mf_nickname, mf_email, mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_no = #{mf_no}
 	</select>
 
 	<!-- 랭킹에 있는 유저 정보 가져오기 -->
@@ -164,6 +164,13 @@
 		select mf_pw
 		  from matflix
 		 where mf_no=#{mf_no}
+	</select>
+
+	<!-- find_id -->
+	<select id="find_id" resultType="int">
+		select count(*)
+		  from matflix
+		 where mf_id=#{mf_id}
 	</select>
 	
 </mapper>
