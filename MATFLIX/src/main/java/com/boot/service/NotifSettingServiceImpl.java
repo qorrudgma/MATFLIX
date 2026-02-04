@@ -1,7 +1,5 @@
 package com.boot.service;
 
-import java.util.ArrayList;
-
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +25,10 @@ public class NotifSettingServiceImpl implements NotifSettingService {
 	}
 
 	@Override
-	public void update_notif_setting(int mf_no, String notif_type, int yn) {
+	public void update_notif_setting(NotifSettingDTO notifSettingDTO) {
 		log.info("update_notif_setting 도착");
-		log.info("mf_no => " + mf_no);
-		log.info("notif_type => " + notif_type);
-		log.info("yn => " + yn);
 		NotifSettingDAO dao = sqlSession.getMapper(NotifSettingDAO.class);
-		dao.update_notif_setting(mf_no, notif_type, yn);
-	}
-
-	@Override
-	public void delete_notif_setting(int mf_no) {
-		log.info("delete_notif_setting 도착 => " + mf_no);
-		NotifSettingDAO dao = sqlSession.getMapper(NotifSettingDAO.class);
-		dao.delete_notif_setting(mf_no);
+		dao.update_notif_setting(notifSettingDTO);
 	}
 
 	@Override
@@ -52,10 +40,10 @@ public class NotifSettingServiceImpl implements NotifSettingService {
 	}
 
 	@Override
-	public ArrayList<NotifSettingDTO> mf_no_notif_setting(int mf_no) {
+	public NotifSettingDTO mf_no_notif_setting(int mf_no) {
 		log.info("mf_no_notif_setting 도착");
 		NotifSettingDAO dao = sqlSession.getMapper(NotifSettingDAO.class);
-		ArrayList<NotifSettingDTO> mf_no_notif_setting = dao.mf_no_notif_setting(mf_no);
+		NotifSettingDTO mf_no_notif_setting = dao.mf_no_notif_setting(mf_no);
 		log.info("mf_no_notif_setting => " + mf_no_notif_setting);
 		return mf_no_notif_setting;
 	}

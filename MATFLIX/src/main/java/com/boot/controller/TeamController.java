@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -417,22 +418,23 @@ public class TeamController {
 	// 환경 설정 클릭시
 	@RequestMapping("/environment")
 	@ResponseBody
-	public ArrayList<NotifSettingDTO> environment(@RequestParam("mf_no") int mf_no) {
+	public NotifSettingDTO environment(@RequestParam("mf_no") int mf_no) {
 		log.info("environment 컨트롤러 옴");
-		ArrayList<NotifSettingDTO> mf_no_notif_setting = notifSettingService.mf_no_notif_setting(mf_no);
+		NotifSettingDTO mf_no_notif_setting = notifSettingService.mf_no_notif_setting(mf_no);
 		log.info("!@#mf_no_notif_setting => " + mf_no_notif_setting);
 		return mf_no_notif_setting;
 	}
 
 	// 알림 설정 업데이트
-	@RequestMapping("/update_notif_setting")
+	@PostMapping("/update_notif_setting")
 	@ResponseBody
-	public void update_notif_setting(@RequestParam("notif_type") String notif_type, @RequestParam("yn") int yn,
-			HttpSession session) {
+	public void update_notif_setting(@RequestBody NotifSettingDTO notifSettingDTO, HttpSession session) {
 		log.info("update_notif_setting 컨트롤러 옴");
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		int mf_no = user.getMf_no();
-		notifSettingService.update_notif_setting(mf_no, notif_type, yn);
+		notifSettingDTO.setMf_no(mf_no);
+		log.info("notifSettingDTO => " + notifSettingDTO);
+		notifSettingService.update_notif_setting(notifSettingDTO);
 	}
 
 }

@@ -8,8 +8,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotifSettingDTO {
-	private int notif_id;
 	private int mf_no;
-	private String notif_type;
-	private int yn;
+	private int follow_yn;
+	private int board_comment_yn;
+	private int board_reaction_yn;
+	private int recipe_review_yn;
+	private int recipe_comment_yn;
+	private int recipe_reaction_yn;
+	private int recomment_yn;
+	private int comment_reaction_yn;
 }

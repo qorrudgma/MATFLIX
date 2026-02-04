@@ -256,53 +256,78 @@
 		<!-- 환경 설정 -->
 		<div class="tab_content" id="environment_content">
 		    <h3>알림 설정</h3>
-
 		    <div class="notif_setting_list">
-
+		        <!-- 팔로우 -->
 		        <div class="notif_item">
-		            <span>팔로우</span>
+		            <span>팔로우 알림</span>
 		            <label class="toggle_switch">
-		                <input type="checkbox" data-type="follow">
+		                <input type="checkbox" id="follow_yn">
 		                <span class="slider"></span>
 		            </label>
 		        </div>
 
-		        <div class="notif_item">
-		            <span>게시글</span>
-		            <label class="toggle_switch">
-		                <input type="checkbox" data-type="board">
-		                <span class="slider"></span>
-		            </label>
+		        <!-- 게시글 -->
+		        <div class="notif_group">
+		            <div class="notif_item">
+		                <span>게시글 알림 전체</span>
+		                <label class="toggle_switch">
+		                    <input type="checkbox" id="board_all">
+		                    <span class="slider"></span>
+		                </label>
+		            </div>
+		            <div class="notif_sub">
+		                <label>
+		                    <input type="checkbox" id="board_comment_yn"> 댓글
+		                </label>
+		                <label>
+		                    <input type="checkbox" id="board_reaction_yn"> 반응
+		                </label>
+		            </div>
 		        </div>
 
-		        <div class="notif_item">
-		            <span>댓글</span>
-		            <label class="toggle_switch">
-		                <input type="checkbox" data-type="comment">
-		                <span class="slider"></span>
-		            </label>
+		        <!-- 레시피 -->
+		        <div class="notif_group">
+		            <div class="notif_item">
+		                <span>레시피 알림 전체</span>
+		                <label class="toggle_switch">
+		                    <input type="checkbox" id="recipe_all">
+		                    <span class="slider"></span>
+		                </label>
+		            </div>
+		            <div class="notif_sub">
+		                <label>
+		                    <input type="checkbox" id="recipe_review_yn"> 리뷰
+		                </label>
+		                <label>
+		                    <input type="checkbox" id="recipe_comment_yn"> 댓글
+		                </label>
+		                <label>
+		                    <input type="checkbox" id="recipe_reaction_yn"> 반응
+		                </label>
+		            </div>
 		        </div>
 
-		        <div class="notif_item">
-		            <span>추천</span>
-		            <label class="toggle_switch">
-		                <input type="checkbox" data-type="recommend">
-		                <span class="slider"></span>
-		            </label>
+				<!-- 댓글 -->				
+		        <div class="notif_group">
+		            <div class="notif_item">
+		                <span>댓글 알림 상세</span>
+		                <label class="toggle_switch">
+		                    <input type="checkbox" id="comment_all">
+		                    <span class="slider"></span>
+		                </label>
+		            </div>
+		            <div class="notif_sub">
+		                <label>
+		                    <input type="checkbox" id="recomment_yn"> 답글
+		                </label>
+		                <label>
+		                    <input type="checkbox" id="comment_reaction_yn"> 반응
+		                </label>
+		            </div>
 		        </div>
-
-		        <div class="notif_item">
-		            <span>레시피 댓글</span>
-		            <label class="toggle_switch">
-		                <input type="checkbox" data-type="recipe_comment">
-		                <span class="slider"></span>
-		            </label>
-		        </div>
-
 		    </div>
-		</div>		
-		
-		<!-- 닉네임 수정 -->
+		    <button id="save_notif_btn" class="submit_btn" disabled>저장</button>
+		</div>
 		
     </div>
     
@@ -410,12 +435,26 @@
 		               data: {mf_no: sessionUserNo},
 		               url: "/environment",
 		               success: function(mf_no_notif_setting) {
-							for (let i = 0; i < mf_no_notif_setting.length; i++) {
-							    const type = mf_no_notif_setting[i].notif_type;
-							    const yn = mf_no_notif_setting[i].yn;
-
-							    $('input[data-type="' + type + '"]').prop('checked', yn === 1);
-							}
+						console.log(mf_no_notif_setting);
+						    $("#follow_yn").prop("checked", mf_no_notif_setting.follow_yn === 1);
+						    $("#board_comment_yn").prop("checked", mf_no_notif_setting.board_comment_yn === 1);
+						    $("#board_reaction_yn").prop("checked", mf_no_notif_setting.board_reaction_yn === 1);
+						    $("#recipe_review_yn").prop("checked", mf_no_notif_setting.recipe_review_yn === 1);
+						    $("#recipe_comment_yn").prop("checked", mf_no_notif_setting.recipe_comment_yn === 1);
+						    $("#recipe_reaction_yn").prop("checked", mf_no_notif_setting.recipe_reaction_yn === 1);
+						    $("#recomment_yn").prop("checked", mf_no_notif_setting.recomment_yn === 1);
+						    $("#comment_reaction_yn").prop("checked", mf_no_notif_setting.comment_reaction_yn === 1);
+							$("#board_all").prop("checked",
+							    $("#board_comment_yn").is(":checked") && $("#board_reaction_yn").is(":checked")
+							);
+							$("#recipe_all").prop("checked",
+							    $("#recipe_review_yn").is(":checked") &&
+							    $("#recipe_comment_yn").is(":checked") &&
+							    $("#recipe_reaction_yn").is(":checked")
+							);
+							$("#comment_all").prop("checked",
+							    $("#recomment_yn").is(":checked") && $("#comment_reaction_yn").is(":checked")
+							);
 		               },
 		               error: function(e) {
 		                   alert("오류 발생"+e);
@@ -520,25 +559,57 @@
 	   			}
             });
 			
-			$('input[type="checkbox"]').change(function() {
-			    const type = $(this).data('type');
-			    const yn = $(this).is(':checked') ? 1 : 0;
+			// 알림 성절
+			const saveBtn = document.getElementById("save_notif_btn");
 
-			    // 서버로 보내기
-				$.ajax({
-				    url: "/update_notif_setting",
-				    type: "post",
-				    data: {
-				        notif_type: type,
-				        yn: yn
-				    },
-				    success: function() {
-				        console.log("알림 설정 변경 완료");
-				    },
-				    error: function(e) {
-				        alert("설정 변경 실패"+e.responseText);
-				    }
-				});
+			const bindGroup = (parentId, childIds) => {
+			    const parent = document.getElementById(parentId);
+			    const children = childIds.map(id => document.getElementById(id));
+
+			    parent.addEventListener("change", () => {
+			        children.forEach(ch => ch.checked = parent.checked);
+			        saveBtn.disabled = false;
+			    });
+
+			    children.forEach(ch => {
+			        ch.addEventListener("change", () => {
+			            parent.checked = children.every(c => c.checked);
+			            saveBtn.disabled = false;
+			        });
+			    });
+			};
+
+			bindGroup("board_all", ["board_comment_yn", "board_reaction_yn"]);
+			bindGroup("recipe_all", ["recipe_review_yn", "recipe_comment_yn", "recipe_reaction_yn"]);
+			bindGroup("comment_all", ["recomment_yn", "comment_reaction_yn"]);
+
+			document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+			    cb.addEventListener("change", () => {
+			        saveBtn.disabled = false;
+			    });
+			});
+
+			$("#save_notif_btn").click(function() {
+			    let notifData = {
+			        follow_yn: $("#follow_yn").is(":checked") ? 1 : 0,
+			        board_comment_yn: $("#board_comment_yn").is(":checked") ? 1 : 0,
+			        board_reaction_yn: $("#board_reaction_yn").is(":checked") ? 1 : 0,
+			        recipe_review_yn: $("#recipe_review_yn").is(":checked") ? 1 : 0,
+			        recipe_comment_yn: $("#recipe_comment_yn").is(":checked") ? 1 : 0,
+			        recipe_reaction_yn: $("#recipe_reaction_yn").is(":checked") ? 1 : 0,
+			        recomment_yn: $("#recomment_yn").is(":checked") ? 1 : 0,
+			        comment_reaction_yn: $("#comment_reaction_yn").is(":checked") ? 1 : 0
+			    };
+
+			    $.ajax({
+			        url: "/update_notif_setting",
+			        type: "POST",
+			        data: JSON.stringify(notifData),
+			        contentType: "application/json",
+			        success: function(res) {
+			            alert("알림 설정이 저장되었습니다.");
+			        }
+			    });
 			});
         });
         

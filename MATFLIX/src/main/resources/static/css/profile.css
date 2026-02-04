@@ -617,6 +617,29 @@
     gap: 20px;
 }
 
+.notif_group {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.notif_sub {
+    margin-left: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.notif_sub label {
+    font-size: 14px;
+    color: #555;
+    cursor: pointer;
+}
+
+.notif_sub input {
+    margin-right: 6px;
+}
+
 .notif_item {
     display: flex;
     justify-content: space-between;

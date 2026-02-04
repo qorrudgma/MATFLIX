@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boot.dao.FollowDAO;
-import com.boot.dao.NotifSettingDAO;
 import com.boot.dao.NotificationDAO;
 import com.boot.dao.TeamDAO;
 import com.boot.dto.ProfileDTO;
@@ -97,11 +96,8 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public void delete_ok(int mf_no) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		NotifSettingDAO NSdao = sqlSession.getMapper(NotifSettingDAO.class);
 		NotificationDAO Ndao = sqlSession.getMapper(NotificationDAO.class);
 		FollowDAO Fdao = sqlSession.getMapper(FollowDAO.class);
-		// 알림 설정 삭제
-		NSdao.delete_notif_setting(mf_no);
 		// 알림 삭제
 		Ndao.delete_notification(mf_no);
 		// 팔로우 정리

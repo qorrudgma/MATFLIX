@@ -78,21 +78,24 @@ DELETE n
 
 -- 알림 on/off 테이블
 CREATE TABLE notif_setting (
-    notif_id INT AUTO_INCREMENT PRIMARY KEY,
-    mf_no INT NOT NULL,
-    notif_type VARCHAR(30) NOT NULL,
-    yn INT NOT NULL DEFAULT 1,
-    UNIQUE KEY uk_user_type (mf_no, notif_type)
+    mf_no INT PRIMARY KEY,
+    follow_yn TINYINT DEFAULT 1,
+    board_comment_yn TINYINT DEFAULT 1,
+    board_reaction_yn TINYINT DEFAULT 1,
+    recipe_review_yn TINYINT DEFAULT 1,
+    recipe_comment_yn TINYINT DEFAULT 1,
+    recipe_reaction_yn TINYINT DEFAULT 1,
+    recomment_yn TINYINT DEFAULT 1,
+    comment_reaction_yn TINYINT DEFAULT 1,
+	-- 유저 삭제 시 추천 자동 삭제
+	constraint fk_notif_user
+		FOREIGN KEY (mf_no)
+		REFERENCES matflix (mf_no)
+		ON DELETE CASCADE
 );
 
 select * from notif_setting;
-SELECT * from notif_setting where mf_no=61;
-SELECT YN from notif_setting where mf_no=62 and notif_type = "follow";
--- follow: "팔로우"
--- board: "게시글"
--- comment: "댓글"
--- recommend: "추천"
--- recipe_comment: "레시피 댓글"
+
 
 -- 게시판 테이블
 CREATE TABLE tbl_board (
