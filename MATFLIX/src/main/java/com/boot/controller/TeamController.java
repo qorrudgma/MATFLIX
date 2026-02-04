@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +30,7 @@ import com.boot.dto.ProfileDTO;
 import com.boot.dto.ProfileImageDTO;
 import com.boot.dto.RecipeDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.dto.WithdrawDTO;
 import com.boot.service.BoardService;
 import com.boot.service.EmailService;
 import com.boot.service.FavoriteRecipeService;
@@ -76,6 +79,9 @@ public class TeamController {
 
 	@Autowired
 	private FileStorageService fileStorageService;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 
 	// 프로필 보기
 	@RequestMapping("/profile")
@@ -169,6 +175,36 @@ public class TeamController {
 		return my_board_list;
 	}
 
+	@PostMapping("/withdraw")
+	@ResponseBody
+	@Transactional
+	public Map<String, String> withdraw(@RequestBody WithdrawDTO dto, HttpSession session) {
+		log.info("WithdrawDTO => " + dto);
+		Map<String, String> result = new HashMap<>();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		log.info("user.getMf_no() => " + user.getMf_no());
+		int mf_no = user.getMf_no();
+		String encodedPw = service.pw_check(mf_no);
+		log.info("encodedPw => " + encodedPw);
+
+		// BCrypt 비교
+		if (!passwordEncoder.matches(dto.getMf_pw(), encodedPw)) {
+			result.put("message", "비밀번호가 일치하지 않습니다.");
+			log.info("result => " + result);
+			return result;
+		}
+		dto.setMf_no(mf_no);
+		service.member_withdraw_reason(dto);
+		session.invalidate(); // 로그아웃
+		service.delete_ok(mf_no);
+
+		result.put("message", "회원 탈퇴 완료");
+		result.put("result", "delete");
+		log.info("result => " + result);
+		return result;
+	}
+
+	// ========================================================
 	// 탈퇴 페이지 이동
 	@RequestMapping("/delete_member")
 	public String delete_member(HttpSession session, Model model) {
@@ -200,6 +236,7 @@ public class TeamController {
 		}
 //		return "";
 	}
+	// ========================================================
 
 	// 계정설정 비밀번호 확인 이동
 	@RequestMapping("/member_check")

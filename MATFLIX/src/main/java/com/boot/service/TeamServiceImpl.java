@@ -16,6 +16,7 @@ import com.boot.dao.NotificationDAO;
 import com.boot.dao.TeamDAO;
 import com.boot.dto.ProfileDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.dto.WithdrawDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -184,5 +185,11 @@ public class TeamServiceImpl implements TeamService {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		String pw_check = dao.pw_check(mf_no);
 		return pw_check;
+	}
+
+	@Override
+	public void member_withdraw_reason(WithdrawDTO withdrawDTO) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		dao.member_withdraw_reason(withdrawDTO);
 	}
 }

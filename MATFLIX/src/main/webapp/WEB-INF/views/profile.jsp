@@ -343,14 +343,18 @@
 
 	        <!-- 탈퇴 이유 -->
 	        <div class="delete_reason">
-	            <label><input type="radio" name="reason" value="서비스 불만"> 서비스가 불편해요</label>
-	            <label><input type="radio" name="reason" value="사용 빈도 낮음"> 사용을 잘 안해요</label>
-	            <label><input type="radio" name="reason" value="콘텐츠 부족"> 콘텐츠가 부족해요</label>
+	            <label><input type="radio" name="reason" value="SERVICE_DISSATISFACTION"> 서비스가 불편해요.</label>
+	            <label><input type="radio" name="reason" value="LOW_USAGE"> 사용을 잘 안해요.</label>
+	            <label><input type="radio" name="reason" value="LACK_OF_CONTENT"> 콘텐츠가 부족해요.</label>
+	            <label><input type="radio" name="reason" value="FOUND_ALTERNATIVE"> 다른 서비스를 사용해요.</label>
 	            <label>
-	                <input type="radio" name="reason" value="etc"> 기타
+	                <input type="radio" name="reason" value="ETC"> 기타
 	            </label>
 
-	            <textarea id="etc_reason" placeholder="기타 사유 입력"></textarea>
+				<textarea id="etc_reason"
+				          placeholder="기타 사유 입력"
+				          style="display:none;"
+				          maxlength="200"></textarea>
 	        </div>
 
 	        <div class="delete_modal_btn">
@@ -805,16 +809,77 @@
 		    });
 		});
 		
-		$("#delete_modal").click(function(e){
-		    if(e.target === this){
-		        $(this).hide();
-		    }
-		});
-		
 		$(document).keydown(function(e){
 		    if(e.key === "Escape"){
 		        $("#delete_modal").hide();
 		    }
+		});
+
+		$("input[name='reason']").change(function(){
+		    const selected = $(this).val();
+
+			if(selected === "ETC"){
+		        $("#etc_reason")
+		            .prop("disabled", false)
+		            .show()
+		            .focus();
+		    }else{
+		        $("#etc_reason")
+		            .prop("disabled", true)
+		            .hide()
+		            .val("");
+		    }
+
+		});
+		
+		$("#confirm_delete").click(function(e){
+			console.log("최종 탈퇴 버튼 누름");
+			
+			const reason = $("input[name='reason']:checked").val();
+			const etc = $("#etc_reason").val().trim();
+			const pw = $("#delete_pw").val().trim();
+			const etcReason = $("#etc_reason").val().trim();
+			
+			if(!pw){
+			    alert("비밀번호를 입력하세요.");
+			    return;
+			}
+
+			if(!reason){
+			    alert("탈퇴 사유를 선택하세요.");
+			    return;
+			}
+			
+			if(reason === "ETC" && !etc.trim()){
+			    alert("기타 사유를 입력해주세요.");
+				$("#etc_reason").focus();
+			    return;
+			}
+			
+			console.log(pw);
+			console.log(reason);
+			console.log(etcReason);
+			$.ajax({
+                type: "POST",
+                url: "/withdraw",
+		        contentType: "application/json",
+		        data: JSON.stringify({
+		            mf_pw: pw,
+		            reason_type: reason,
+		            reason_detail: reason === "ETC" ? etcReason : reason
+		        }),
+                success: function(response) {
+					alert(response.message);
+					if(response.result === "delete"){
+						window.location.href="main";
+					}else{
+						location.href="/profile";
+					}
+                },
+                error: function() {
+                    alert("탈퇴중 오류 발생.");
+                }
+            });
 		});
     </script>
 </body>

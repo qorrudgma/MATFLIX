@@ -15,20 +15,8 @@ CREATE TABLE matflix (
     UNIQUE KEY uk_matflix_id (mf_id) -- 중복 방지
 );
 select * from matflix;
-delete from matflix where mf_id = "bcrypt";
-select mf_no, mf_id, mf_pw, mf_pw_chk, mf_nickname, mf_name, mf_email,
-		mf_phone, mf_birth, mf_gender, mf_regdate, mf_role from matflix where mf_id="qw12";
-SELECT m.mf_no, m.mf_id, m.mf_nickname, m.mf_name, m.mf_pw
-FROM matflix m
-LEFT JOIN tbl_board b ON m.mf_no = b.mf_no
-LEFT JOIN recipe r ON m.mf_no = r.mf_no
-WHERE b.mf_no IS NULL
-  AND r.mf_no IS NULL;
-  ALTER TABLE matflix 
-MODIFY mf_pw VARCHAR(255) NOT NULL;
-ALTER TABLE matflix 
-DROP COLUMN mf_pw_chk;
-
+alter table matflix add COLUMN deleted INT DEFAULT 0;
+insert into matflix (deleted) value (1) where mf_no = 66;
 SELECT m.mf_no
 	 , m.mf_id
 	 , m.mf_pw
@@ -59,6 +47,8 @@ CREATE TABLE member_withdraw_reason (
     FOREIGN KEY (mf_no) REFERENCES matflix(mf_no)
     ON DELETE CASCADE
 );
+select * from member_withdraw_reason;
+
 -- 유저 프로필 사진
 CREATE TABLE user_image (
     image_no INT AUTO_INCREMENT PRIMARY KEY,

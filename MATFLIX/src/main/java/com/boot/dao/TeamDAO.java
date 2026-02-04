@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.boot.dto.ProfileDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.dto.WithdrawDTO;
 
 @Mapper
 public interface TeamDAO {
@@ -47,4 +48,6 @@ public interface TeamDAO {
 	public Map<String, Object> rank_user(int mf_no);
 
 	public String pw_check(int mf_no);
+
+	public void member_withdraw_reason(WithdrawDTO withdrawDTO);
 }

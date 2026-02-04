@@ -173,4 +173,12 @@
 		 where mf_id=#{mf_id}
 	</select>
 	
+	<!-- 탈퇴 사유 -->
+	<insert id="member_withdraw_reason">
+		INSERT INTO member_withdraw_reason (
+	  		mf_no, reason_type, reason_detail
+		) VALUES (
+			#{mf_no}, #{reason_type}, #{reason_detail}
+		)
+	</insert>
 </mapper>

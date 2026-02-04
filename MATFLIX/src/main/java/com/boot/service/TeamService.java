@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.boot.dto.ProfileDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.dto.WithdrawDTO;
 
 public interface TeamService {
 	// 회원가입
@@ -53,4 +54,6 @@ public interface TeamService {
 	public Map<String, Object> rank_user(int mf_no);
 
 	public String pw_check(int mf_no);
+
+	public void member_withdraw_reason(WithdrawDTO withdrawDTO);
 }
