@@ -44,7 +44,25 @@
                 <form id="user_login" class="login_form" action="main_membership" method="post">
                     <div class="form_group">
                         <label for="mf_id"><i class="fas fa-user"></i> 아이디</label>
-                        <input type="text" name="mf_id" id="mf_id" required oninvalid="this.setCustomValidity('아이디를 입력해주세요.')" oninput="this.setCustomValidity('')" autofocus>
+						<%
+						    String savedId = "";
+						    javax.servlet.http.Cookie[] cookies = request.getCookies();
+						    if (cookies != null) {
+						        for (javax.servlet.http.Cookie cookie : cookies) {
+						            if ("savedId".equals(cookie.getName())) {
+						                savedId = cookie.getValue();
+						            }
+						        }
+						    }
+						%>
+                        <input type="text" name="mf_id" id="mf_id" required oninvalid="this.setCustomValidity('아이디를 입력해주세요.')" oninput="this.setCustomValidity('')" autofocus value="<%= savedId %>">
+						<% if(!savedId.isEmpty()) { %>
+						    <script>
+						        $(document).ready(function() {
+						            $("#remember").prop("checked", true);
+						        });
+						    </script>
+						<% } %>
                     </div>
 					
 					<c:if test="${not empty error}">

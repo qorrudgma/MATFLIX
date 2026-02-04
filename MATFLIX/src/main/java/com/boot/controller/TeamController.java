@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,7 +253,8 @@ public class TeamController {
 	// 로그인 가능 여부 확인
 	@PostMapping("/main_membership")
 	public String login_ok(@RequestParam("mf_id") String mf_id, @RequestParam("mf_pw") String mf_pw,
-			HttpServletRequest request, Model model) {
+			@RequestParam(required = false) String remember, HttpServletResponse response, HttpServletRequest request,
+			Model model) {
 		log.info("@# mf_id 입니다 : " + mf_id);
 		log.info("@# mf_pw 입니다 : " + mf_pw);
 		int result = service.login(mf_id, mf_pw);
@@ -272,6 +275,21 @@ public class TeamController {
 				log.info("@# session user_follow_list => " + session.getAttribute("user_follow_list"));
 			}
 			log.info("@# session => " + session.getAttribute("user"));
+
+			// 아이디 저장 쿠키 처리
+			if ("on".equals(remember)) {
+				Cookie cookie = new Cookie("savedId", mf_id);
+				cookie.setMaxAge(60 * 60 * 24 * 7); // 7일 동안 저장
+				cookie.setPath("/"); // 전체 경로에서 접근 가능
+				response.addCookie(cookie);
+			} else {
+				// 체크 안 하면 쿠키 삭제
+				Cookie cookie = new Cookie("savedId", "");
+				cookie.setMaxAge(0);
+				cookie.setPath("/");
+				response.addCookie(cookie);
+			}
+
 			return "redirect:/main"; // 로그인 성공 시 이동할 페이지
 		} else {
 			model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
