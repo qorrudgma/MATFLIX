@@ -185,12 +185,11 @@ public class TeamController {
 	public String delete_member_check(@RequestParam("mf_id") String mf_id, @RequestParam("mf_pw") String mf_pw,
 			HttpSession session) {
 		log.info("탈퇴 버튼 누름");
-		TeamDTO dto = service.find_list(mf_id); // 기존 비밀번호 확인용
 		TeamDTO user = (TeamDTO) session.getAttribute("user"); // 기존 비밀번호 확인용
-		if (dto != null && dto.getMf_pw().equals(mf_pw)) {
-			log.info("mf_id => " + mf_id);
-			log.info("mf_no => " + user.getMf_no());
-			service.delete_ok(user.getMf_no()); // delete_ok에 바로 mf_id 전달
+		int mf_no = user.getMf_no();
+		String pw_check = service.pw_check(mf_no); // 기존 비밀번호 확인용
+		if (pw_check != null && pw_check.equals(mf_pw)) {
+			service.delete_ok(mf_no); // delete_ok에 바로 mf_id 전달
 			session.invalidate(); // 세션 종료
 			log.info("삭제 및 세션 종료");
 			return "available";

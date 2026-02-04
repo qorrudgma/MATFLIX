@@ -43,4 +43,6 @@ public interface TeamDAO {
 
 	// 랭킹에있는 유저 정보 가져오기
 	public Map<String, Object> rank_user(int mf_no);
+
+	public String pw_check(int mf_no);
 }

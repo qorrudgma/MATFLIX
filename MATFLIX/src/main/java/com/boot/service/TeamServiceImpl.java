@@ -150,4 +150,11 @@ public class TeamServiceImpl implements TeamService {
 		ProfileDTO PDTO = dao.profile(mf_no);
 		return PDTO;
 	}
+
+	@Override
+	public String pw_check(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		String pw_check = dao.pw_check(mf_no);
+		return pw_check;
+	}
 }
