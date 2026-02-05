@@ -302,6 +302,11 @@ public class TeamController {
 		int find_id = service.find_id(mf_id);
 		if (find_id == 1) {
 			TeamDTO user = service.login(mf_id, mf_pw);
+			if (user == null) {
+				model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+				log.info("로그인 실패");
+				return "login"; // 로그인 실패 시 다시 로그인 페이지로
+			}
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
 			log.info("user => " + user);
