@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.BoardDTO;
 import com.boot.dto.CommentDTO;
+import com.boot.dto.NotificationDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.BoardService;
 import com.boot.service.CommentRecommendService;
@@ -48,10 +49,11 @@ public class CommentController {
 
 	@RequestMapping("/save")
 	@ResponseBody
-	public ArrayList<CommentDTO> save(@RequestParam HashMap<String, String> param) {
+	public ArrayList<CommentDTO> save(@RequestParam HashMap<String, String> param, HttpSession session) {
 		log.info("@# save()");
 		log.info("@# param=>" + param);
 
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		commentService.save(param);
 
 		HashMap<String, String> boardNo = new HashMap<>();
@@ -69,8 +71,18 @@ public class CommentController {
 
 		// 팔로우 할때 메시지 다시 작성하기
 		if (mf_no != userNo) {
-			sseService.send(mf_no, userNo + "가 내 게시글에 댓글 작성함");
-			notificationService.add_notification(userNo, mf_no, b_no, 3);
+//			sseService.send(mf_no, userNo + "가 내 게시글에 댓글 작성함");
+			NotificationDTO notif = new NotificationDTO();
+			notif.setReceiver_id(mf_no);
+			notif.setSender_id(user.getMf_no());
+			notif.setNotif_type("COMMENT");
+			if (Integer.parseInt(param.get("parentCommentNo")) == 0) {
+				notif.setTarget_type("BOARD");
+			} else {
+				notif.setTarget_type("COMMENT");
+			}
+			notif.setTarget_id(b_no);
+			notificationService.add_notification(notif);
 		}
 
 		ArrayList<CommentDTO> commentList = commentService.findAll(param);

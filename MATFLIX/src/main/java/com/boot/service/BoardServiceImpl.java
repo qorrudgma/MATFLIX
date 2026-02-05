@@ -9,7 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.boot.dao.BoardAttachDAO;
 import com.boot.dao.BoardDAO;
 import com.boot.dao.CommentDAO;
 import com.boot.dao.CommentRecommendDAO;
@@ -43,23 +42,23 @@ public class BoardServiceImpl implements BoardService {
 		log.info("@# BoardServiceImpl boardDTO=>" + boardDTO);
 
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
-		BoardAttachDAO adao = sqlSession.getMapper(BoardAttachDAO.class);
+//		BoardAttachDAO adao = sqlSession.getMapper(BoardAttachDAO.class);
 
 //		dao.write(param);
 		dao.write(boardDTO);
 
 //		첨부파일 있는지 체크
-		log.info("@# getAttachList=>" + boardDTO.getAttachList());
-		if (boardDTO.getAttachList() == null || boardDTO.getAttachList().size() == 0) {
-			log.info("@# null");
-			return;
-		}
+//		log.info("@# getAttachList=>" + boardDTO.getAttachList());
+//		if (boardDTO.getAttachList() == null || boardDTO.getAttachList().size() == 0) {
+//			log.info("@# null");
+//			return;
+//		}
 
 //		첨부파일이 있는 경우 처리
-		boardDTO.getAttachList().forEach(attach -> {
-			attach.setBoardNo(boardDTO.getBoardNo());
-			adao.insertFile(attach);
-		});
+//		boardDTO.getAttachList().forEach(attach -> {
+//			attach.setBoardNo(boardDTO.getBoardNo());
+//			adao.insertFile(attach);
+//		});
 	}
 
 	@Override
@@ -88,12 +87,12 @@ public class BoardServiceImpl implements BoardService {
 		log.info("@# delete param=>" + param);
 
 		BoardDAO dao = sqlSession.getMapper(BoardDAO.class);
-		BoardAttachDAO attachDAO = sqlSession.getMapper(BoardAttachDAO.class);
+//		BoardAttachDAO attachDAO = sqlSession.getMapper(BoardAttachDAO.class);
 		CommentDAO cDAO = sqlSession.getMapper(CommentDAO.class);
 		CommentRecommendDAO crDAO = sqlSession.getMapper(CommentRecommendDAO.class);
 
 		dao.delete(param);
-		attachDAO.deleteFile(param.get("boardNo"));
+//		attachDAO.deleteFile(param.get("boardNo"));
 		cDAO.boardCommentDelete(param);
 		int boardNo = Integer.parseInt(param.get("boardNo"));
 		crDAO.delete_board_comment(boardNo);

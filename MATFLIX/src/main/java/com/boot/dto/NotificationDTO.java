@@ -10,13 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificationDTO {
-	private int notifications_id;
-	private int follower_id;
-	private int following_id;
-	private int boardNo;
-	private int post_id;
+	private int notif_id;
+	private int receiver_id; // 알림 받는 사람
+	private int sender_id; // 알림 발생 시킨 사람
+	private String notif_type; // 'FOLLOW', 'CREATE', 'COMMENT', 'LIKE'
+	private String target_type; // 'USER', 'BOARD', 'COMMENT', 'RECIPE', 'REVIEW'
+	private int target_id; // 어디서 알림 발생했나
 	private int is_read;
 	private LocalDateTime created_at;
-	private String nickname;
-	private String board_title;
+
+	// 화면
+	private String mf_nickname;
 }

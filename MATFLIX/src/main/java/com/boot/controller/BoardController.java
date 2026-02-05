@@ -2,7 +2,6 @@ package com.boot.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,25 +54,30 @@ public class BoardController {
 
 		service.write(boardDTO);
 		// 여기다가 메일 보내는거 적기
-		int following_id = boardDTO.getMf_no();
-		String following_name = boardDTO.getBoardName();
-		int boardNo = boardDTO.getBoardNo();
-		log.info("작성자 고유 id => " + following_id);
-
-		// 알림 테이블에 데이터 넣기
-		List<Integer> follower_id_list = followService.follower_id_list(following_id);
-		for (int i = 0; i < follower_id_list.size(); i++) {
-//			log.info("반복문" + i);
-			notificationService.add_notification(following_id, follower_id_list.get(i), boardNo, 1);
-		}
-
-		// 메일 보내기
-		List<String> follower_list = followService.follower_list(following_id);
-//		log.info("follower_list => " + follower_list);
-		for (int i = 0; i < follower_list.size(); i++) {
-			String follower_email = follower_list.get(i);
-			emailService.follower_list(following_name, follower_email);
-		}
+//		int following_id = boardDTO.getMf_no();
+//		String following_name = boardDTO.getBoardName();
+//		int boardNo = boardDTO.getBoardNo();
+//		log.info("작성자 고유 id => " + following_id);
+//
+//		// 알림 테이블에 데이터 넣기
+//		List<Integer> follower_id_list = followService.follower_id_list(following_id);
+//		for (int i = 0; i < follower_id_list.size(); i++) {
+//			NotificationDTO setting = new NotificationDTO();
+//			setting.setNotif_type(following_name);
+//			setting.setReceiver_id(follower_id_list.get(i));
+//			setting.setSender_id(following_id);
+//			setting.setTarget_id(boardNo);
+//			setting.setTarget_type(following_name);
+//			notificationService.add_notification(setting);
+//		}
+//
+//		// 메일 보내기
+//		List<String> follower_list = followService.follower_list(following_id);
+////		log.info("follower_list => " + follower_list);
+//		for (int i = 0; i < follower_list.size(); i++) {
+//			String follower_email = follower_list.get(i);
+//			emailService.follower_list(following_name, follower_email);
+//		}
 		// --------------------------------------------------------------------
 
 		return "redirect:list";

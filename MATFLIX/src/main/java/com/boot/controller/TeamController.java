@@ -303,11 +303,11 @@ public class TeamController {
 			log.info("notification_count => " + notification_count);
 			session.setAttribute("notification_count", notification_count);
 
-			List<Integer> user_follow_list = followService.user_follow_list(user.getMf_no());
-			if (user_follow_list != null) {
-				session.setAttribute("user_follow_list", user_follow_list);
-				log.info("@# session user_follow_list => " + session.getAttribute("user_follow_list"));
-			}
+//			List<Integer> user_follow_list = followService.user_follow_list(user.getMf_no());
+//			if (user_follow_list != null) {
+//				session.setAttribute("user_follow_list", user_follow_list);
+//				log.info("@# session user_follow_list => " + session.getAttribute("user_follow_list"));
+//			}
 			log.info("@# session => " + session.getAttribute("user"));
 
 			// 아이디 저장 쿠키 처리
@@ -327,6 +327,7 @@ public class TeamController {
 			return "redirect:/main"; // 로그인 성공 시 이동할 페이지
 		} else {
 			model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+			log.info("로그인 실패");
 			return "login"; // 로그인 실패 시 다시 로그인 페이지로
 		}
 	}

@@ -72,7 +72,7 @@ public class RecommendController {
 					int yn = notifSettingService.check_notif_setting(board_mf_no, "recommend");
 					if (yn == 1) {
 						log.info("알림이 가야하는데");
-						notificationService.add_notification(user.getMf_no(), board_mf_no, boardNo, 4);
+//						notificationService.add_notification(user.getMf_no(), board_mf_no, boardNo, 4);
 					}
 				}
 			}

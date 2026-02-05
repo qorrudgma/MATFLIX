@@ -35,9 +35,9 @@ public class NotificationController {
 
 	@RequestMapping("/notification_list_n")
 	@ResponseBody
-	public List<NotificationDTO> notification_list_n(@RequestParam("follower_id") int follower_id) {
-		List<NotificationDTO> notification_list_n = notificationService.notification_list_n(follower_id);
-//		log.info("notification_list_n => " + notification_list_n);
+	public List<NotificationDTO> notification_list_n(@RequestParam("receiver_id") int receiver_id) {
+		List<NotificationDTO> notification_list_n = notificationService.notification_list_n(receiver_id);
+		log.info("notification_list_n => " + notification_list_n);
 		return notification_list_n;
 	}
 

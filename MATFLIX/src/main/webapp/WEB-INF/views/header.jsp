@@ -131,7 +131,7 @@
 		<% if (user != null) { %>
 			var sessionUserNo = <%= user.getMf_no() %>;
 			var sessionUserNickname = "<%= user.getMf_nickname() %>";
-			var notification_count = <%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>;
+			//var notification_count = <%= session.getAttribute("notification_count") != null ? session.getAttribute("notification_count") : "0" %>;
 			
 			// 알림 카운트가 있으면 알림 배지 표시
 			//if (notification_count > 0) {
@@ -171,14 +171,15 @@
 	
     // 초기 알림 로드
     function loadInitialNotifications() {
-        var followerId = parseInt(sessionUserNo, 10);
+        //var followerId = parseInt(sessionUserNo, 10);
         
         $.ajax({
             type: "POST",
             url: "/notification_list_n",
-            data: {follower_id: followerId},
+            data: {receiver_id: sessionUserNo},
             dataType: "json",
             success: function(notification_list_n) {
+				console.log(notification_list_n);
                 // 읽지 않은 알림 개수 저장 및 표시
                 notificationCount = notification_list_n.filter(item => item.is_read === 0).length;
 				if(notificationCount>0){
@@ -212,12 +213,12 @@
 
     // 알림 목록 로드
     function loadNotifications() {
-        var followerId = parseInt(sessionUserNo, 10);
+        //var followerId = parseInt(sessionUserNo, 10);
         
         $.ajax({
             type: "POST",
             url: "/notification_list_n",
-            data: {follower_id: followerId},
+            data: {receiver_id: sessionUserNo},
             dataType: "json",
             success: function(notification_list_n) {
                 let notification_data = "";
@@ -243,26 +244,40 @@
 					console.log("시간: ", timeAgo(notification_list_n[i].created_at));
 
 					notification_data += "<div>" + timeAgo(notification_list_n[i].created_at) + "</div>";
-					// 팔로우(1),게시글(2),댓글(3),게시글추천(4),댓글 추천(5)
-					switch(notification_list_n[i].post_id){
-						case 1:
-		                    notification_data += "<div>'" + notification_list_n[i].nickname + "'님이 팔로우를 하였습니다.</div>";
-						break;
-						case 2:
-		                    notification_data += "<div>'" +notification_list_n[i].nickname+"'님이 '"+ notification_list_n[i].board_title + "'게시글을 추가하였습니다.</div>";
-						break;
-						case 3:
-		                    notification_data += "<div>'"+notification_list_n[i].nickname+"'님이 '" + notification_list_n[i].board_title + "'게시글에 댓글을 추가하였습니다.</div>";
-						break;
-						case 4:
-		                    notification_data += "<div>'" + notification_list_n[i].board_title + "'게시글이 추천수'"+"(추천수)"+"'에 도달했습니다.</div>";
-						break;
-						break;
-						case 4:
-		                    notification_data += "<div>댓글이 추천수'"+"(추천수)"+"'에 도달했습니다.</div>";
-						break;
-					}
-					notification_data += '<button type="button" class="move_board" data-board_no="' + notification_list_n[i].boardNo + '" data-notifications_id="'+notification_list_n[i].notifications_id+'">보러가기</button></div>';
+					if (notification_list_n[i].is_read == 0) {
+						switch (notification_list_n[i].notif_type) {
+							case "FOLLOW":
+								notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 팔로우를 하였습니다.</div>";
+								break;
+	
+							case "CREATE":
+								if ("REVIEW" === notification_list_n[i].target_type) {
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 리뷰를 남겼습니다.</div>";
+								}
+								break;
+	
+							case "COMMENT":
+								if ("BOARD" === notification_list_n[i].target_type) {
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 게시글에 댓글을 달았습니다.</div>";
+								} else if ("RECIPE" === notification_list_n[i].target_type) {
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 레시피에 댓글을 달았습니다.</div>";
+								} else if ("COMMENT" === notification_list_n[i].target_type) {
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 댓글에 답글을 달았습니다.</div>";
+								}
+								break;
+	
+							case "LIKE":
+								if ("BOARD" === notification_list_n[i].target_type) {
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 게시글에 좋아요를 달았습니다.</div>";
+								} else if ("RECIPE" === notification_list_n[i].target_type) {
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 레시피에 좋아요를 달았습니다.</div>";
+								} else if ("COMMENT" === notification_list_n[i].target_type) {
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 댓글에 좋아요를 달았습니다.</div>";
+								}
+								break;
+							}
+						}
+					notification_data += '<button type="button" class="move_board" data-board_no="' + notification_list_n[i].target_id + '" data-notifications_id="'+notification_list_n[i].notif_id+'">보러가기</button></div>';
                 }
                 
                 document.getElementById("notification_div").innerHTML = notification_data;

@@ -38,8 +38,8 @@ public class SseService {
 	}
 
 	// 특정 유저에게 알림 보내기
-	public void send(int mf_no, String message) {
-		log.info("mf_no => {}, message => {}", mf_no, message);
+	public void send(int mf_no) {
+		log.info("mf_no => {}, message => {}", mf_no);
 		SseEmitter emitter = emitters.get(mf_no);
 		if (emitter == null) {
 			log.info("mf_no={} 에 대한 활성화된 SSE 연결이 없습니다.", mf_no);
@@ -47,9 +47,23 @@ public class SseService {
 		}
 
 		try {
-			emitter.send(SseEmitter.event().name("alert").data(message));
+			emitter.send(SseEmitter.event().name("alert").data("알림"));
 		} catch (IOException e) {
 			emitters.remove(mf_no);
 		}
 	}
+//	public void send(int mf_no, String message) {
+//		log.info("mf_no => {}, message => {}", mf_no, message);
+//		SseEmitter emitter = emitters.get(mf_no);
+//		if (emitter == null) {
+//			log.info("mf_no={} 에 대한 활성화된 SSE 연결이 없습니다.", mf_no);
+//			return;
+//		}
+//		
+//		try {
+//			emitter.send(SseEmitter.event().name("alert").data(message));
+//		} catch (IOException e) {
+//			emitters.remove(mf_no);
+//		}
+//	}
 }

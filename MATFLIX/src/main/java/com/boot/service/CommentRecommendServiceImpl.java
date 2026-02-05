@@ -15,13 +15,8 @@ import lombok.extern.log4j.Log4j2;
 @Service("CommentRecommendService")
 public class CommentRecommendServiceImpl implements CommentRecommendService {
 
-	private final NotificationServiceImpl NotificationService;
 	@Autowired
 	private SqlSession sqlSession;
-
-	CommentRecommendServiceImpl(NotificationServiceImpl NotificationService) {
-		this.NotificationService = NotificationService;
-	}
 
 	@Override
 	public void add_comment_recommend(int commentNo, int mf_no) {
@@ -44,7 +39,7 @@ public class CommentRecommendServiceImpl implements CommentRecommendService {
 					log.info("알림이 가야하는데");
 					// 보내는 사람/받는사람/어디서/어떤거
 					int boardNo = Cdao.commentNo_boardNo(commentNo);
-					Ndao.add_notification(mf_no, mf_no, boardNo, 5);
+//					Ndao.add_notification(mf_no, mf_no, boardNo, 5);
 				}
 			}
 		}
