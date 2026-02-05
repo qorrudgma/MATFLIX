@@ -22,6 +22,7 @@ public class TeamDTO {
 	private String mf_gender;
 	private Date mf_regdate;
 	private String mf_role;
+	private String status;
 
 	private LocalDateTime mf_nickname_updatetime;
 	private String profile_image_path;

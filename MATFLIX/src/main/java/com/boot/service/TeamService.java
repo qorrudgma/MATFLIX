@@ -56,4 +56,6 @@ public interface TeamService {
 	public String pw_check(int mf_no);
 
 	public void member_withdraw_reason(WithdrawDTO withdrawDTO);
+
+	public void last_login_at(int mf_no);
 }

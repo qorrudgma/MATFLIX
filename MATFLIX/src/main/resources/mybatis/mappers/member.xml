@@ -64,6 +64,7 @@
 		  	 , m.mf_regdate
 		  	 , m.mf_role
 		  	 , m.mf_nickname_updatetime
+		  	 , m.status
 		  	 , ui.profile_image_path
 		  FROM matflix m
 		  LEFT JOIN user_image ui
@@ -181,4 +182,10 @@
 			#{mf_no}, #{reason_type}, #{reason_detail}
 		)
 	</insert>
+	
+	<!-- 마지막 로그인 갱신 -->
+	<update id="last_login_at">
+		update matflix set last_login_at = CURRENT_TIMESTAMP
+		 where mf_no = #{mf_no}
+	</update>
 </mapper>

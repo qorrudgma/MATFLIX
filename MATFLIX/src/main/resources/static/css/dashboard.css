@@ -1,0 +1,162 @@
+body { 
+	margin:0; 
+	font-family: Arial, sans-serif; 
+}
+
+.header { 
+	height:60px; 
+	background:#333; 
+	color:#fff; 
+	display:flex; 
+	align-items:center; 
+	padding:0 20px; 
+}
+
+.dashboard { 
+	display:flex; 
+	height: calc(100vh - 60px); 
+}
+
+.sidebar { 
+	width:200px; 
+	background:#f4f4f4; 
+	padding:20px; 
+	box-sizing:border-box; 
+}
+
+.sidebar button { 
+	width:100%; 
+	margin-bottom:10px; 
+	padding:10px; 
+	cursor:pointer; 
+}
+
+.content { 
+	flex:1; 
+	padding:20px; 
+	box-sizing:border-box; 
+	overflow-y:auto; 
+}
+
+.menu_btn.active { 
+	background:#ddd; 
+}
+
+.admin_table{
+    width:100%;
+    border-collapse: collapse;
+    margin-top:20px;
+}
+
+/* 헤더 */
+.admin_table thead{
+    background:#444;
+    color:white;
+}
+
+.admin_table th,
+.admin_table td{
+    padding:5px;
+    border:1px solid #ddd;
+    text-align:center;
+	font-size: 15px;
+}
+
+/* 검색 */
+.search-container { 
+    margin-bottom: 20px; 
+    text-align: right; 
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.search-container select, 
+.search-container input { 
+    padding: 8px 12px; 
+    border: 1px solid #ddd; 
+    border-radius: 4px; 
+    outline: none;
+}
+
+.search-container input:focus { border-color: #333; }
+
+.btn-search { 
+    padding: 8px 15px; 
+    background: #333; 
+    color: #fff; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    transition: 0.2s;
+}
+
+.btn-search:hover { background: #555; }
+
+.btn-reset {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #666;
+    text-decoration: none;
+    line-height: 32px;
+}
+
+/* 줄마다 회색 */
+.admin_table tbody tr:nth-child(even){
+    background:rgb(224, 224, 224);
+}
+
+/* 온라인/오프라인 표시용 */
+.status-dot {
+    font-size: 10px;
+    margin-right: 5px;
+}
+
+.online-text {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.offline-text {
+    color: #95a5a6;
+}
+
+/* 테이블 셀 안에서 수직 정렬 맞추기 */
+.status-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* hover 효과 (관리자에서 매우 중요 ⭐) */
+.admin_table tbody tr:hover{
+    background:rgb(198, 225, 255);
+}
+
+
+/* 페이지 버튼 */
+.pagination{
+    margin-top:30px;
+    text-align:center;
+}
+
+.pagination a{
+    display:inline-block;
+    padding:8px 14px;
+    margin:0 4px;
+    border:1px solid #ddd;
+    text-decoration:none;
+    color:#333;
+    border-radius:6px;
+}
+
+.pagination a:hover{
+    background:#444;
+    color:white;
+}
+
+.active_page{
+    background:#444;
+    color:white !important;
+    font-weight:bold;
+}

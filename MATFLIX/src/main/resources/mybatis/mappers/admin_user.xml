@@ -1,0 +1,75 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.AdminDAO">
+
+	<sql id="user_search">
+	    <if test="keyword != null and keyword != ''">
+	        <choose>
+	            <when test="type == 'mf_id'">
+	                AND mf_id LIKE CONCAT(#{keyword}, '%')
+	            </when>
+	            <when test="type == 'mf_name'">
+	                AND mf_name LIKE CONCAT(#{keyword}, '%')
+	            </when>
+	            <when test="type == 'mf_nickname'">
+	                AND mf_nickname LIKE CONCAT(#{keyword}, '%')
+	            </when>
+	        </choose>
+	    </if>
+	</sql>
+	
+    <!-- 모든 유저 list -->
+    <select id="user_list" resultType="com.boot.dto.AdminUserDTO">
+		SELECT mf_no
+			 , mf_id
+			 , mf_name
+			 , mf_nickname
+			 , status
+			 , created_at
+			 , last_login_at
+		  FROM matflix
+<!--		 WHERE mf_role = 'USER'-->
+		 <include refid="user_search"></include>
+		 ORDER BY mf_no DESC
+		 LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+    
+    <!-- 모든 유저 count -->
+	<select id="user_total_count" resultType="int">
+	    SELECT COUNT(*)
+	      FROM matflix
+	     WHERE mf_role = 'USER'
+	     <include refid="user_search"/>
+	</select>
+	
+    <!-- 유저 active -->
+	<update id="user_status_active">
+	    UPDATE matflix
+		   SET status = "ACTIVE"
+	 	 WHERE mf_no = #{mf_no}
+	</update>
+	
+    <!-- 유저 banned -->
+	<update id="user_status_banned">
+	    UPDATE matflix
+		   SET status = "BANNED"
+	 	 WHERE mf_no = #{mf_no}
+	</update>
+	
+    <!-- 유저 banned -->
+	<update id="user_status_suspended">
+	    UPDATE matflix
+		   SET status = "SUSPENDED"
+	 	 WHERE mf_no = #{mf_no}
+	</update>
+	
+    <!--  -->
+	<update id="user_status_update">
+	    UPDATE matflix
+		   SET status = #{status}
+	 	 WHERE mf_no = #{mf_no}
+	</update>
+    
+</mapper>

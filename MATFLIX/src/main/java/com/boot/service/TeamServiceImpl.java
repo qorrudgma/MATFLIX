@@ -192,4 +192,10 @@ public class TeamServiceImpl implements TeamService {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		dao.member_withdraw_reason(withdrawDTO);
 	}
+
+	@Override
+	public void last_login_at(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		dao.last_login_at(mf_no);
+	}
 }

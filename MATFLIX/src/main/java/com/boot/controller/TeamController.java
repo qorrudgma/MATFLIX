@@ -16,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,6 +87,9 @@ public class TeamController {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private SessionRegistry sessionRegistry;
 
 	// 프로필 보기
 	@RequestMapping("/profile")
@@ -307,7 +310,7 @@ public class TeamController {
 			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user.getMf_id(), null,
 					Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getMf_role())));
 			SecurityContextHolder.getContext().setAuthentication(auth);
-
+			sessionRegistry.registerNewSession(session.getId(), auth.getPrincipal());
 //			TeamDTO user = (TeamDTO) session.getAttribute("user");
 
 			int notification_count = notificationService.notification_count(user.getMf_no());
@@ -334,6 +337,8 @@ public class TeamController {
 				cookie.setPath("/");
 				response.addCookie(cookie);
 			}
+			int mf_no = user.getMf_no();
+			service.last_login_at(mf_no);
 
 			return "redirect:/main"; // 로그인 성공 시 이동할 페이지
 		} else {
@@ -499,21 +504,4 @@ public class TeamController {
 		log.info("notifSettingDTO => " + notifSettingDTO);
 		notifSettingService.update_notif_setting(notifSettingDTO);
 	}
-
-	// ===============================================================================
-	// 관리자
-	// ===============================================================================
-
-	@GetMapping("/admin/dashboard")
-	public String adminDashboard(HttpSession session) {
-		log.info("관리자");
-		TeamDTO user = (TeamDTO) session.getAttribute("user");
-		if (user == null || !"ADMIN".equals(user.getMf_role())) {
-			log.info("관리자 계정 아님");
-			return "redirect:/access_denied";
-		}
-		log.info("관리 페이지 옴");
-		return "dashboard";
-	}
-
 }

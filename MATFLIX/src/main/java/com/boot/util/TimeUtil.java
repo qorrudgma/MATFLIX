@@ -11,14 +11,12 @@ public class TimeUtil {
 
 	/* LocalDateTime → "방금 전 / n분 전 / n시간 전 / n일 전 / n개월 전 / n년 전" */
 	public static String timeAgo(LocalDateTime time) {
-
 		if (time == null) {
 			return "";
 		}
 
 		LocalDateTime now = LocalDateTime.now();
 		Duration duration = Duration.between(time, now);
-
 		long seconds = duration.getSeconds();
 
 		if (seconds < 0) {
@@ -54,11 +52,9 @@ public class TimeUtil {
 
 	/* LocalDateTime => "yyyy-MM-dd" */
 	public static String formatDate(LocalDateTime time) {
-
 		if (time == null) {
 			return "";
 		}
-
 		int currentYear = LocalDate.now().getYear();
 		int targetYear = time.getYear();
 
@@ -75,14 +71,12 @@ public class TimeUtil {
 
 	/* LocalDateTime => "yyyy-MM-dd HH:mm" */
 	public static String formatDateTime(LocalDateTime time) {
-
 		if (time == null) {
 			return "";
 		}
 
 		int currentYear = LocalDate.now().getYear();
 		int targetYear = time.getYear();
-
 		DateTimeFormatter formatter;
 
 		if (currentYear == targetYear) {
@@ -90,6 +84,17 @@ public class TimeUtil {
 		} else {
 			formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		}
+
+		return time.format(formatter);
+	}
+
+	/* LocalDateTime => "yyyy-MM-dd HH:mm" */
+	public static String formatDateTimeAll(LocalDateTime time) {
+		if (time == null) {
+			return "";
+		}
+		DateTimeFormatter formatter;
+		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 		return time.format(formatter);
 	}

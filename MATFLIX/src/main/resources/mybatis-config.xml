@@ -39,5 +39,8 @@
 		<!-- 공지사항 -->
 		<mapper resource="mybatis/mappers/notice_board.xml"/>
 		<mapper resource="mybatis/mappers/notice_page.xml"/>
+		
+		<!-- 관리자 -->
+		<mapper resource="mybatis/mappers/admin_user.xml"/>
 	</mappers>
 </configuration>
