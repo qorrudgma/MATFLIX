@@ -14,6 +14,10 @@
   margin-bottom: 30px;
 }
 
+#profile_id {
+	font-size: 65px;	
+}
+
 .profile_header {
   padding: 30px;
   background: linear-gradient(to right, #ff9a9e, #fad0c4);

@@ -27,7 +27,7 @@
 								<img src="${pageContext.request.contextPath}${profile.profile_image_path}">
 							</c:when>
 							<c:otherwise>
-								<i class="fas fa-user"></i>
+								<i class="fas fa-user" id="profile_id"></i>
 							</c:otherwise>
 						</c:choose>
 	                </div>
