@@ -97,6 +97,17 @@ public class CommentController {
 		commentService.userCommentDelete(param);
 	}
 
+	@RequestMapping("/modify")
+	@ResponseBody
+	public ArrayList<CommentDTO> userCommentModify(@RequestParam HashMap<String, String> param) {
+		log.info("@# userCommentModify()");
+		log.info("@# param=>" + param);
+		commentService.modify_comment(Integer.parseInt(param.get("commentNo")), param.get("commentContent"));
+
+		ArrayList<CommentDTO> commentList = commentService.findAll(param);
+		return commentList;
+	}
+
 	@RequestMapping("/list")
 	@ResponseBody
 	public List<CommentDTO> recommend(@Param("boardNo") int boardNo, HttpSession session) {

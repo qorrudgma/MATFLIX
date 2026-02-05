@@ -36,6 +36,13 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
+	public void modify_comment(int commentNo, String commentContent) {
+		log.info("modify_comment => {},{}", commentNo, commentContent);
+		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
+		dao.modify_comment(commentNo, commentContent);
+	}
+
+	@Override
 	public ArrayList<CommentDTO> findAll(HashMap<String, String> param) {
 		CommentDAO dao = sqlSession.getMapper(CommentDAO.class);
 		ArrayList<CommentDTO> list = dao.findAll(param);

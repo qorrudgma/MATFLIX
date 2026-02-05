@@ -13,6 +13,8 @@ public interface CommentService {
 
 	public void save_comment(CommentDTO commentDTO);
 
+	public void modify_comment(@Param("commentNo") int commentNo, @Param("commentContent") String commentContent);
+
 	public ArrayList<CommentDTO> findAll(HashMap<String, String> param);
 
 	public void boardCommentDelete(HashMap<String, String> param);

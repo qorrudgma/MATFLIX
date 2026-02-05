@@ -533,6 +533,9 @@
 	                              <div class="dropdown-item delete" onclick="deleteComment(`+commentList[i].commentNo+`)">
 	                                  <i class="fas fa-trash-alt"></i> 삭제
 	                              </div>
+								  <div class="dropdown-item modify"onclick="modifyComment(` + commentList[i].commentNo + `)">
+								  	  <i class="fas fa-pen"></i> 수정
+								  </div>
 	                     </div>`;
 	            }
 	            output += `</div>`;
@@ -606,6 +609,9 @@
 				            <div class="dropdown-item delete"onclick="deleteComment(` + c.commentNo + `)">
 								<i class="fas fa-trash-alt"></i> 삭제
 				            </div>
+							<div class="dropdown-item modify"onclick="modifyComment(` + c.commentNo + `)">
+								  <i class="fas fa-pen"></i> 수정
+							</div>
 				        </div>` : ``) + `</div>`;
 	    return html;
 	}
@@ -649,8 +655,68 @@
 				                 onclick="deleteComment(` + c.commentNo + `)">
 				                <i class="fas fa-trash-alt"></i> 삭제
 				            </div>
+							<div class="dropdown-item modify" onclick="modifyComment(` + c.commentNo + `)">
+								  <i class="fas fa-pen"></i> 수정
+							</div>
 				        </div>` : ``) + `</div>`;
 	    return html;
+	}
+	
+	// 댓글 수정창 띄우기
+	function modifyComment(comment_no) {
+	    cancelCommentModify();
+
+	    const $commentNoSpan = $(".commentNo").filter(function() {
+	        return $(this).text() == comment_no;
+	    });
+	    
+	    const $commentItem = $commentNoSpan.closest(".comment-item");
+	    const $textEl = $commentItem.find(".comment-text");
+	    const originText = $textEl.text();
+
+	    const editBox = `
+	        <div class="comment-edit-box" style="margin-top:10px;">
+	            <input type="text" id="edit-input-` + comment_no + `" class="comment-edit-input" value="` + originText + `" style="width:80%; padding:5px;">
+	            <div class="comment-edit-actions" style="margin-top:5px;">
+	                <button class="btn-comment" onclick="submitCommentModify(` + comment_no + `)">확인</button>
+	                <button class="btn-comment" onclick="cancelCommentModify()">취소</button>
+	            </div>
+	        </div>
+	    `;
+
+	    $textEl.hide();
+	    $textEl.after(editBox);
+	    $("#edit-input-" + comment_no).focus();
+	}
+	
+	function submitCommentModify(commentNo) {
+	    const modifiedContent = $("#edit-input-" + commentNo).val();
+
+	    if (!modifiedContent.trim()) {
+	        alert("수정할 내용을 입력해주세요.");
+	        return;
+	    }
+
+	    $.ajax({
+	        type: "post",
+	        url: "/comment/modify",
+	        data: {
+	            commentNo: commentNo,
+	            commentContent: modifiedContent
+	        },
+	        success: function(res) {
+	            console.log("댓글 수정 성공");
+	            loadComments();
+	        },
+	        error: function() {
+	            alert("댓글 수정에 실패했습니다.");
+	        }
+	    });
+	}
+	
+	function cancelCommentModify() {
+	    $(".comment-edit-box").remove();
+	    $(".comment-text").show();
 	}
 
     // 페이지 로드 시 댓글 목록 초기화
