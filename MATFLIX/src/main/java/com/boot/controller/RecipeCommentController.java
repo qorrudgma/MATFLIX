@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.NotificationDTO;
 import com.boot.dto.RecipeCommentDTO;
 import com.boot.dto.TeamDTO;
+import com.boot.service.NotificationService;
 import com.boot.service.RecipeCommentRecommendService;
 import com.boot.service.RecipeCommentService;
 import com.boot.util.TimeUtil;
@@ -30,6 +32,9 @@ public class RecipeCommentController {
 	@Autowired
 	private RecipeCommentRecommendService recipeCommentRecommendService;
 
+	@Autowired
+	private NotificationService notificationService;
+
 	@PostMapping("/recipe/comment")
 	@ResponseBody
 	public List<RecipeCommentDTO> save(RecipeCommentDTO recipeCommentDTO, HttpSession session) {
@@ -43,8 +48,23 @@ public class RecipeCommentController {
 		recipeCommentService.insert_recipe_comment(recipeCommentDTO);
 		log.info("mf_no => " + mf_no);
 		int recipe_id = recipeCommentDTO.getRecipe_id();
+		int recipe_mf_no = recipeCommentDTO.getMf_no();
 		recipeCommentList = recipeCommentService.all_recipe_comment(recipe_id, mf_no);
 		log.info("recipe_id => " + recipe_id);
+
+		if ((user != null) && (recipe_mf_no != mf_no)) {
+			NotificationDTO notif = new NotificationDTO();
+			notif.setReceiver_id(recipe_mf_no);
+			notif.setSender_id(user.getMf_no());
+			notif.setNotif_type("COMMENT");
+			if (recipeCommentDTO.getParentCommentNo() == 0) {
+				notif.setTarget_type("RECIPE");
+			} else {
+				notif.setTarget_type("COMMENT");
+			}
+			notif.setTarget_id(recipe_id);
+			notificationService.add_notification(notif);
+		}
 
 		return recipeCommentList;
 	}

@@ -2,6 +2,7 @@ package com.boot.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -297,6 +302,12 @@ public class TeamController {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
 			log.info("user => " + user);
+
+			// Security 권한 추가
+			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user.getMf_id(), null,
+					Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getMf_role())));
+			SecurityContextHolder.getContext().setAuthentication(auth);
+
 //			TeamDTO user = (TeamDTO) session.getAttribute("user");
 
 			int notification_count = notificationService.notification_count(user.getMf_no());
@@ -487,6 +498,22 @@ public class TeamController {
 		notifSettingDTO.setMf_no(mf_no);
 		log.info("notifSettingDTO => " + notifSettingDTO);
 		notifSettingService.update_notif_setting(notifSettingDTO);
+	}
+
+	// ===============================================================================
+	// 관리자
+	// ===============================================================================
+
+	@GetMapping("/admin/dashboard")
+	public String adminDashboard(HttpSession session) {
+		log.info("관리자");
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
+		if (user == null || !"ADMIN".equals(user.getMf_role())) {
+			log.info("관리자 계정 아님");
+			return "redirect:/access_denied";
+		}
+		log.info("관리 페이지 옴");
+		return "dashboard";
 	}
 
 }

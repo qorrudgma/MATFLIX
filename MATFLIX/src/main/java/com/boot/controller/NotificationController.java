@@ -58,10 +58,10 @@ public class NotificationController {
 	// 알림 읽음 처리
 	@RequestMapping("/is_read_true")
 	@ResponseBody
-	public void is_read_true(@RequestParam("notifications_id") int notifications_id) {
+	public void is_read_true(@RequestParam("notif_id") int notif_id) {
 		log.info("is_read_true()");
 
-		notificationService.is_read_true(notifications_id);
+		notificationService.is_read_true(notif_id);
 	}
 
 }

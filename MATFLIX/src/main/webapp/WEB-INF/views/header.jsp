@@ -91,14 +91,14 @@
 		<nav id="header_nav">
 			<div class="nav_header_logo nav_action" onclick="location.href='${pageContext.request.contextPath}/main'"><h3>MATFLIX</h3></div>
 <!--			<div><a href="recipe_board?rc_type=&rc_keyword=&rc_pageNum=1&rc_amount=12"><div>레시피</div></a></div>-->
-			<div><a href="${pageContext.request.contextPath}/recipe_list"><div>레시피</div></a></div>
+			<div><a href="${pageContext.request.contextPath}/recipe_list"><div> 레시피 </div></a></div>
 			<div><a href="${pageContext.request.contextPath}/user_rank"><div> 랭킹 </div></a></div>
-			<div><a href="${pageContext.request.contextPath}/list"><div>게시판</div></a></div>
+			<div><a href="${pageContext.request.contextPath}/list"><div> 게시판 </div></a></div>
 			<div><a href="${pageContext.request.contextPath}/notice_list"><div> 공지사항 </div></a></div>
 			<% if(user != null){ %>
 				<div><a href="${pageContext.request.contextPath}/follow_board_list"><div> 친구들 소식 </div></a></div>
 			<% } %>
-			<div> 더보기 </div>
+				<div> 더보기 </div>
 			<div class="nav_header_actions nav_action">
 				<% if(user != null){ %>
 					<div class="user_container">
@@ -277,7 +277,7 @@
 								break;
 							}
 						}
-					notification_data += '<button type="button" class="move_board" data-board_no="' + notification_list_n[i].target_id + '" data-notifications_id="'+notification_list_n[i].notif_id+'">보러가기</button></div>';
+					notification_data += '<button type="button" class="move_board" data-target_type="' + notification_list_n[i].target_type + '" data-target_id="' + notification_list_n[i].target_id + '" data-notif_id="'+notification_list_n[i].notif_id+'">보러가기</button></div>';
                 }
                 
                 document.getElementById("notification_div").innerHTML = notification_data;
@@ -335,21 +335,23 @@
         e.preventDefault();
 
         console.log("게시글 가는 버튼 클릭 됨");
-        var board_no = $(this).data("board_no");
-        var notifications_id = $(this).data("notifications_id");
-        var h_data = {boardNo: board_no}
+        var target_type = $(this).data("target_type");
+        var target_id = $(this).data("target_id");
+        var notif_id = $(this).data("notif_id");
 
-        console.log(board_no);
-        console.log(notifications_id);
         console.log("is_read_true ajax 시작");
         // 알림 읽음 처리
         $.ajax({
              type: "post"
             ,url: "/is_read_true"
-            ,data: {notifications_id:notifications_id}
+            ,data: {notif_id:notif_id}
             ,success: function (params) {
                 console.log("해당 알림 읽음 처리됨.");
-                window.location.href = "content_view?pageNum=1&amount=10&type=&keyword=&boardNo="+board_no+"&mf_no="+sessionUserNo;
+				if(target_type === "BOARD"){
+	                window.location.href = "content_view?pageNum=1&amount=10&type=&keyword=&boardNo="+target_id+"&mf_no="+sessionUserNo;
+				}else if(target_type === "RECIPE"){
+	                window.location.href = "recipe_content_view?recipe_id="+target_id;
+				}
             }
             ,error: function (error) {
                 console.log(error);

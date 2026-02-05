@@ -16,7 +16,9 @@ CREATE TABLE matflix (
 );
 select * from matflix;
 alter table matflix add COLUMN deleted INT DEFAULT 0;
-insert into matflix (deleted) value (1) where mf_no = 66;
+UPDATE matflix
+SET deleted = 0
+WHERE mf_no = 66;
 SELECT m.mf_no
 	 , m.mf_id
 	 , m.mf_pw
@@ -98,35 +100,28 @@ delete f
 
 -- 알림 테이블
 CREATE TABLE notifications (
-    notifications_id INT AUTO_INCREMENT PRIMARY KEY,
-    follower_id INT NOT NULL,          -- 팔로우를 거는 사람 (알림 생성하는 행동하는 사람)
-    following_id INT NOT NULL,          -- 팔로우 당하는 사람 (알림 받는 대상)
-    boardNo INT NOT NULL,             -- 해당 게시판 고유넘버 (알림 생성하는 게시판)
-    post_id INT,                         -- 어떤 알림인지 (게시글(1),댓글(2),팔로우(3),레시피(4),댓글추천(5))
-    is_read int DEFAULT 0,             -- 알림 읽음 여부
-    created_at DATETIME DEFAULT NOW()    -- 생성 시간
+    notif_id INT AUTO_INCREMENT PRIMARY KEY,
+    receiver_id INT NOT NULL,    	 	-- 알림 받는 사람
+    sender_id INT,               	 	-- 알림 발생시킨 사람 (시스템 알림이면 NULL)
+    notif_type VARCHAR(30) NOT NULL,  	-- 'FOLLOW', 'CREATE', 'COMME  	NT', 'LIKE', 'REVIEW'
+    target_type VARCHAR(30),        	-- 'USER', 'BOARD', 'COMMENT', 'RECIPE'
+    target_id INT,              	  	-- board_no / comment_id / recipe_id
+    is_read INT DEFAULT 0,         		-- 0: 안읽음, 1: 읽음
+    created_at DATETIME DEFAULT NOW()
 );
 select * from notifications;
-DELETE n
-  FROM notifications n
-  JOIN (
-       SELECT notifications_id
-         FROM notifications
-        WHERE follower_id = 61
-		   OR following_id = 62
-	   ) t ON n.notifications_id = t.notifications_id;
 
 -- 알림 on/off 테이블
 CREATE TABLE notif_setting (
     mf_no INT PRIMARY KEY,
-    follow_yn TINYINT DEFAULT 1,
-    board_comment_yn TINYINT DEFAULT 1,
-    board_reaction_yn TINYINT DEFAULT 1,
-    recipe_review_yn TINYINT DEFAULT 1,
-    recipe_comment_yn TINYINT DEFAULT 1,
-    recipe_reaction_yn TINYINT DEFAULT 1,
-    recomment_yn TINYINT DEFAULT 1,
-    comment_reaction_yn TINYINT DEFAULT 1,
+    follow_yn TINYINT DEFAULT 1,			-- 팔로우
+    board_comment_yn TINYINT DEFAULT 1,		-- 게시글 댓글 알림
+    board_reaction_yn TINYINT DEFAULT 1,	-- 게시글 좋아요
+    recipe_review_yn TINYINT DEFAULT 1,		-- 레시피 리뷰
+    recipe_comment_yn TINYINT DEFAULT 1,	-- 레시피 댓글
+    recipe_reaction_yn TINYINT DEFAULT 1,	-- 레시피 좋아요
+    recomment_yn TINYINT DEFAULT 1,			-- 댓글의 답글
+    comment_reaction_yn TINYINT DEFAULT 1,	-- 댓글의 좋아요
 	-- 유저 삭제 시 추천 자동 삭제
 	constraint fk_notif_user
 		FOREIGN KEY (mf_no)

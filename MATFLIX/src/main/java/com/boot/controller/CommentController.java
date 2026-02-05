@@ -69,8 +69,7 @@ public class CommentController {
 
 		int userNo = Integer.parseInt(param.get("userNo"));
 
-		// 팔로우 할때 메시지 다시 작성하기
-		if (mf_no != userNo) {
+		if ((user != null) && (mf_no != userNo)) {
 //			sseService.send(mf_no, userNo + "가 내 게시글에 댓글 작성함");
 			NotificationDTO notif = new NotificationDTO();
 			notif.setReceiver_id(mf_no);
