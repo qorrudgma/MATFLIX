@@ -263,4 +263,11 @@ public class RecipeServiceImpl implements RecipeService {
 		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
 		dao.modify_recipe_star(recipe_id);
 	}
+
+	@Override
+	public int recipe_mf_no(int recipe_id) {
+		RecipeDAO dao = sqlSession.getMapper(RecipeDAO.class);
+		int mf_no = dao.recipe_mf_no(recipe_id);
+		return mf_no;
+	}
 }

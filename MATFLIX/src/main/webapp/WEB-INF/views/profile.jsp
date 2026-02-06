@@ -25,6 +25,7 @@
 						<c:choose>
 						    <c:when test="${not empty profile.profile_image_path}">
 								<img src="${pageContext.request.contextPath}${profile.profile_image_path}">
+<!--								<img src="${pageContext.request.contextPath}${profile.profile_image_path}?v=<%= System.currentTimeMillis() %>">-->
 							</c:when>
 							<c:otherwise>
 								<i class="fas fa-user" id="profile_id"></i>
@@ -136,9 +137,6 @@
                     <div class="empty-state">
                         <i class="fas fa-utensils"></i>
                         <p>아직 등록한 레시피가 없습니다.</p>
-                        <a href="insert_recipe" class="add_recipe_btn">
-                            <i class="fas fa-plus"></i> 레시피 등록하기
-                        </a>
                     </div>
                 </c:if>
             </div>
@@ -406,6 +404,7 @@
 		// 확인 버튼
 		$("#profile_image_confirm").on("click", function () {
 		    const fileInput = $("#profile_image_file")[0];
+			const existing_profile_image_path = "${profile.profile_image_path}";
 
 		    if (!fileInput.files.length) {
 		        alert("이미지를 선택해주세요.");
@@ -415,7 +414,10 @@
 		    const formData = new FormData();
 		    formData.append("image_file", fileInput.files[0]);
 			// 기존 이미지 있을경우 추가하기
-		    formData.append("profile_image_path", null);
+			if (existing_profile_image_path && existing_profile_image_path !== "") {
+			  formData.append("profile_image_path", existing_profile_image_path);
+			}
+			console.log(formData);
 
 		    $.ajax({
 		        url: "/profile_image",
@@ -425,7 +427,7 @@
 		        contentType: false,
 		        success: function () {
 		            alert("프로필 이미지가 변경되었습니다.");
-		            location.reload();
+		            location.reload(true);
 		        },
 		        error: function () {
 		            alert("이미지 업로드 실패");
@@ -533,10 +535,7 @@
 							}else {
 								html += `<div class="empty-state">
 						                <i class="fas fa-utensils"></i>
-						                <p>아직 등록한 레시피가 없습니다.</p>
-						                <a href="insert_recipe" class="add_recipe_btn">
-						                    <i class="fas fa-plus"></i> 레시피 등록하기
-						                </a>
+						                <p>아직 즐겨찾기한 레시피가 없습니다.</p>
 						            </div>`;
 							}
 							$("#favorites_list").html(html);

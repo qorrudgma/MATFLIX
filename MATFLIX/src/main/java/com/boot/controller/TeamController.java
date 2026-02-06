@@ -119,6 +119,7 @@ public class TeamController {
 	// 프로필 이미지
 	@PostMapping("/profile_image")
 	@ResponseBody
+	@Transactional
 	public String profile_image(String profile_image_path, MultipartFile image_file, HttpSession session) {
 		log.info("profile_image()");
 		log.info("image_path => {}, image_file => {}", profile_image_path, image_file);
@@ -133,6 +134,10 @@ public class TeamController {
 		PIDTO.setImage_file(image_file);
 
 		fileStorageService.modify_profile_image(PIDTO);
+
+		String path = service.profile_image_path(mf_no);
+		user.setProfile_image_path(path);
+		session.setAttribute("user", user);
 		return "";
 	}
 

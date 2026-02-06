@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.NotificationDTO;
 import com.boot.dto.RecipeDTO;
 import com.boot.dto.RecipeReviewDTO;
 import com.boot.dto.RecipeReviewSummaryDTO;
@@ -27,6 +28,7 @@ import com.boot.dto.ReviewImageDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.FavoriteRecipeService;
 import com.boot.service.FollowService;
+import com.boot.service.NotificationService;
 import com.boot.service.RecipeRecommendService;
 import com.boot.service.RecipeReviewService;
 import com.boot.service.RecipeService;
@@ -49,6 +51,9 @@ public class RecipeController {
 
 	@Autowired
 	private FollowService followService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	@Autowired
 	private FavoriteRecipeService favoriteRecipeService;
@@ -242,6 +247,20 @@ public class RecipeController {
 		recipeReviewWriteDTO.setMf_no(mf_no);
 //		log.info("recipeReviewDTO => " + recipeReviewWriteDTO);
 		recipeReviewService.process_review_write(recipeReviewWriteDTO);
+		int recipe_id = recipeReviewWriteDTO.getRecipe_id();
+		int recipe_mf_no = recipeService.recipe_mf_no(recipe_id);
+
+		if ((user != null) && (mf_no != recipe_mf_no)) {
+//			sseService.send(mf_no, userNo + "가 내 게시글에 댓글 작성함");
+			NotificationDTO notif = new NotificationDTO();
+			notif.setReceiver_id(recipe_mf_no);
+			notif.setSender_id(user.getMf_no());
+			notif.setNotif_type("CREATE");
+			notif.setTarget_type("REVIEW");
+			notif.setTarget_id(recipe_id);
+			notificationService.add_notification(notif);
+		}
+
 		return "redirect:/recipe_content_view?recipe_id=" + recipeReviewWriteDTO.getRecipe_id();
 	}
 

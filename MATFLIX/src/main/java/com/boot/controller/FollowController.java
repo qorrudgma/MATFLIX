@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.boot.dto.NotificationDTO;
+import com.boot.dto.TeamDTO;
 import com.boot.service.FollowService;
+import com.boot.service.NotificationService;
 import com.boot.service.RecipeService;
 import com.boot.service.SseService;
 
@@ -26,6 +29,10 @@ public class FollowController {
 
 	@Autowired
 	private RecipeService recipeService;
+
+	@Autowired
+	private NotificationService notificationService;
+
 	@Autowired
 	private final SseService sseService = new SseService();
 
@@ -45,12 +52,24 @@ public class FollowController {
 //		sseService.send(following_id, "팔로우함");
 
 		HttpSession session = request.getSession();
+		TeamDTO user = (TeamDTO) session.getAttribute("user");
 
 		List<Integer> user_follow_list = followService.user_follow_list(follower_id);
 		session.removeAttribute("user_follow_list");
 		if (user_follow_list != null) {
 			session.setAttribute("user_follow_list", user_follow_list);
 			log.info("@# session user_follow_list => " + session.getAttribute("user_follow_list"));
+		}
+
+		if ((user != null)) {
+//			sseService.send(mf_no, userNo + "가 내 게시글에 댓글 작성함");
+			NotificationDTO notif = new NotificationDTO();
+			notif.setReceiver_id(following_id);
+			notif.setSender_id(follower_id);
+			notif.setNotif_type("FOLLOW");
+			notif.setTarget_type("USER");
+			notif.setTarget_id(follower_id);
+			notificationService.add_notification(notif);
 		}
 	}
 

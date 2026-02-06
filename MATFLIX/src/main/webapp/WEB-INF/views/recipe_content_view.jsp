@@ -559,6 +559,7 @@
 		$(".review_modify_form").fadeOut();
 		const review_id = this.dataset.review_id;
 		const review_img = this.dataset.img;
+		console.log(review_id);
 		
 		$.ajax({
 		    url: "/review/detail",

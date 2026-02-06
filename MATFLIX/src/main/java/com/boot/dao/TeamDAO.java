@@ -18,7 +18,7 @@ public interface TeamDAO {
 
 	public void recruit_profile_image(int mf_no);
 
-	public void modify_profile_image(@Param("mf_no") int mf_no, @Param("image_path") String image_path);
+	public void modify_profile_image(@Param("mf_no") int mf_no, @Param("profile_image_path") String profile_image_path);
 
 	public ArrayList<TeamDTO> list();
 
@@ -48,6 +48,8 @@ public interface TeamDAO {
 	public Map<String, Object> rank_user(int mf_no);
 
 	public String pw_check(int mf_no);
+
+	public String profile_image_path(int mf_no);
 
 	public void member_withdraw_reason(WithdrawDTO withdrawDTO);
 

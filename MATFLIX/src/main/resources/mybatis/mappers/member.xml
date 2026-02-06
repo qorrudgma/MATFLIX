@@ -24,8 +24,15 @@
 	<update id="modify_profile_image">
 		UPDATE user_image
 		   SET profile_image_path = #{profile_image_path}
-		 WHERE mf_no =#{mf_no}
+		 WHERE mf_no = #{mf_no}
 	</update>
+
+	<!-- 프로필 이미지 수정 -->
+	<select id="profile_image_path" resultType="String">
+		select profile_image_path
+		  FROM user_image
+		 WHERE mf_no =#{mf_no}
+	</select>
 
 	<!-- 로그인 -->
 <!--	<select id="login" resultType="int">-->

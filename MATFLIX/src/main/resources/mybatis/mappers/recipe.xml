@@ -175,6 +175,13 @@
 		 WHERE recipe_id = #{recipe_id}
 	</select>
 
+	<!-- 레시피 id로 유저 넘 -->	
+	<select id="recipe_mf_no" resultType="int">
+		SELECT mf_no
+		  FROM recipe
+		 WHERE recipe_id = #{recipe_id}
+	</select>
+
 	<!-- 별점 수정 -->
 	<update id="modify_recipe_star">
 		UPDATE recipe

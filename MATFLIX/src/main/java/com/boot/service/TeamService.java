@@ -17,7 +17,7 @@ public interface TeamService {
 
 	public void recruit_profile_image(int mf_no);
 
-	public void modify_profile_image(int mf_no, String image_path);
+	public void modify_profile_image(@Param("mf_no") int mf_no, @Param("profile_image_path") String profile_image_path);
 
 	// 리스트 불러오기
 	public ArrayList<TeamDTO> list();
@@ -54,6 +54,8 @@ public interface TeamService {
 	public Map<String, Object> rank_user(int mf_no);
 
 	public String pw_check(int mf_no);
+
+	public String profile_image_path(int mf_no);
 
 	public void member_withdraw_reason(WithdrawDTO withdrawDTO);
 

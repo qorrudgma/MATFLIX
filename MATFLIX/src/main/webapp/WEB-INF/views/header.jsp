@@ -54,6 +54,8 @@
 							%>
 							    <img onclick="location.href='<%= request.getContextPath() %>/profile'"
 							         src="<%= request.getContextPath() + profileImagePath %>">
+<!--								<img onclick="location.href='<%= request.getContextPath() %>/profile'"-->
+<!--								     src="<%= request.getContextPath() + profileImagePath %>?v=<%= System.currentTimeMillis() %>">-->
 							<%
 							    } else {
 							%>
@@ -252,7 +254,7 @@
 	
 							case "CREATE":
 								if ("REVIEW" === notification_list_n[i].target_type) {
-									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 리뷰를 남겼습니다.</div>";
+									notification_data += "<div>'" + notification_list_n[i].mf_nickname + "'님이 레시피에 리뷰를 남겼습니다.</div>";
 								}
 								break;
 	
@@ -349,8 +351,11 @@
                 console.log("해당 알림 읽음 처리됨.");
 				if(target_type === "BOARD"){
 	                window.location.href = "content_view?pageNum=1&amount=10&type=&keyword=&boardNo="+target_id+"&mf_no="+sessionUserNo;
-				}else if(target_type === "RECIPE"){
+				}else if(target_type === "RECIPE" || target_type === "REVIEW"){
 	                window.location.href = "recipe_content_view?recipe_id="+target_id;
+				}else if(target_type === "USER"){
+					console.log("해당 알림 읽음 처리됨.");
+	                window.location.href = "other_profile?mf_no="+target_id;
 				}
             }
             ,error: function (error) {

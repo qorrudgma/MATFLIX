@@ -18,7 +18,8 @@ CREATE TABLE matflix (
     UNIQUE KEY uk_matflix_id (mf_id) -- 중복 방지
 );
 alter table matflix add column created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-select mf_id, status from matflix;
+select *
+ from matflix;
 SELECT *
 FROM matflix
 ORDER BY mf_no ASC
@@ -79,6 +80,7 @@ CREATE TABLE user_image (
         ON DELETE CASCADE
 );
 select * from user_image;
+update user_image set profile_image_path = null where mf_no = 75;
 
 
 -- 팔로우
@@ -110,8 +112,8 @@ delete f
   join (
 		select follow_id
           from follow
-		 where follower_id =1
-			or following_id =1
+		 where follower_id =75
+			or following_id =75
 	   ) f2 on f.follow_id = f2.follow_id;
 
 -- 알림 테이블
@@ -126,6 +128,21 @@ CREATE TABLE notifications (
     created_at DATETIME DEFAULT NOW()
 );
 select * from notifications;
+    	select n.notif_id
+    		 , n.receiver_id
+    		 , n.sender_id
+    		 , n.notif_type
+    		 , n.target_type
+    		 , n.target_id
+    		 , n.is_read
+    		 , n.created_at
+    		 , m.mf_nickname as mf_nickname
+    	  from notifications n
+    	  join matflix m
+    	    on n.sender_id = m.mf_no
+    	 where receiver_id = 76
+    	   and is_read = 0
+    	 ORDER BY created_at DESC;
 
 -- 알림 on/off 테이블
 CREATE TABLE notif_setting (
@@ -602,6 +619,21 @@ select f.favorite_no
 			ON f.recipe_id = ri.recipe_id
 		   AND ri.image_type ="THUMBNAIL"
 		 where f.mf_no = 61;
+         
+         SELECT r.review_id
+			 , r.recipe_id
+			 , r.mf_no
+			 , r.rating
+			 , r.deleted
+			 , r.content
+			 , r.created_at
+			 , m.mf_nickname
+		  FROM recipe_review r
+		  left join matflix m
+		    on r.mf_no = m.mf_no
+		 WHERE r.review_id = 28
+		   AND r.deleted = 0
+		 ORDER BY created_at DESC;
 
 -- 리뷰 이미지
 CREATE TABLE review_image (

@@ -65,9 +65,10 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void modify_profile_image(int mf_no, String image_path) {
+	public void modify_profile_image(int mf_no, String profile_image_path) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
-		dao.modify_profile_image(mf_no, image_path);
+		log.info(mf_no + "##########" + profile_image_path);
+		dao.modify_profile_image(mf_no, profile_image_path);
 	}
 
 	// 회원 리스트 all
@@ -197,5 +198,12 @@ public class TeamServiceImpl implements TeamService {
 	public void last_login_at(int mf_no) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		dao.last_login_at(mf_no);
+	}
+
+	@Override
+	public String profile_image_path(int mf_no) {
+		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
+		String profile_image_path = dao.profile_image_path(mf_no);
+		return profile_image_path;
 	}
 }

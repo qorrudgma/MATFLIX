@@ -28,6 +28,9 @@ public class FileStorageServiceImpl implements FileStorageService {
 	@Autowired
 	private SqlSession sqlSession;
 
+	@Autowired
+	private TeamService teamService;
+
 	@Override
 	public void save_image(int recipe_id, RecipeWriteDTO dto) {
 		log.info("save_image 옴");
@@ -317,7 +320,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 	public void modify_profile_image(ProfileImageDTO dto) {
 		TeamDAO dao = sqlSession.getMapper(TeamDAO.class);
 		MultipartFile file = dto.getImage_file();
-
+		log.info("ProfileImageDTO => " + dto);
 		String base_dir = "C:/matflix_upload/profile";
 
 		if (file != null && !file.isEmpty()) {
@@ -325,10 +328,13 @@ public class FileStorageServiceImpl implements FileStorageService {
 				if (dto.getProfile_image_path() != null && !dto.getProfile_image_path().isBlank()) {
 					String old_image_path = "C:/matflix_upload" + dto.getProfile_image_path();
 					File old_file = new File(old_image_path);
+					log.info("old_image_path => " + old_image_path);
 
 					if (old_file.exists()) {
 						boolean deleted = old_file.delete();
 						log.info("기존 프로필 이미지 삭제 => {} / 성공여부 = {}", old_file.getAbsolutePath(), deleted);
+					} else {
+						log.warn("삭제 대상 파일이 존재하지 않음");
 					}
 				}
 
@@ -349,7 +355,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 				File save_file = new File(dir, save_file_name);
 				file.transferTo(save_file);
 
-				dao.modify_profile_image(dto.getMf_no(), "/profile/" + save_file_name);
+				teamService.modify_profile_image(dto.getMf_no(), "/profile/" + save_file_name);
+				log.info(dto.getMf_no() + "!@#" + save_file_name);
 				log.info("프로필 이미지 수정 완료: {}", save_file.getAbsolutePath());
 			} catch (Exception e) {
 				log.error("프로필 이미지 수정 실패", e);
