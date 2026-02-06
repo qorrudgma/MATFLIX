@@ -30,6 +30,7 @@ import com.boot.service.FollowService;
 import com.boot.service.RecipeRecommendService;
 import com.boot.service.RecipeReviewService;
 import com.boot.service.RecipeService;
+import com.boot.util.CategoryUtil;
 import com.boot.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -131,6 +132,9 @@ public class RecipeController {
 		log.info("recipe_id=>" + recipe_id);
 		TeamDTO user = (TeamDTO) session.getAttribute("user");
 		RecipeDTO recipe = recipeService.recipe(recipe_id);
+		// 화면 카데고리
+		recipe.setDisplay_category(CategoryUtil.toKorean(recipe.getCategory()));
+		// 화면 시간
 		String time = TimeUtil.timeAgo(recipe.getCreated_at());
 		recipe.setDisplay_updated_at(time);
 		model.addAttribute("recipe", recipe);

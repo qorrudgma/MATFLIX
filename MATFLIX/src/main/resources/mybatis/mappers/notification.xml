@@ -20,14 +20,14 @@
 
 	<!-- 안 읽은 알림 보기 -->
     <select id="notification_list_n" resultType="com.boot.dto.NotificationDTO">
-    	select notif_id
-    		 , receiver_id
-    		 , sender_id
-    		 , notif_type
-    		 , target_type
-    		 , target_id
-    		 , is_read
-    		 , created_at
+    	select n.notif_id
+    		 , n.receiver_id
+    		 , n.sender_id
+    		 , n.notif_type
+    		 , n.target_type
+    		 , n.target_id
+    		 , n.is_read
+    		 , n.created_at
     		 , m.mf_nickname as mf_nickname
     	  from notifications n
     	  join matflix m

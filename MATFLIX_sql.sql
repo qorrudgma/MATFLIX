@@ -11,31 +11,47 @@ CREATE TABLE matflix (
     mf_gender CHAR(1) DEFAULT 'M' CHECK (mf_gender IN ('M', 'F')),
     mf_regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
     mf_role VARCHAR(10) DEFAULT 'USER' CHECK (mf_role IN ('USER', 'ADMIN')),
-    mf_nickname_updatetime date DEFAULT null,
+    mf_nickname_updatetime DATETIME DEFAULT null,
+    last_password_change DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status varchar(20) DEFAULT "ACTIVE",
+    last_login_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uk_matflix_id (mf_id) -- 중복 방지
 );
-select * from matflix;
-alter table matflix add COLUMN deleted INT DEFAULT 0;
-UPDATE matflix
-SET deleted = 0
-WHERE mf_no = 66;
+alter table matflix add column created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+select mf_id, status from matflix;
+SELECT *
+FROM matflix
+ORDER BY mf_no ASC
+LIMIT 5 OFFSET 0;
+update matflix
+   -- set status = "BANNED"
+   set status = "BANNED"
+ where mf_no = 74;
 SELECT m.mf_no
-	 , m.mf_id
-	 , m.mf_pw
-	 , m.mf_nickname
-	 , m.mf_name
-	 , m.mf_email
-	 , m.mf_phone
-	 , m.mf_birth
-	 , m.mf_gender
-	 , m.mf_regdate
-	 , m.mf_role
-	 , m.mf_nickname_updatetime
-	 , ui.profile_image_path
-  FROM matflix m
-  LEFT JOIN user_image ui
-	ON ui.mf_no = m.mf_no
- WHERE m.mf_id = "bcrypt2";
+		  	 , m.mf_id
+		  	 , m.mf_pw
+		  	 , m.mf_nickname
+		  	 , m.mf_name
+		  	 , m.mf_email
+		 	 , m.mf_phone
+		 	 , m.mf_birth
+		  	 , m.mf_gender
+		  	 , m.mf_regdate
+		  	 , m.mf_role
+		  	 , m.mf_nickname_updatetime
+		  	 , m.status
+		  	 , ui.profile_image_path
+		  FROM matflix m
+		  LEFT JOIN user_image ui
+	        ON ui.mf_no = m.mf_no
+		 WHERE m.mf_id = "banned";
+SELECT *
+FROM matflix
+WHERE mf_name LIKE CONCAT("", '%')
+ORDER BY mf_no DESC
+LIMIT 5 OFFSET 0;
+
+
          
 -- 탈퇴 이유
 CREATE TABLE member_withdraw_reason (
@@ -103,7 +119,7 @@ CREATE TABLE notifications (
     notif_id INT AUTO_INCREMENT PRIMARY KEY,
     receiver_id INT NOT NULL,    	 	-- 알림 받는 사람
     sender_id INT,               	 	-- 알림 발생시킨 사람 (시스템 알림이면 NULL)
-    notif_type VARCHAR(30) NOT NULL,  	-- 'FOLLOW', 'CREATE', 'COMME  	NT', 'LIKE', 'REVIEW'
+    notif_type VARCHAR(30) NOT NULL,  	-- 'FOLLOW', 'CREATE', 'COMMENT', 'LIKE', 'REVIEW'
     target_type VARCHAR(30),        	-- 'USER', 'BOARD', 'COMMENT', 'RECIPE'
     target_id INT,              	  	-- board_no / comment_id / recipe_id
     is_read INT DEFAULT 0,         		-- 0: 안읽음, 1: 읽음
@@ -181,7 +197,7 @@ CREATE TABLE board_comment (
     recommend_count INT DEFAULT 0,
     recommend_notify_step INT DEFAULT 0
 );
-select * FROM board_comment where boardNo = 332 order by 1 desc;
+select * FROM board_comment where boardNo = 333 order by 1 desc;
 SELECT c.commentNo
 	 , c.commentWriter
 	 , c.commentContent

@@ -46,6 +46,7 @@ import com.boot.service.NotificationService;
 import com.boot.service.RecipeService;
 import com.boot.service.RecommendService;
 import com.boot.service.TeamService;
+import com.boot.util.CategoryUtil;
 import com.boot.util.TimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -103,29 +104,14 @@ public class TeamController {
 		int mf_no = user.getMf_no();
 		ProfileDTO profile = service.profile(mf_no);
 
-//		List<Map<String, Object>> profile_board = boardService.profile_board_list(user.getMf_no());
-//		log.info(profile_board + "");
-//		for (int i = 0; i < profile_board.size(); i++) {
-//			Map<String, Object> board = profile_board.get(i);
-//			int boardNo = (int) board.get("boardNo");
-//			int recommend_count = recommendService.total_recommend(boardNo);
-//			board.put("recommend_count", recommend_count);
-//		}
-
 		List<RecipeDTO> my_recipe = recipeService.my_recipe_list(mf_no);
 		for (RecipeDTO c : my_recipe) {
+			c.setDisplay_category(CategoryUtil.toKorean(c.getCategory()));
 			c.setDisplay_time(TimeUtil.formatDate(c.getCreated_at()));
 		}
-//		int mfNo = user.getMf_no();
-
-//		int user_follow_count = followService.user_follow_count(mfNo);
-//		int user_follower_count = followService.user_follower_count(mfNo);
 
 		model.addAttribute("my_recipe", my_recipe);
 		model.addAttribute("profile", profile);
-//		model.addAttribute("profile_board", profile_board);
-//		model.addAttribute("user_follow_count", user_follow_count);
-//		model.addAttribute("user_follower_count", user_follower_count);
 
 		return "profile";
 	}

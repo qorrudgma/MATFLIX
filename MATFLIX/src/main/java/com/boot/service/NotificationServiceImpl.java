@@ -1,5 +1,6 @@
 package com.boot.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -107,11 +108,15 @@ public class NotificationServiceImpl implements NotificationService {
 //	}
 
 	@Override
-	public List<NotificationDTO> notification_list_n(int follower_id) {
+	public List<NotificationDTO> notification_list_n(int receiver_id) {
 		NotificationDAO dao = sqlSession.getMapper(NotificationDAO.class);
-		List<NotificationDTO> notification_list_n = dao.notification_list_n(follower_id);
+		List<NotificationDTO> notification_list_n = dao.notification_list_n(receiver_id);
 
 //		log.info("!@#$" + notification_list_n);
+		if (notification_list_n == null) {
+			log.info("없음");
+			return new ArrayList<>();
+		}
 		return notification_list_n;
 	}
 

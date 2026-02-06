@@ -1,3 +1,75 @@
+/* 댓글 수정 박스 전체 */
+.comment-edit-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* 입력창과 버튼 사이 간격 */
+    padding: 12px;
+    background-color: #f5f5f5; /* 기존 댓글 배경과 비슷하게 */
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    width: 80%;
+    box-sizing: border-box;
+}
+
+/* 댓글 입력창 */
+.comment-edit-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.comment-edit-input:focus {
+    border: 1px solid #e50914;
+    box-shadow: 0 0 4px rgba(229,9,20,0.3);
+    background-color: #fff;
+}
+
+/* 버튼 컨테이너 */
+.comment-edit-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start; /* 버튼 오른쪽 정렬 */
+}
+
+/* 버튼 공통 스타일 */
+.comment-edit-actions button {
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* 수정 버튼 */
+.comment-edit-actions button.modify-btn {
+    background-color: #e50914;
+    color: #fff;
+}
+
+.comment-edit-actions button.modify-btn:hover {
+    background-color: #f6121d;
+}
+
+/* 취소 버튼 */
+.comment-edit-actions button.cancel-btn {
+    background-color: #ccc;
+    color: #333;
+}
+
+.comment-edit-actions button.cancel-btn:hover {
+    background-color: #aaa;
+    color: #fff;
+}
+
+
 .recipe_view_container {
     max-width: 1000px;
     margin: 0 auto;
@@ -918,7 +990,18 @@
     right: 14px;
 }
 
-.comment-actions .delete,
+.comment-actions .delete {
+	padding: 2px;
+    font-size: 12px;
+    color: rgb(255, 68, 68);
+    cursor: pointer;
+}
+
+.comment_modify {
+    background-color:  rgb(255, 68, 68);
+    color:  white;
+}
+
 .comment-actions .modify {
 	padding: 2px;
     font-size: 12px;

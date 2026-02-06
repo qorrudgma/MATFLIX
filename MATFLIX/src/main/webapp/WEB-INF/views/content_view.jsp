@@ -679,7 +679,7 @@
 	            <input type="text" id="edit-input-` + comment_no + `" class="comment-edit-input" value="` + originText + `" style="width:80%; padding:5px;">
 	            <div class="comment-edit-actions" style="margin-top:5px;">
 	                <button class="btn-comment" onclick="submitCommentModify(` + comment_no + `)">확인</button>
-	                <button class="btn-comment" onclick="cancelCommentModify()">취소</button>
+	                <button class="btn-comment cancel" onclick="cancelCommentModify()">취소</button>
 	            </div>
 	        </div>
 	    `;

@@ -20,7 +20,7 @@
     <section class="recipe_hero">
         <img src="${pageContext.request.contextPath}${recipe.image_path}" alt="${recipe.title}">
         <div class="hero_overlay">
-            <span class="hero_category">${recipe.category}</span>
+            <span class="hero_category">${recipe.display_category}</span>
             <h1>${recipe.title}</h1>
             <p>${recipe.mf_nickname} · ${recipe.display_updated_at}</p>
             <p class="recommend">레시피 추천 · <span id="recommend_count">${recipe.recommend}</span></p>
@@ -1035,7 +1035,7 @@
 	        <div class="comment-edit-box">
 	            <input type="text" class="comment-edit-input" value="` + originText + `">
 	            <div class="comment-edit-actions">
-	                <button onclick="submitCommentModify(` + comment_no + `)">수정</button>
+	                <button class="comment_modify" onclick="submitCommentModify(` + comment_no + `)">수정</button>
 	                <button onclick="cancelCommentModify()">취소</button>
 	            </div>
 	        </div>

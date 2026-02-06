@@ -1,9 +1,11 @@
 package com.boot.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,11 +35,16 @@ public class NotificationController {
 //		return notification_list;
 //	}
 
-	@RequestMapping("/notification_list_n")
+	@PostMapping("/notification_list_n")
 	@ResponseBody
 	public List<NotificationDTO> notification_list_n(@RequestParam("receiver_id") int receiver_id) {
+		log.info("receiver_id => " + receiver_id);
 		List<NotificationDTO> notification_list_n = notificationService.notification_list_n(receiver_id);
 		log.info("notification_list_n => " + notification_list_n);
+		if (notification_list_n == null) {
+			log.info("없음");
+			return new ArrayList<>();
+		}
 		return notification_list_n;
 	}
 

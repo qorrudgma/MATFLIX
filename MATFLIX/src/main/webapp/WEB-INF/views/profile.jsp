@@ -110,7 +110,7 @@
 					<a class="recipe-card" href="recipe_content_view?recipe_id=${r.recipe_id}">
 						<div class="recipe-image">
 							<img src="${pageContext.request.contextPath}${r.image_path}" alt="${r.title}">
-							<div class="recipe-category">한식</div>
+							<div class="recipe-category">${r.display_category}</div>
 						</div>
 						<div class="recipe-info">
 							<h3>${r.title}<span class="review_count"> [${r.review_count}]</span></h3>
