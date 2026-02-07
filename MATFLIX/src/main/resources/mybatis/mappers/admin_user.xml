@@ -30,7 +30,7 @@
 			 , created_at
 			 , last_login_at
 		  FROM matflix
-<!--		 WHERE mf_role = 'USER'-->
+		 WHERE mf_role = 'USER'
 		 <include refid="user_search"></include>
 		 ORDER BY mf_no DESC
 		 LIMIT #{pageSize} OFFSET #{offset}

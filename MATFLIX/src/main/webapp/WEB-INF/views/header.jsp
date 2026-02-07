@@ -149,6 +149,24 @@
     // 전역 변수
     let eventSource;
     let notificationCount = 0;
+	
+	//(function () {
+		//function session_check() {
+			//alert("세션 체크");
+			//$.ajax({
+				//url: "${pageContext.request.contextPath}/session_check",
+				//type: "get",
+				//cache: false,
+				//success: function(res) {
+					//if (res && res.ok === false && res.reason === "DUP_LOGIN") {
+					//	alert("다른 곳에서 로그인하여 기존 로그인은 로그아웃되었습니다.");
+					//	location.href = "${pageContext.request.contextPath}/login";
+					//}
+				//}
+			//});
+		//}
+		//setInterval(session_check, 10000); // 10초마다
+	//})();
 
 	// SSE
 	function connectSSE() {

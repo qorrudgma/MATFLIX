@@ -42,5 +42,8 @@
 		
 		<!-- 관리자 -->
 		<mapper resource="mybatis/mappers/admin_user.xml"/>
+		
+		<!-- 신고 -->
+		<mapper resource="mybatis/mappers/report.xml"/>
 	</mappers>
 </configuration>

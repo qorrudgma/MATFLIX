@@ -780,7 +780,68 @@ ON DUPLICATE KEY UPDATE
     avg_recipe_star = new.avg_recipe_star,
     avg_board_recommend = new.avg_board_recommend,
     ranking_score = new.ranking_score;
--- ------------------------------------------------------------------------------------------------
+-- 신고 기능 ------------------------------------------------------------------------------------------------
+
+-- 신고 테이블
+CREATE TABLE report (
+    report_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    reporter_mf_no INT NOT NULL,                 		-- 신고자 mf_no
+    target_type VARCHAR(20) NOT NULL,            		-- "USER" / "BOARD" / "COMMENT" / "RECIPE"
+    target_id BIGINT NOT NULL,                   		-- 대상 PK
+    target_owner_mf_no INT DEFAULT NULL,         		-- 대상 작성자 mf_no (유저 신고면 신고당한 유저)
+    report_title VARCHAR(120) NOT NULL,         		-- 관리자 빠른 파악용 제목
+    report_reason VARCHAR(30) NOT NULL,          		-- "성적" / "욕설" / "비하" / "차별" / "스팸" ...
+    report_detail TEXT,                          		-- 상세 설명
+    status VARCHAR(20) NOT NULL DEFAULT "PENDING",		-- "PENDING"(미처리) / "DONE"(처리완료) / "REJECTED"(반려)  <- 원하는 만큼만 쓰면 됨
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX idx_report_target (target_type, target_id),
+    INDEX idx_report_status_created (status, created_at),
+    INDEX idx_report_reporter_created (reporter_mf_no, created_at)
+);
+select * from report;
+
+
+-- 신고 이미지 테이블
+CREATE TABLE report_image (
+    report_image_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    report_id BIGINT NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    original_name VARCHAR(255) DEFAULT NULL,
+    sort_no INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_report_image_report (report_id, sort_no),
+    CONSTRAINT fk_report_image_report
+        FOREIGN KEY (report_id) REFERENCES report(report_id) ON DELETE CASCADE
+);
+select * from report_image;
+
+
+-- 신고 관리자 테이블
+CREATE TABLE report_admin_action (
+    action_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    report_id BIGINT NOT NULL,
+    admin_mf_no INT NOT NULL,                    -- 관리자 mf_no
+    action_type VARCHAR(30) NOT NULL,            -- "REVIEW" 검토중 / "DONE" 저리 완료 / "REJECT" 반려
+    action_code VARCHAR(30) DEFAULT NULL,        -- "WARN" 경고 / "SUSPEND" 이용정지(일정기간) / "BAN" 영구정지 / "DELETE_CONTENT" 해당 콘텐츠 삭제 / "NO_ACTION" 초지 없음 등(선택)
+    action_detail TEXT,                          -- 관리자 메모/처리 사유/내부 기록
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_report_action_report (report_id, created_at),
+    INDEX idx_report_action_admin (admin_mf_no, created_at),
+    CONSTRAINT fk_report_action_report
+        FOREIGN KEY (report_id) REFERENCES report(report_id) ON DELETE CASCADE
+);
+select * from report_admin_action;
+
+
+
+
+
+
+
 -- ------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------------

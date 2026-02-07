@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -298,6 +299,16 @@ public class TeamController {
 				log.info("로그인 실패");
 				return "login"; // 로그인 실패 시 다시 로그인 페이지로
 			}
+
+			// 기존 세션 강제 만료
+			List<SessionInformation> active_sessions = sessionRegistry.getAllSessions(mf_id, false);
+			for (SessionInformation si : active_sessions) {
+				if (!si.isExpired()) {
+					si.expireNow();
+				}
+				sessionRegistry.removeSessionInformation(si.getSessionId());
+			}
+
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
 			log.info("user => " + user);
@@ -307,17 +318,11 @@ public class TeamController {
 					Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getMf_role())));
 			SecurityContextHolder.getContext().setAuthentication(auth);
 			sessionRegistry.registerNewSession(session.getId(), auth.getPrincipal());
-//			TeamDTO user = (TeamDTO) session.getAttribute("user");
 
 			int notification_count = notificationService.notification_count(user.getMf_no());
 			log.info("notification_count => " + notification_count);
 			session.setAttribute("notification_count", notification_count);
 
-//			List<Integer> user_follow_list = followService.user_follow_list(user.getMf_no());
-//			if (user_follow_list != null) {
-//				session.setAttribute("user_follow_list", user_follow_list);
-//				log.info("@# session user_follow_list => " + session.getAttribute("user_follow_list"));
-//			}
 			log.info("@# session => " + session.getAttribute("user"));
 
 			// 아이디 저장 쿠키 처리

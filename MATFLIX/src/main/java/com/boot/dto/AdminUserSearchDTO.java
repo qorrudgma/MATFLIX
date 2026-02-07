@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AdminUserSearchDTO {
-	private int pageSize = 2;
+	private int pageSize = 10;
 	private int page = 1;
 	private String type;
 	private String keyword;
