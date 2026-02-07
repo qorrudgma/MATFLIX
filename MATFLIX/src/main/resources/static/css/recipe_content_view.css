@@ -194,7 +194,7 @@
 
 /* Block */
 .recipe_block {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 	background-color: #ffffff;
 	border-radius: 16px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -265,7 +265,7 @@
 
 /* Tags */
 .recipe_tag_section {
-    margin: 40px 0;
+    margin: 40px 0 0 0;
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
@@ -283,26 +283,70 @@
     white-space: nowrap;
 }
 
-/* 삭제 버튼 영역을 오른쪽 끝으로 밀기 */
-.delete_recipe_form {
+/* =========================
+   레시피 액션 버튼 가로 정렬
+========================= */
+.recipe_action_row {
+    display: flex;
+    justify-content: flex-end;   /* 전체를 오른쪽으로 */
+    align-items: center;
+    gap: 12px;
+}
+
+.recipe_action_row > :last-child {
     margin-left: auto;
 }
 
-/* 삭제 버튼 스타일 */
+/* 수정 - 가장 연함 */
+.recipe_edit_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    background: #f1f3f5;
+    border: 1px solid #e9ecef;
+    color: #495057;
+
+    transition: all 0.2s ease;
+}
+
+.recipe_edit_btn:hover {
+    background: #e9ecef;
+    color: #343a40;
+}
+
+/* 삭제 - 연한 레드 */
 .delete_recipe {
-    background: #e50914;
-    color: #fff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+
+    background: #ffe3e3;
+    border: 1px solid #ffc9c9;
+    color: #c92a2a;
+
     cursor: pointer;
-	gap: 6px;
+    transition: all 0.2s ease;
 }
 
 .delete_recipe:hover {
-    background: #b20710;
+    background: #ffcccc;
+}
+
+/* form 때문에 줄 깨지는 거 방지 */
+.delete_recipe_form {
+    margin: 0;
 }
 
 /* 사진 리뷰 섹션 */
@@ -315,7 +359,7 @@
 }
 
 .photo_review_section {
-    margin: 50px 0;
+    margin: 30px 0;
 	background-color: #ffffff;
 	border-radius: 16px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -336,17 +380,6 @@
 
 #detail_text{
 	font-size: 20px;
-}
-
-.photo_review_like_btn {
-	margin-left: auto;
-    background: #e50914;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
 }
 
 /* 가로 스크롤 영역 */
@@ -550,7 +583,7 @@
    사진 리뷰 섹션
 ========================= */
 .photo_review_section {
-    margin: 50px 0;
+    margin: 30px 0;
     padding: 30px;
     background: #ffffff;
     border-radius: 16px;
@@ -1059,4 +1092,279 @@
     padding: 8px 14px;
     border-radius: 8px;
     font-size: 13px;
+}
+
+/* =========================
+   레시피 추천/수정/삭제 버튼 가로 정렬 (오른쪽)
+========================= */
+.delete_recipe_form {
+    margin: 0;
+}
+
+/* 수정 - 가장 연함 */
+.recipe_edit_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    background: #f1f3f5;
+    border: 1px solid #e9ecef;
+    color: #495057;
+
+    transition: all 0.2s ease;
+}
+
+.recipe_edit_btn:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+    color: #343a40;
+}
+
+/* 삭제 - 연한 레드 */
+.delete_recipe {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+
+    background: #ffe3e3;
+    border: 1px solid #ffc9c9;
+    color: #c92a2a;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete_recipe:hover {
+    background: #ffcccc;
+    border-color: #ffb3b3;
+}
+
+/* 추천 - 기존 강한 빨강 유지 */
+.photo_review_like_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+
+    background: #e50914;
+    border: 1px solid #e50914;
+    color: #fff;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.photo_review_like_btn:hover {
+    background: #f6121d;
+    border-color: #f6121d;
+}
+
+/* 추천 취소(active) - 살짝 연하게(구분감) */
+.photo_review_like_btn.active {
+    background: #fff5f5;
+    border: 1px solid #ffc9c9;
+    color: #c92a2a;
+}
+/* 신고 폼 */
+.report_recipe_form {
+    display: inline-block;
+}
+
+/* 신고 버튼 */
+.report_recipe {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #e53935; /* 경고 레드 */
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* hover */
+.report_recipe:hover {
+    background-color: #c62828;
+}
+
+/* 클릭 시 */
+.report_recipe:active {
+    transform: scale(0.97);
+}
+
+/* 아이콘 */
+.report_recipe i {
+    font-size: 13px;
+}
+
+/*신고창*/
+.report_modal_overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.2s ease;
+    z-index: 999;
+}
+
+.report_modal_overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.report_modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.98);
+    width: min(520px, calc(100% - 24px));
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.2s ease;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.report_modal.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.report_modal_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.report_modal_title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.report_modal_close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+}
+
+.report_modal_form {
+    padding: 16px;
+}
+
+.report_field {
+    margin-bottom: 14px;
+}
+
+.report_label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.report_reason_group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.report_radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #333;
+}
+
+.report_input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+}
+
+.report_input:focus {
+    border-color: #e53935;
+}
+
+.report_textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    resize: vertical;
+}
+
+.report_textarea:focus {
+    border-color: #e53935;
+}
+
+.report_file {
+    width: 100%;
+    padding: 1px;
+}
+
+.report_hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #777;
+}
+
+.report_modal_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.report_cancel_btn {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+}
+
+.report_submit_btn {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    background: #e53935;
+    color: #fff;
+    cursor: pointer;
+}
+
+.report_submit_btn:hover {
+    background: #c62828;
 }

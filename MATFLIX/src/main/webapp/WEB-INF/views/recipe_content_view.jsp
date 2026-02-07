@@ -58,10 +58,6 @@
 			</c:choose>
 			${recipe.intro}
 		</p>
-		
-		<c:if test="${not empty user and recipe.mf_no == user.mf_no}">
-			<a href="/recipe_modify_page?recipe_id=${recipe.recipe_id}" class="edit-btn">수정</a>
-		</c:if>
     </section>
 
     <!-- 재료 -->
@@ -98,33 +94,119 @@
                 </div>
             </div>
         </c:forEach>
+
+	    <!-- 태그 -->
+	    <section class="recipe_tag_section">
+	        <c:forEach var="t" items="${tag_list}">
+	            <span class="recipe_tag">#${t.tag}</span>
+	        </c:forEach>
+	    </section>
     </section>
 
-    <!-- 태그 -->
-    <section class="recipe_tag_section">
-        <c:forEach var="t" items="${tag_list}">
-            <span class="recipe_tag">#${t.tag}</span>
-        </c:forEach>
-		<c:if test="${recipe.mf_no == user.mf_no}">
-			<form action="/delete_recipe" method="post" class="delete_recipe_form" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-		        <input type="hidden" name="recipe_id" value="${recipe.recipe_id}">
-		        <button type="submit" class="delete_recipe"><i class="fa-solid fa-trash"></i> 레시피 삭제하기</button>
-		    </form>
-		</c:if>
+<!--	수정, 삭제, 신고, 추천-->
+	<div class="recipe_action_row">
 		<c:choose>
-			<c:when test="${recommended != 1}">
-		        <button class="photo_review_like_btn">
-		            <i class="fas fa-thumbs-up"></i> 레시피 추천
-		        </button>
+			<c:when test="${not empty user and recipe.mf_no == user.mf_no}">
+		        <a href="/recipe_modify_page?recipe_id=${recipe.recipe_id}" class="recipe_edit_btn">
+		            <i class="fa-solid fa-pen"></i> 수정
+		        </a>
+		        <form action="/delete_recipe" method="post" class="delete_recipe_form"
+		              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+		            <input type="hidden" name="recipe_id" value="${recipe.recipe_id}">
+		            <button type="submit" class="delete_recipe">
+		                <i class="fa-solid fa-trash"></i> 삭제
+		            </button>
+		        </form>
 			</c:when>
 			<c:otherwise>
-				<button class="photo_review_like_btn active">
-				    <i class="fas fa-thumbs-up"></i> 레시피 추천 취소
-				</button>
+<!--				<form action="/insert_recipe" method="post" class="report_recipe_form">-->
+<!--				      onsubmit="return confirm('정말 신고하시겠습니까?');">-->
+<!--				    <input type="hidden" name="recipe_id" value="${recipe.recipe_id}">-->
+				    <button type="button" class="report_recipe" id="open_report_modal">
+				        <i class="fa-solid fa-triangle-exclamation"></i> 신고
+				    </button>
+<!--				</form>-->
+				<div class="report_modal_overlay" id="report_modal_overlay"></div>
+				<div class="report_modal" id="report_modal">
+				    <div class="report_modal_header">
+				        <div class="report_modal_title">레시피 신고</div>
+				        <button type="button" class="report_modal_close" id="close_report_modal">
+				            <i class="fa-solid fa-xmark"></i>
+				        </button>
+				    </div>
+				    <form action="/report_recipe" method="post" enctype="multipart/form-data" class="report_modal_form"
+				          onsubmit="return confirm('이 내용으로 신고를 제출하시겠습니까?');">
+				        <input type="hidden" name="target_type" value="RECIPE">
+				        <input type="hidden" name="target_id" value="${recipe.recipe_id}">
+				        <div class="report_field">
+				            <div class="report_label">신고 사유</div>
+				            <div class="report_reason_group">
+				                <label class="report_radio">
+				                    <input type="radio" name="report_reason" value="욕설" required>
+				                    <span>욕설</span>
+				                </label>
+				                <label class="report_radio">
+				                    <input type="radio" name="report_reason" value="성적" required>
+				                    <span>성적</span>
+				                </label>
+				                <label class="report_radio">
+				                    <input type="radio" name="report_reason" value="비하" required>
+				                    <span>비하</span>
+				                </label>
+				                <label class="report_radio">
+				                    <input type="radio" name="report_reason" value="차별" required>
+				                    <span>차별</span>
+				                </label>
+				                <label class="report_radio">
+				                    <input type="radio" name="report_reason" value="스팸" required>
+				                    <span>스팸/광고</span>
+				                </label>
+				                <label class="report_radio">
+				                    <input type="radio" name="report_reason" value="기타" required>
+				                    <span>기타</span>
+				                </label>
+				            </div>
+				        </div>
+				        <div class="report_field">
+				            <label class="report_label" for="report_title">제목</label>
+				            <input type="text" id="report_title" name="report_title" class="report_input"
+				                   maxlength="120" placeholder="관리자가 빠르게 이해할 수 있게 간단히 적어주세요" required>
+				        </div>
+				        <div class="report_field">
+				            <label class="report_label" for="report_detail">상세 설명</label>
+				            <textarea id="report_detail" name="report_detail" class="report_textarea"
+				                      rows="5" placeholder="상황을 구체적으로 적어주세요 (선택)"></textarea>
+				        </div>
+				        <div class="report_field">
+				            <label class="report_label" for="report_images">증거 이미지(선택, 여러 장 가능)</label>
+				            <input type="file" id="report_images" name="report_images" class="report_file"
+				                   accept="image/*" multiple>
+				            <div class="report_hint">이미지는 최대 용량 제한을 두는 걸 추천해 (예: 5MB, 5장)</div>
+				        </div>
+				        <div class="report_modal_actions">
+				            <button type="button" class="report_cancel_btn" id="cancel_report_modal">취소</button>
+				            <button type="submit" class="report_submit_btn">
+				                <i class="fa-solid fa-paper-plane"></i> 제출
+				            </button>
+				        </div>
+				    </form>
+				</div>
 			</c:otherwise>
 		</c:choose>
-    </section>
-	
+	    <c:choose>
+	        <c:when test="${recommended != 1}">
+	            <button class="photo_review_like_btn">
+	                <i class="fas fa-thumbs-up"></i> 레시피 추천
+	            </button>
+	        </c:when>
+	        <c:otherwise>
+	            <button class="photo_review_like_btn active">
+	                <i class="fas fa-thumbs-up"></i> 추천 취소
+	            </button>
+	        </c:otherwise>
+	    </c:choose>
+	</div>
+
 	<!-- 사진 리뷰 -->
 	<section class="photo_review_section" id="photo_review_section">
 	    <div class="photo_review_header">
@@ -1110,4 +1192,21 @@
 			}
 		});
 	}
+	
+	// 신고 창
+	$(document).on("click", "#open_report_modal", function () {
+	    if (sessionUserNo == '') {
+	        alert("로그인 후 이용 가능합니다.");
+	        return;
+	    }
+
+	    $("#report_modal_overlay").addClass("show");
+	    $("#report_modal").addClass("show");
+	});
+
+	$(document).on("click", "#close_report_modal, #cancel_report_modal, #report_modal_overlay", function () {
+	    $("#report_modal_overlay").removeClass("show");
+	    $("#report_modal").removeClass("show");
+	});
+
 </script>
