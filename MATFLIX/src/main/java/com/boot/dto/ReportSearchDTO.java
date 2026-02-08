@@ -2,8 +2,6 @@ package com.boot.dto;
 
 import java.time.LocalDateTime;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReportDTO {
+public class ReportSearchDTO {
 	private int report_id; // 신고 PK
 	private int reporter_mf_no; // 신고자 mf_no
 	private String target_type; // USER / BOARD / COMMENT / RECIPE
@@ -24,5 +22,13 @@ public class ReportDTO {
 	private LocalDateTime created_at;
 	private LocalDateTime updated_at;
 
-	private MultipartFile[] report_image_file;
+	private int pageSize = 10;
+	private int page = 1;
+	private String type;
+	private String keyword;
+
+	public int getOffset() {
+		return (page - 1) * pageSize;
+	}
+
 }

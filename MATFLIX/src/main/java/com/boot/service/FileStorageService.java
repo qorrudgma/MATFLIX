@@ -6,6 +6,7 @@ import com.boot.dto.ProfileImageDTO;
 import com.boot.dto.RecipeImageDTO;
 import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
+import com.boot.dto.ReportDTO;
 import com.boot.dto.ReviewImageDTO;
 
 public interface FileStorageService {
@@ -22,4 +23,6 @@ public interface FileStorageService {
 	public void modify_revoiw_image(RecipeReviewWriteDTO dto);
 
 	public void modify_profile_image(ProfileImageDTO dto);
+
+	public String save_report(ReportDTO reportDTO);
 }

@@ -11,11 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.dao.RecipeDAO;
 import com.boot.dao.RecipeReviewDAO;
+import com.boot.dao.ReportDAO;
 import com.boot.dao.TeamDAO;
 import com.boot.dto.ProfileImageDTO;
 import com.boot.dto.RecipeImageDTO;
 import com.boot.dto.RecipeReviewWriteDTO;
 import com.boot.dto.RecipeWriteDTO;
+import com.boot.dto.ReportDTO;
+import com.boot.dto.ReportImageDTO;
 import com.boot.dto.ReviewImageDTO;
 
 import lombok.extern.log4j.Log4j2;
@@ -363,5 +366,55 @@ public class FileStorageServiceImpl implements FileStorageService {
 				throw new RuntimeException("프로필 이미지 수정 중 오류 발생");
 			}
 		}
+	}
+
+	@Override
+	public String save_report(ReportDTO reportDTO) {
+		ReportDAO dao = sqlSession.getMapper(ReportDAO.class);
+		String baseDir = "C:/matflix_upload/report";
+		MultipartFile[] files = reportDTO.getReport_image_file();
+		if (files == null || files.length == 0) {
+			return "fail";
+		}
+
+		File dir = new File(baseDir);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		for (int i = 0; i < files.length; i++) {
+			log.info("files " + i + " => " + files[i]);
+		}
+
+		for (int i = 0; i < files.length; i++) {
+			MultipartFile file = files[i];
+			if (file == null || file.isEmpty()) {
+				continue;
+			}
+
+			String original_name = file.getOriginalFilename();
+
+			String ext = "";
+			if (original_name != null && original_name.lastIndexOf(".") != -1) {
+				ext = original_name.substring(original_name.lastIndexOf("."));
+			}
+
+			String save_name = UUID.randomUUID().toString() + ext;
+			File save_file = new File(dir, save_name);
+
+			try {
+				file.transferTo(save_file);
+
+				ReportImageDTO imgDTO = new ReportImageDTO();
+				imgDTO.setReport_id(reportDTO.getReport_id());
+				imgDTO.setImage_path("/report/" + save_name);
+				imgDTO.setOriginal_name(original_name);
+				imgDTO.setSort_no(i);
+				log.info("imgDTO => " + imgDTO);
+				dao.save_report_image(imgDTO);
+			} catch (Exception e) {
+				throw new RuntimeException("신고 이미지 저장 실패", e);
+			}
+		}
+		return "success";
 	}
 }

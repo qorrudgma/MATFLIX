@@ -1,24 +1,17 @@
 package com.boot.dao;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
-import com.boot.dto.AdminUserDTO;
-import com.boot.dto.AdminUserSearchDTO;
+import com.boot.dto.ReportDTO;
+import com.boot.dto.ReportImageDTO;
 
 @Mapper
 public interface ReportDAO {
-	public List<AdminUserDTO> user_list(AdminUserSearchDTO adminUserSearchDTO);
+	public void insert_report(ReportDTO reportDTO);
 
-	public int user_total_count(AdminUserSearchDTO adminUserSearchDTO);
+	public void save_report_image(ReportImageDTO reportImageDTO);
 
-	public void user_status_active(int mf_no);
+	public void report_list(int mf_no);
 
-	public void user_status_banned(int mf_no);
-
-	public void user_status_suspended(int mf_no);
-
-	public void user_status_update(@Param("mf_no") int mf_no, @Param("status") String status);
+	public int report_exists(ReportDTO reportDTO);
 }

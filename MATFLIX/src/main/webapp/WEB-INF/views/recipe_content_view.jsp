@@ -134,10 +134,11 @@
 				            <i class="fa-solid fa-xmark"></i>
 				        </button>
 				    </div>
-				    <form action="/report_recipe" method="post" enctype="multipart/form-data" class="report_modal_form"
+				    <form action="/insert_report" method="post" enctype="multipart/form-data" class="report_modal_form"
 				          onsubmit="return confirm('이 내용으로 신고를 제출하시겠습니까?');">
 				        <input type="hidden" name="target_type" value="RECIPE">
 				        <input type="hidden" name="target_id" value="${recipe.recipe_id}">
+				        <input type="hidden" name="target_owner_mf_no" value="${recipe.mf_no}">
 				        <div class="report_field">
 				            <div class="report_label">신고 사유</div>
 				            <div class="report_reason_group">
@@ -179,9 +180,11 @@
 				        </div>
 				        <div class="report_field">
 				            <label class="report_label" for="report_images">증거 이미지(선택, 여러 장 가능)</label>
-				            <input type="file" id="report_images" name="report_images" class="report_file"
+				            <input type="file" id="report_images" name="report_image_file" class="report_file"
 				                   accept="image/*" multiple>
-				            <div class="report_hint">이미지는 최대 용량 제한을 두는 걸 추천해 (예: 5MB, 5장)</div>
+
+						    <div class="report_image_preview" id="report_image_preview" style="display:none;"></div>
+						    <div class="report_hint">이미지는 최대 5개까지 업로드 가능합니다. (예: 5MB, 5장)</div>
 				        </div>
 				        <div class="report_modal_actions">
 				            <button type="button" class="report_cancel_btn" id="cancel_report_modal">취소</button>
@@ -191,6 +194,11 @@
 				        </div>
 				    </form>
 				</div>
+				<c:if test="${not empty report_exists}">
+				    <script>
+				        alert("${report_exists}");
+				    </script>
+				</c:if>
 			</c:otherwise>
 		</c:choose>
 	    <c:choose>
@@ -1092,7 +1100,7 @@
         $.ajax({
             type: "post",
             url: "/recipe/comment/delete",
-            data: { comment_no: comment_no },
+            data: { target_id: re },
             success: function() {
                 console.log("댓글 삭제 성공"); 
                 loadComments();
@@ -1194,19 +1202,153 @@
 	}
 	
 	// 신고 창
-	$(document).on("click", "#open_report_modal", function () {
-	    if (sessionUserNo == '') {
-	        alert("로그인 후 이용 가능합니다.");
-	        return;
-	    }
+	$(document).on("click", "#open_report_modal", function (e) {
+		e.preventDefault();
 
-	    $("#report_modal_overlay").addClass("show");
-	    $("#report_modal").addClass("show");
+		$.ajax({
+			type: "get",
+			url: "/report_exists",
+			data: { target_id: recipe_id },
+			success: function (result) {
+				// 로그인 안됨
+				if (!result.ok && result.code === "NOT_LOGIN") {
+					alert(result.message);
+					location.href = "/login";
+					return;
+				}
+
+				// 이미 신고함
+				if (!result.ok && result.code === "ALREADY_REPORTED") {
+					alert(result.message);
+					return;
+				}
+
+				// 신고 가능
+				$("#report_modal_overlay").addClass("show");
+				$("#report_modal").addClass("show");
+			},
+			error: function (xhr) {
+				console.log("실패", xhr);
+				alert("신고 확인 중 오류가 발생했습니다.");
+			}
+		});
 	});
 
 	$(document).on("click", "#close_report_modal, #cancel_report_modal, #report_modal_overlay", function () {
 	    $("#report_modal_overlay").removeClass("show");
 	    $("#report_modal").removeClass("show");
 	});
+	
+	// 신고 이미지 최대 5개 제한
+	$(document).on("change", "#report_images", function () {
+	    const max_count = 5;
+	    const files = this.files;
+
+	    if (!files) return;
+
+	    if (files.length > max_count) {
+	        alert("이미지는 최대 " + max_count + "개까지 업로드 가능합니다.");
+	        $(this).val("");
+	        return;
+	    }
+
+	    // 이미지 파일만 허용(추가 안전장치)
+	    for (let i = 0; i < files.length; i++) {
+	        if (!files[i].type || !files[i].type.startsWith("image/")) {
+	            alert("이미지 파일만 업로드 가능합니다.");
+	            $(this).val("");
+	            return;
+	        }
+	    }
+	});
+	
+	// 신고 이미지: 최대 5개 + 미리보기 + 개별 삭제
+	const report_max_count = 5;
+	let report_selected_files = [];
+
+	// FileList는 직접 수정이 안 되니까 DataTransfer로 다시 세팅
+	function set_report_input_files() {
+	    const dt = new DataTransfer();
+	    report_selected_files.forEach(f => dt.items.add(f));
+	    document.getElementById("report_images").files = dt.files;
+	}
+
+	function render_report_preview() {
+	    const $preview = $("#report_image_preview");
+	    $preview.empty();
+
+	    if (report_selected_files.length === 0) {
+	        $preview.hide();
+	        return;
+	    }
+
+	    report_selected_files.forEach((file, idx) => {
+	        const reader = new FileReader();
+	        reader.onload = function (e) {
+	            const item = `
+	                <div class="report_preview_item" data-index="` + idx + `">
+	                    <img src="` + e.target.result + `" alt="신고 이미지 미리보기">
+	                    <button type="button" class="report_preview_remove_btn" title="삭제">×</button>
+	                </div>
+	            `;
+	            $preview.append(item);
+	            $preview.show();
+	        };
+	        reader.readAsDataURL(file);
+	    });
+	}
+
+	// 파일 선택 시
+	$(document).on("change", "#report_images", function () {
+	    const files = Array.from(this.files || []);
+
+	    if (files.length === 0) return;
+
+	    // 이미지 타입 체크 + 기존 선택 파일에 추가
+	    for (let i = 0; i < files.length; i++) {
+	        const f = files[i];
+
+	        if (!f.type || !f.type.startsWith("image/")) {
+	            alert("이미지 파일만 업로드 가능합니다.");
+	            $("#report_images").val("");
+	            return;
+	        }
+
+	        report_selected_files.push(f);
+	    }
+
+	    // 최대 5개 제한
+	    if (report_selected_files.length > report_max_count) {
+	        alert("이미지는 최대 " + report_max_count + "개까지 업로드 가능합니다.");
+	        report_selected_files = report_selected_files.slice(0, report_max_count);
+	    }
+
+	    set_report_input_files();
+	    render_report_preview();
+	});
+
+	// 미리보기에서 개별 삭제
+	$(document).on("click", ".report_preview_remove_btn", function () {
+	    const idx = Number($(this).closest(".report_preview_item").attr("data-index"));
+
+	    if (Number.isNaN(idx)) return;
+
+	    report_selected_files.splice(idx, 1);
+
+	    set_report_input_files();
+	    render_report_preview();
+	});
+
+	// 모달 닫을 때 초기화
+	function reset_report_modal_files() {
+	    report_selected_files = [];
+	    $("#report_images").val("");
+	    $("#report_image_preview").empty().hide();
+	}
+
+	$(document).on("click", "#close_report_modal, #cancel_report_modal, #report_modal_overlay", function () {
+	    reset_report_modal_files();
+	});
+
 
 </script>

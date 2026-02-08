@@ -784,10 +784,10 @@ ON DUPLICATE KEY UPDATE
 
 -- 신고 테이블
 CREATE TABLE report (
-    report_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
     reporter_mf_no INT NOT NULL,                 		-- 신고자 mf_no
     target_type VARCHAR(20) NOT NULL,            		-- "USER" / "BOARD" / "COMMENT" / "RECIPE"
-    target_id BIGINT NOT NULL,                   		-- 대상 PK
+    target_id INT NOT NULL,                   		-- 대상 PK
     target_owner_mf_no INT DEFAULT NULL,         		-- 대상 작성자 mf_no (유저 신고면 신고당한 유저)
     report_title VARCHAR(120) NOT NULL,         		-- 관리자 빠른 파악용 제목
     report_reason VARCHAR(30) NOT NULL,          		-- "성적" / "욕설" / "비하" / "차별" / "스팸" ...
@@ -805,8 +805,8 @@ select * from report;
 
 -- 신고 이미지 테이블
 CREATE TABLE report_image (
-    report_image_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    report_id BIGINT NOT NULL,
+    report_image_id INT AUTO_INCREMENT PRIMARY KEY,
+    report_id INT NOT NULL,
     file_path VARCHAR(500) NOT NULL,
     original_name VARCHAR(255) DEFAULT NULL,
     sort_no INT NOT NULL DEFAULT 0,
@@ -821,8 +821,8 @@ select * from report_image;
 
 -- 신고 관리자 테이블
 CREATE TABLE report_admin_action (
-    action_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    report_id BIGINT NOT NULL,
+    action_id INT AUTO_INCREMENT PRIMARY KEY,
+    report_id INT NOT NULL,
     admin_mf_no INT NOT NULL,                    -- 관리자 mf_no
     action_type VARCHAR(30) NOT NULL,            -- "REVIEW" 검토중 / "DONE" 저리 완료 / "REJECT" 반려
     action_code VARCHAR(30) DEFAULT NULL,        -- "WARN" 경고 / "SUSPEND" 이용정지(일정기간) / "BAN" 영구정지 / "DELETE_CONTENT" 해당 콘텐츠 삭제 / "NO_ACTION" 초지 없음 등(선택)
