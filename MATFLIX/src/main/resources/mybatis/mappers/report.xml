@@ -85,7 +85,7 @@
     </insert>
 	
     <!-- 신고 내역 -->
-    <select id="report_list" resultType="com.boot.dto.ReportDisplayDTO">
+    <select id="recipe_report_list" parameterType="com.boot.dto.SearchDTO" resultType="com.boot.dto.RecipeReportDTO">
 		SELECT r.report_id
 		     , r.report_title
 		     , r.report_reason
@@ -96,11 +96,12 @@
 		     , m.mf_no AS reporter_mf_no
 		     , m.mf_id AS reporter_mf_id
 		     , m.mf_nickname AS reporter_mf_nickname
-		FROM report r
-		JOIN matflix m
-		  ON r.reporter_mf_no = m.mf_no
-		ORDER BY r.report_id DESC
-		LIMIT #{pageSize} OFFSET #{offset}
+		  FROM report r
+		  JOIN matflix m
+		    ON r.reporter_mf_no = m.mf_no
+	     WHERE target_type = "RECIPE"
+		 ORDER BY r.report_id DESC
+		 LIMIT #{pageSize} OFFSET #{offset}
     </select>
     
 <!--    신고 확인-->

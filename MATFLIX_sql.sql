@@ -801,13 +801,30 @@ CREATE TABLE report (
     INDEX idx_report_reporter_created (reporter_mf_no, created_at)
 );
 select * from report;
+delete from report where report_id = 4;
+SELECT r.report_id
+	 , r.report_title
+	 , r.report_reason
+	 , r.status
+	 , r.target_type
+	 , r.target_id
+	 , r.created_at
+	 , m.mf_no AS reporter_mf_no
+	 , m.mf_id AS reporter_mf_id
+	 , m.mf_nickname AS reporter_mf_nickname
+  FROM report r
+  JOIN matflix m
+	ON r.reporter_mf_no = m.mf_no
+ WHERE target_type = "RECIPE"
+ ORDER BY r.report_id DESC
+ LIMIT 10 OFFSET 0;
 
 
 -- 신고 이미지 테이블
 CREATE TABLE report_image (
     report_image_id INT AUTO_INCREMENT PRIMARY KEY,
     report_id INT NOT NULL,
-    file_path VARCHAR(500) NOT NULL,
+    image_path VARCHAR(500) NOT NULL,
     original_name VARCHAR(255) DEFAULT NULL,
     sort_no INT NOT NULL DEFAULT 0,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

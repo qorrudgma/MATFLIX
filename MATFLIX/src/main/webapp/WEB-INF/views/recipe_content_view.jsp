@@ -147,20 +147,20 @@
 				                    <span>욕설</span>
 				                </label>
 				                <label class="report_radio">
-				                    <input type="radio" name="report_reason" value="성적" required>
-				                    <span>성적</span>
+				                    <input type="radio" name="report_reason" value="선정적" required>
+				                    <span>선정적</span>
 				                </label>
 				                <label class="report_radio">
-				                    <input type="radio" name="report_reason" value="비하" required>
-				                    <span>비하</span>
+				                    <input type="radio" name="report_reason" value="잘못된 조리법" required>
+				                    <span>잘못된 조리법</span>
 				                </label>
 				                <label class="report_radio">
-				                    <input type="radio" name="report_reason" value="차별" required>
-				                    <span>차별</span>
+				                    <input type="radio" name="report_reason" value="위험한 조리법" required>
+				                    <span>위험한 조리법</span>
 				                </label>
 				                <label class="report_radio">
-				                    <input type="radio" name="report_reason" value="스팸" required>
-				                    <span>스팸/광고</span>
+				                    <input type="radio" name="report_reason" value="표절/이미지 도용" required>
+				                    <span>표절/이미지 도용</span>
 				                </label>
 				                <label class="report_radio">
 				                    <input type="radio" name="report_reason" value="기타" required>
@@ -1307,13 +1307,11 @@
 	    // 이미지 타입 체크 + 기존 선택 파일에 추가
 	    for (let i = 0; i < files.length; i++) {
 	        const f = files[i];
-
 	        if (!f.type || !f.type.startsWith("image/")) {
 	            alert("이미지 파일만 업로드 가능합니다.");
 	            $("#report_images").val("");
 	            return;
 	        }
-
 	        report_selected_files.push(f);
 	    }
 
@@ -1322,7 +1320,6 @@
 	        alert("이미지는 최대 " + report_max_count + "개까지 업로드 가능합니다.");
 	        report_selected_files = report_selected_files.slice(0, report_max_count);
 	    }
-
 	    set_report_input_files();
 	    render_report_preview();
 	});
@@ -1334,7 +1331,6 @@
 	    if (Number.isNaN(idx)) return;
 
 	    report_selected_files.splice(idx, 1);
-
 	    set_report_input_files();
 	    render_report_preview();
 	});

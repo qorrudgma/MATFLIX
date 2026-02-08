@@ -1,12 +1,16 @@
 package com.boot.service;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boot.dao.ReportDAO;
+import com.boot.dto.RecipeReportDTO;
 import com.boot.dto.ReportDTO;
 import com.boot.dto.ReportImageDTO;
+import com.boot.dto.SearchDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,9 +48,10 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public void report_list(int mf_no) {
+	public List<RecipeReportDTO> recipe_report_list(SearchDTO searchDTO) {
 		ReportDAO dao = sqlSession.getMapper(ReportDAO.class);
-		dao.report_list(mf_no);
+		List<RecipeReportDTO> recipe_report_list = dao.recipe_report_list(searchDTO);
+		return recipe_report_list;
 	}
 
 	@Override

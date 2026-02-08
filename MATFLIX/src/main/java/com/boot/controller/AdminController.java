@@ -1,5 +1,6 @@
 package com.boot.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -13,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.AdminUserSearchDTO;
+import com.boot.dto.RecipeReportDTO;
+import com.boot.dto.SearchDTO;
 import com.boot.dto.TeamDTO;
 import com.boot.service.AdminUserService;
+import com.boot.service.ReportService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +28,9 @@ public class AdminController {
 
 	@Autowired
 	private AdminUserService adminUserService;
+
+	@Autowired
+	private ReportService reportService;
 
 	@GetMapping("/admin/dashboard")
 	public String admin_dashboard(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -62,5 +69,21 @@ public class AdminController {
 		} catch (Exception e) {
 			return "fail";
 		}
+	}
+
+	@GetMapping("/admin/report/recipe")
+	public String admin_report_recipe(
+			@RequestParam(name = "status", required = false, defaultValue = "PENDING") String status, Model model) {
+		SearchDTO search = new SearchDTO();
+//		search.setType(status);
+//		search.setKeyword(status);
+
+		List<RecipeReportDTO> report_list = reportService.recipe_report_list(search);
+
+		model.addAttribute("tab", "report_recipe");
+		model.addAttribute("status", status);
+		model.addAttribute("report_list", report_list);
+
+		return "dashboard";
 	}
 }

@@ -25,8 +25,8 @@
         <!-- 좌측 메뉴 -->
         <div class="sidebar">
             <button class="menu_btn active" data-target="user_list">로그인한 유저</button>
-            <button class="menu_btn" data-target="recipe_list">레시피</button>
-            <button class="menu_btn" data-target="board_list">게시글</button>
+            <button class="menu_btn" data-target="recipe_report">레시피 신고 내역</button>
+            <button class="menu_btn" data-target="board_list">게시글 신고 내역</button>
             <button class="menu_btn" data-target="statistics">통계</button>
         </div>
 
@@ -120,8 +120,70 @@
 		</section>
 		
 		<section class="content_section" id="recipe_area" style="display:none;">
-	        <h3>최근 등록된 레시피</h3>
-	        <ul id="recipe_list_data"></ul>
+	        <h3>레시피 신고 내역</h3>
+			<div class="search-container">
+	            <form action="${pageContext.request.contextPath}/admin/report/recipe" method="get">
+	                <select name="status">
+	                    <option value="PENDING" ${status == 'PENDING' ? 'selected' : ''}>PENDING</option>
+	                    <option value="DONE" ${status == 'DONE' ? 'selected' : ''}>DONE</option>
+	                    <option value="REJECTED" ${status == 'REJECTED' ? 'selected' : ''}>REJECTED</option>
+	                </select>
+	                <button type="submit" class="btn-search">조회</button>
+	            </form>
+	        </div>
+	
+	        <table class="admin_table">
+	            <thead>
+	                <tr>
+	                    <th>신고번호</th>
+	                    <th>신고자</th>
+	                    <th>대상 레시피</th>
+	                    <th>사유</th>
+	                    <th>상태</th>
+	                    <th>신고일</th>
+	                    <th>관리</th>
+	                </tr>
+	            </thead>
+	
+	            <tbody>
+	                <c:choose>
+	                    <c:when test="${not empty report_list}">
+	                        <c:forEach var="r" items="${report_list}">
+	                            <tr id="report_row_${r.report_id}">
+	                                <td>${r.report_id}</td>
+	                                <td>${r.reporter_nickname}</td>
+	                                <td>
+	                                    <a href="${pageContext.request.contextPath}/recipe_content_view?recipe_id=${r.target_id}"
+	                                       target="_blank">
+	                                        레시피 #${r.target_id}
+	                                    </a>
+	                                </td>
+	                                <td>${r.report_reason}</td>
+	                                <td class="report_status_cell">
+	                                    <span class="status_${r.status}">${r.status}</span>
+	                                </td>
+	                                <td>${r.created_at}</td>
+	                                <td>
+	                                    <button type="button" onclick="update_report_status(${r.report_id}, 'DONE')">
+	                                        처리
+	                                    </button>
+	                                    <button type="button" onclick="update_report_status(${r.report_id}, 'REJECTED')">
+	                                        반려
+	                                    </button>
+	                                </td>
+	                            </tr>
+	                        </c:forEach>
+	                    </c:when>
+	
+	                    <c:otherwise>
+	                        <tr>
+	                            <td colspan="7">신고 내역이 없습니다.</td>
+	                        </tr>
+	                    </c:otherwise>
+	                </c:choose>
+	            </tbody>
+	        </table>
+	    </section>
 	    </section>
 
 	    <section class="content_section" id="board_area" style="display:none;">
@@ -144,7 +206,7 @@
                     case "user_list":
 						$("#user_area").show();
                         break;
-                    case "recipe_list":
+                    case "recipe_report":
 						$("#recipe_list_data").html("<li>김치찌개</li><li>된장찌개</li>");
 		                $("#recipe_area").show();
                         break;
