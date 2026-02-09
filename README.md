@@ -224,24 +224,24 @@
 <details>
   <summary>User ERD</summary>
   <br>
-  <img src="USER.png" alt="MATFLIX 로고" width="700"/>
+  <img src="ERD/USER.png" alt="MATFLIX 로고" width="700"/>
 </details>
 
 <details>
   <summary>Recipe ERD</summary>
   <br>
-  <img src="RECIPE.png" alt="MATFLIX 로고" width="700"/>
+  <img src="ERD/RECIPE.png" alt="MATFLIX 로고" width="700"/>
 </details>
 
 <details>
   <summary>Board ERD</summary>
   <br>
-  <img src="BOARD.png" alt="MATFLIX 로고" width="700"/>
+  <img src="ERD/BOARD.png" alt="MATFLIX 로고" width="700"/>
 </details>
 
 <details>
   <summary>Notification ERD</summary>
   <br>
-  <img src="NOTIFICATION.png" alt="MATFLIX 로고" width="700"/>
+  <img src="ERD/NOTIFICATION.png" alt="MATFLIX 로고" width="700"/>
 </details>
 
